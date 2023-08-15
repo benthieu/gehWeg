@@ -1,12 +1,15 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import styles from './app.module.scss';
-
-import NxWelcome from './nx-welcome';
+import { MapContainer, TileLayer } from 'react-leaflet';
 
 export function App() {
   return (
     <div>
-      <NxWelcome title="gehweg" />
+      <MapContainer center={[46.947707374681514, 7.445807175401288]} zoom={13} scrollWheelZoom={false}>
+        <TileLayer
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        />
+      </MapContainer>
     </div>
   );
 }
