@@ -6,8 +6,7 @@ const supabase = createClient("https://sjnxrpazstalmggosrcy.supabase.co", "eyJhb
 type User = {name: string}
 
 function Users() {
-  const [user, setUser] = useState([]);
-  useState<User[] | null>([]);
+  const [user, setUser] = useState<User[] | null>([]);
 
   useEffect(() => {
     getUser();
@@ -24,9 +23,10 @@ function Users() {
   return (
     <ul>
     <h1>User: </h1>
-      {user.map((user: User) => (
+      {
+      user? user.map((user: User) => (
         <li key={user.name}>{user.name}</li>
-      ))}
+      )) : 'No user found'}
     </ul>
   );
 }
