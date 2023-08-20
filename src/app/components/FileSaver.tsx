@@ -19,16 +19,12 @@ function FileSaver() {
       })
     }
 
-    function alertError(error: any) {
-      alert(error);
-    }
-
 
   return (
     <div>
       <ErrorBoundary
-      onError={(error) => alertError(error)}
-      FallbackComponent={() => {return (<div>Error occured...</div>)}}>
+      onError={(error) => alert(error)}
+      FallbackComponent={FallbackComponent}>
       <h1>Save File: </h1>
       <input type="file">Save</input>
       <button onClick={(e) => saveFile(e)}>Save</button>
@@ -38,3 +34,7 @@ function FileSaver() {
 }
 
 export default FileSaver;
+
+function FallbackComponent() {
+  return (<div>Error occured...</div>)
+}
