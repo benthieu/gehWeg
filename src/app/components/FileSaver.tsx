@@ -1,33 +1,87 @@
-import { useSupabaseClient } from '@supabase/auth-helpers-react';
-import { useEffect } from 'react';
+import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react';
+import { useEffect, useState } from 'react';
+import { Button, Card, Col, Form, Row } from 'react-bootstrap';
 import { ErrorBoundary } from 'react-error-boundary';
+import { v4 as uuidv4 } from 'uuid';
 
+
+// https://sjnxrpazstalmggosrcy.supabase.co/storage/v1/object/public/images/anonymous/e669be3e-d48e-42f1-aa3a-12f492e509d8
+
+const CDNURL = 'https://sjnxrpazstalmggosrcy.supabase.co/storage/v1/object/public/images/anonymous/';
 
 function FileSaver() {
-
+  const user = useUser();
   const supabase = useSupabaseClient();
+  const [images, setImages] = useState([]);
 
-    async function saveFile(event: any): Promise<void> {
-
-    const image = event?.target?.files[0]
-    const { data, error } = await supabase
-      .storage
+  async function uploadFile(event: any): Promise<void> {
+    console.log('user: ', user)
+    const image = event?.target?.files[0];
+    const { data, error } = await supabase.storage
       .from('images')
-      .upload('images/avatar1.png', image, {
-        cacheControl: '3600',
-        upsert: false
-      })
-    }
+      .upload('anonymous/' + uuidv4(), image);
 
+    if (error) {
+      console.log('error: ' + typeof error, error);
+      alert('error: ' + error.error + ', ' + error.message);
+    } else {
+      getImages();
+    }
+  }
+
+  async function getImages() {
+    console.log('getImges called...')
+    const {data, error} = await supabase
+    .storage
+    .from('images')
+    .list('anonymous/', {
+      limit: 20,
+      offset: 0,
+      sortBy: { column: "name", order: "asc"}
+    });
+
+    if (data !== null) {
+      console.log('data', data);
+      setImages(data);
+    } else {
+      alert('Error loading imgaes');
+      console.log(error);
+    }
+  }
+
+  useEffect(() => {
+    getImages();
+  },
+  [user])
 
   return (
     <div>
       <ErrorBoundary
-      onError={(error) => alert(error)}
-      FallbackComponent={FallbackComponent}>
-      <h1>Save File: </h1>
-      <input type="file">Save</input>
-      <button onClick={(e) => saveFile(e)}>Save</button>
+        onError={(error) => alert(error)}
+        FallbackComponent={FallbackComponent}
+      >
+        <p>Choose file to upload</p>
+        <Form.Group className="mb-3" style={{ maxWidth: '500px' }}>
+          <Form.Control
+            type="file"
+            accept="image/png, image/jpeg, image/jpeg"
+            onChange={(event) => uploadFile(event)}
+          />
+        </Form.Group>
+        <Row xs={1} md={3} className="g-4">
+          {images.map((image) => {
+            return (
+              <Col key={CDNURL + image.name}>
+              <Card>
+                <Card.Img variant="top" src={CDNURL + image.name}/>
+                <Card.Body>
+                  <Button variant="danger">Delete Image</Button>
+                </Card.Body>
+              </Card>
+              </Col>
+            )  
+          })}
+        </Row>
       </ErrorBoundary>
     </div>
   );
@@ -36,5 +90,7 @@ function FileSaver() {
 export default FileSaver;
 
 function FallbackComponent() {
-  return (<div>Error occured...</div>)
+  return <div>Error occured...</div>;
 }
+
+
