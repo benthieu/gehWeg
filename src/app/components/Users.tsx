@@ -1,14 +1,10 @@
+import { useSupabaseClient } from '@supabase/auth-helpers-react';
 import { useEffect, useState } from 'react';
-import { createClient } from '@supabase/supabase-js';
-
-const supabase = createClient(
-  'https://sjnxrpazstalmggosrcy.supabase.co',
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNqbnhycGF6c3RhbG1nZ29zcmN5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE2OTIxMjIyNjcsImV4cCI6MjAwNzY5ODI2N30.oL_LjLWYH_V0HjxPCwjPt1NXaosiXKQbCDugQDELOP8'
-);
 
 type User = { name: string };
 
 function Users() {
+  const supabase = useSupabaseClient()
   const [user, setUser] = useState<User[] | null>([]);
 
   useEffect(() => {

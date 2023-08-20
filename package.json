@@ -1,4 +1,4 @@
- {
+{
   "name": "gehweg",
   "version": "0.0.0",
   "license": "MIT",
@@ -9,11 +9,13 @@
   },
   "private": true,
   "dependencies": {
+    "@supabase/auth-helpers-react": "^0.4.2",
     "@supabase/supabase-js": "^2.32.0",
     "@swc/helpers": "~0.5.0",
     "leaflet": "^1.9.4",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "react-error-boundary": "^4.0.11",
     "react-leaflet": "^4.2.1"
   },
   "devDependencies": {
