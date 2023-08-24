@@ -5,9 +5,9 @@ import { ErrorBoundary } from 'react-error-boundary';
 import { v4 as uuidv4 } from 'uuid';
 
 
-// https://sjnxrpazstalmggosrcy.supabase.co/storage/v1/object/public/images/anonymous/e669be3e-d48e-42f1-aa3a-12f492e509d8
+// https://sjnxrpazstalmggosrcy.supabase.co/storage/v1/object/public/images/admin/e669be3e-d48e-42f1-aa3a-12f492e509d8
 
-const CDNURL = 'https://sjnxrpazstalmggosrcy.supabase.co/storage/v1/object/public/images/anonymous/';
+const CDNURL = 'https://sjnxrpazstalmggosrcy.supabase.co/storage/v1/object/public/images/admin/';
 
 function FileSaver() {
   const user = useUser();
@@ -19,7 +19,7 @@ function FileSaver() {
     const image = event?.target?.files[0];
     const { data, error } = await supabase.storage
       .from('images')
-      .upload('anonymous/' + uuidv4(), image);
+      .upload('admin/' + uuidv4(), image);
 
     if (error) {
       console.log('error: ' + typeof error, error);
@@ -34,7 +34,7 @@ function FileSaver() {
     const {data, error} = await supabase
     .storage
     .from('images')
-    .list('anonymous/', {
+    .list('admin/', {
       limit: 20,
       offset: 0,
       sortBy: { column: "name", order: "asc"}

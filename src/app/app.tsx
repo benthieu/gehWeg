@@ -6,9 +6,6 @@ import FileSaver from './components/FileSaver';
 import {
   Button,
   Container,
-  Form,
-  FormControl,
-  FormGroup,
 } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react';
