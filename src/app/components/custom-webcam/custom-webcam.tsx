@@ -41,16 +41,19 @@ const CustomWebcam = () => {
             <Button className="mt-1" onClick={retake}>
               Retake
             </Button>
+            <Button className="mt-1" variant="secondary" onClick={closeCamera}>
+              Back
+            </Button>
             <Button className="mt-1" variant="danger" onClick={savePhoto}>
-              Save photo
+              Upload
             </Button>
           </section>
         ) : (
           <section>
             <Button className="mt-1" onClick={capture}>
-              Take a photo
+              Click
             </Button>
-            <Button className="mt-1" variant="danger" onClick={closeCamera}>
+            <Button className="mt-1" variant="secondary" onClick={closeCamera}>
               Back
             </Button>
           </section>
