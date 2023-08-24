@@ -1,7 +1,7 @@
 import { useContext, useEffect } from 'react';
 import StateContext from '../state/state.context';
 
-export function UserList() {
+export function Profile() {
     const { users } = useContext(StateContext);
     useEffect(() => {
         console.log('users', users);
@@ -18,4 +18,4 @@ export function UserList() {
   );
 }
 
-export default UserList;
+export default Profile;
