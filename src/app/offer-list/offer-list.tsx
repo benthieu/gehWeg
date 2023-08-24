@@ -11,8 +11,8 @@ export function OfferList() {
     <div>
       <h3>Angebote</h3>
       <ul>
-        {offers.map((offer) => {
-          return <li>offer: {offer.description}</li>;
+        {offers.map((offer, index) => {
+          return <li key={index}>offer: {offer.description}</li>;
         })}
       </ul>
     </div>
