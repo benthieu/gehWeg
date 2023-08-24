@@ -9,7 +9,7 @@ if ('mediaDevices' in navigator && 'getUserMedia' in navigator.mediaDevices) {
 
 function Camera() {
 
-  const video = document.querySelector('video');
+  let video = document.querySelector('video');
 
   let isAvailableCamera = false;
 
@@ -28,9 +28,30 @@ function Camera() {
     }
   }
 
-  const handleStream = (stream: any) => {
-    video? video.srcObject = stream : console.log('video element not found');
+  const handleStream = async (stream: any) => {
+    video ? video.srcObject = stream : await connectVideo(stream); 
     video?.play();
+  }
+
+  async function connectVideo(stream: any) {
+    console.log('video element not found. retrying...');
+    video = document.querySelector('video');
+    video.srcObject = stream
+  }
+
+  function takePicture(): void {
+    console.log('take picture called')
+    const canvas = document.querySelector('canvas');
+    const screenshotImage = document.querySelector('img');
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    canvas?.getContext('2d')?.drawImage(video, 0, 0);
+    screenshotImage.src = canvas.toDataURL('image/webp');
+    screenshotImage.classList.remove('d-none');
+  }
+
+  function closeCamera(): void {
+    throw new Error("Function not implemented.");
   }
 
   return (
@@ -42,10 +63,22 @@ function Camera() {
       
       
       </> : null}
-      <Button variant="primary" onClick={() => openCamera()}>
+    
+      <section className="mb-4">
+      <Button variant="secondary" className="mt-4" onClick={() => openCamera()}>
+        Open camera
+      </Button>
+      <Button variant="primary" className="mt-4"  onClick={() => takePicture()}>
         Take a picture
       </Button>
-     
+      <Button variant="secondary" className="mt-4"  onClick={() => closeCamera()}>
+        Close camera
+      </Button>
+      </section>
+      <section>
+      <canvas class="d-none"></canvas>
+      <img class="screenshot-image d-none" alt=""/>
+      </section>
     </>
   );
 }
