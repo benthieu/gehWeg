@@ -1,4 +1,4 @@
-import User from './components/Users';
+import Camera from './components/Camera';
 import FileUpload from './components/FileUpload';
 import {
   Container,
@@ -9,7 +9,7 @@ export function App() {
 
   return (
     <Container align="center" className="container-sm mt-4">
-          <User />
+          <Camera />
           <FileUpload></FileUpload>
     </Container>
   );
