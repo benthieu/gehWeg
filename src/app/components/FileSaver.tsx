@@ -1,22 +1,20 @@
-import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react';
+import { useSupabaseClient } from '@supabase/auth-helpers-react';
 import { useEffect, useState } from 'react';
 import { Button, Card, Col, Form, Row } from 'react-bootstrap';
 import { ErrorBoundary } from 'react-error-boundary';
 import { v4 as uuidv4 } from 'uuid';
 
-
 // Link base url to load images, image id added in functions uploadFile and getImages
-const CDNURL = 'https://sjnxrpazstalmggosrcy.supabase.co/storage/v1/object/public/images/admin/';
+const CDNURL =
+  'https://sjnxrpazstalmggosrcy.supabase.co/storage/v1/object/public/images/admin/';
 
 function FileSaver() {
-  const user = useUser();
   const supabase = useSupabaseClient();
   const [images, setImages] = useState([]);
 
   async function uploadFile(event: any): Promise<void> {
-    console.log('user: ', user)
     const image = event?.target?.files[0];
-    const { data, error } = await supabase.storage
+    const { error } = await supabase.storage
       .from('images')
       .upload('admin/' + uuidv4(), image);
 
@@ -29,15 +27,14 @@ function FileSaver() {
   }
 
   async function getImages() {
-    console.log('getImges called...')
-    const {data, error} = await supabase
-    .storage
-    .from('images')
-    .list('admin/', {
-      limit: 20,
-      offset: 0,
-      sortBy: { column: "name", order: "asc"}
-    });
+    console.log('getImges called...');
+    const { data, error } = await supabase.storage
+      .from('images')
+      .list('admin/', {
+        limit: 20,
+        offset: 0,
+        sortBy: { column: 'name', order: 'asc' },
+      });
 
     if (data !== null) {
       console.log('data', data);
@@ -50,8 +47,21 @@ function FileSaver() {
 
   useEffect(() => {
     getImages();
-  },
-  [user])
+  }, []);
+
+  async function deleteImage(name: string) {
+    const { data, error } = await supabase.storage
+      .from('images')
+      .remove(['admin/' + name]);
+
+      if (data !== null) {
+        console.log('image deleted' + name + ', response: ', data);
+        getImages();
+      } else {
+        alert('Error deleting imgage');
+        console.log(error);
+      }
+  }
 
   return (
     <div>
@@ -71,14 +81,16 @@ function FileSaver() {
           {images.map((image) => {
             return (
               <Col key={CDNURL + image.name}>
-              <Card>
-                <Card.Img variant="top" src={CDNURL + image.name}/>
-                <Card.Body>
-                  <Button variant="danger">Delete Image</Button>
-                </Card.Body>
-              </Card>
+                <Card>
+                  <Card.Img variant="top" src={CDNURL + image.name} />
+                  <Card.Body>
+                    <Button variant="danger" onClick={() => deleteImage(image.name)}>
+                      Delete Image
+                    </Button>
+                  </Card.Body>
+                </Card>
               </Col>
-            )  
+            );
           })}
         </Row>
       </ErrorBoundary>
@@ -89,7 +101,5 @@ function FileSaver() {
 export default FileSaver;
 
 function FallbackComponent() {
-  return <>{alert("Error occured...")}</>;
+  return <>{alert('Error occured...')}</>;
 }
-
-
