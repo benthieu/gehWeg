@@ -21,7 +21,7 @@ function Camera() {
 
   async function openCamera(): void {
     try{
-    const stream = navigator.mediaDevices.getUserMedia({video: true});
+    const stream = await navigator.mediaDevices.getUserMedia({video: true});
     handleStream(stream);
     } catch {
       alert('error asking permissions of camera')
@@ -30,6 +30,7 @@ function Camera() {
 
   const handleStream = (stream: any) => {
     video? video.srcObject = stream : console.log('video element not found');
+    video?.play();
   }
 
   return (
