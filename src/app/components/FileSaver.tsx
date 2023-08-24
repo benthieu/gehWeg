@@ -5,8 +5,7 @@ import { ErrorBoundary } from 'react-error-boundary';
 import { v4 as uuidv4 } from 'uuid';
 
 
-// https://sjnxrpazstalmggosrcy.supabase.co/storage/v1/object/public/images/admin/e669be3e-d48e-42f1-aa3a-12f492e509d8
-
+// Link base url to load images, image id added in functions uploadFile and getImages
 const CDNURL = 'https://sjnxrpazstalmggosrcy.supabase.co/storage/v1/object/public/images/admin/';
 
 function FileSaver() {
@@ -90,7 +89,7 @@ function FileSaver() {
 export default FileSaver;
 
 function FallbackComponent() {
-  return <div>Error occured...</div>;
+  return <>{alert("Error occured...")}</>;
 }
 
 
