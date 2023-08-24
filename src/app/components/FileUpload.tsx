@@ -8,7 +8,7 @@ import { v4 as uuidv4 } from 'uuid';
 const CDNURL =
   'https://sjnxrpazstalmggosrcy.supabase.co/storage/v1/object/public/images/admin/';
 
-function FileSaver() {
+function FileUpload() {
   const supabase = useSupabaseClient();
   const [images, setImages] = useState([]);
 
@@ -101,7 +101,7 @@ function FileSaver() {
   );
 }
 
-export default FileSaver;
+export default FileUpload;
 
 function FallbackComponent() {
   return <>{alert('Error occured...')}</>;

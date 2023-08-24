@@ -1,5 +1,5 @@
 import User from './components/Users';
-import FileSaver from './components/FileSaver';
+import FileUpload from './components/FileUpload';
 import {
   Container,
 } from 'react-bootstrap';
@@ -10,7 +10,7 @@ export function App() {
   return (
     <Container align="center" className="container-sm mt-4">
           <User />
-          <FileSaver></FileSaver>
+          <FileUpload></FileUpload>
     </Container>
   );
 }
