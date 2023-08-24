@@ -54,13 +54,13 @@ function FileSaver() {
       .from('images')
       .remove(['admin/' + name]);
 
-      if (data !== null) {
-        console.log('image deleted' + name + ', response: ', data);
-        getImages();
-      } else {
-        alert('Error deleting imgage');
-        console.log(error);
-      }
+    if (data !== null) {
+      console.log('image deleted' + name + ', response: ', data);
+      getImages();
+    } else {
+      alert('Error deleting imgage');
+      console.log(error);
+    }
   }
 
   return (
@@ -84,7 +84,10 @@ function FileSaver() {
                 <Card>
                   <Card.Img variant="top" src={CDNURL + image.name} />
                   <Card.Body>
-                    <Button variant="danger" onClick={() => deleteImage(image.name)}>
+                    <Button
+                      variant="danger"
+                      onClick={() => deleteImage(image.name)}
+                    >
                       Delete Image
                     </Button>
                   </Card.Body>

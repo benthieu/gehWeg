@@ -12,7 +12,7 @@ function Users() {
   }, []);
 
   async function getUser() {
-    const { data } = await supabase.from('_user').select();
+    const { data } = await supabase.from('User').select();
     console.log('data fetched: ', data);
     if (data) setUser(data);
   }
