@@ -9,10 +9,15 @@ const Camera = () => {
     setCameraOpened(() => true);
   };
 
+  const closeCamera = () => {
+    console.log("closeCamera called")
+    setCameraOpened(() => false);
+  };
+
   return (
     <div className="container">
       {cameraOpened ? (
-        <CustomWebcam />
+        <CustomWebcam turnOff={closeCamera}/>
       ) : (
         <section>
           <Button className="mt-1" onClick={openCamera}>
