@@ -98,7 +98,7 @@ export interface Database {
           created_by: number
           description: string | null
           id: number
-          location: unknown | null
+          location: Json | null
           postal_code: number | null
           status: string
           street: string | null
