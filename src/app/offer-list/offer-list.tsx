@@ -26,8 +26,8 @@ export function OfferList() {
         const offerDate = new Date(offer.created_at);
         const formattedDate = offerDate.toLocaleDateString('de-CH');
         return (
-          <>
-            <ListItem key={index} alignItems="flex-start" disablePadding>
+          <div key={index}>
+            <ListItem alignItems="flex-start" disablePadding>
               <ListItemButton>
                 <img
                   className="list-item-image"
@@ -43,7 +43,7 @@ export function OfferList() {
               </ListItemButton>
             </ListItem>
             <Divider />
-          </>
+          </div>
         );
       })}
     </>

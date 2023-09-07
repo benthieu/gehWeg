@@ -109,39 +109,6 @@ function ImageLoader() {
         </ImageList>
       </ErrorBoundary>
     </Container>
-    // <div>
-    //   <ErrorBoundary
-    //     onError={(error) => alert(error)}
-    //     FallbackComponent={FallbackComponent}
-    //   >
-    //     <p>Choose file to upload</p>
-    //     <Box className="mb-3" style={{ maxWidth: '500px' }}>
-    //       <FormControl
-    //         type="file"
-    //         accept="image/png, image/jpeg, image/jpeg"
-    //         onChange={(event) => uploadFile(event)}
-    //       />
-    //     </Box>
-    //     <Box>
-    //       {images.map((image) => {
-    //         return (
-    //           <Box key={CDNURL + image.name}>
-    //             <Card>
-    //               <Card  src={CDNURL + image.name} />
-    //               <CardContent>
-    //                 <Button
-    //                   onClick={() => deleteImage(image.name)}
-    //                 >
-    //                   Delete Image
-    //                 </Button>
-    //               </CardContent>
-    //             </Card>
-    //           </Box>
-    //         );
-    //       })}
-    //     </Box>
-    //   </ErrorBoundary>
-    // </div>
   );
 }
 

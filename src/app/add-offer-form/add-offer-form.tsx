@@ -1,37 +1,41 @@
-import { Box, Container, Grid } from '@mui/material';
 import ImageLoader from './image-loader';
+import OfferTitle from './offer-title';
+import OfferCategory from './offer-category';
+import OfferDescription from './offer-description';
+import OfferGeolocation from './offer-geolocation';
+import { Button, Grid } from '@mui/material';
 
 export function AddOfferForm() {
   return (
-    // <Container>
-    //   <Box display="flex" justifyContent="center" alignItems="center">
-    //     <ImageLoader />
-    //   </Box>
-    // </Container>
-
-    <Grid
-      container
-      spacing={0}
-      direction="column"
-      alignItems="center"
-      justifyContent="center"
-      sx={{ minHeight: '100vh' }}
-    >
-      <Grid item xs={3}>
-        <ImageLoader />
+    <>
+      <div className="header">
+        <h3>Angebot erfassen</h3>
+      </div>
+      <Grid
+        container
+        direction="column"
+        alignItems="center"
+        justifyContent="center"
+      >
+        <Grid item xs={3}>
+          <ImageLoader />
+        </Grid>
+        <Grid item xs={3}>
+          <OfferDescription description={''} />
+        </Grid>
+        <Grid item xs={3}>
+          <OfferTitle title={''} />
+        </Grid>
+        <Grid item xs={3}>
+          <OfferCategory categories={[]} />
+        </Grid>
+        <Grid item xs={3}>
+          <OfferGeolocation title={''} />
+        </Grid>
+        <Grid  mb={1}>
+        <Button>Speichern</Button>
+        </Grid>
       </Grid>
-      <Grid item xs={3}>
-      Bezeichnung
-      </Grid>
-      <Grid item xs={3}>
-      Kategorie
-      </Grid>
-      <Grid item xs={3}>
-      Beschreibung
-      </Grid>
-      <Grid item xs={3}>
-      Standort
-      </Grid>
-    </Grid>
+    </>
   );
 }
