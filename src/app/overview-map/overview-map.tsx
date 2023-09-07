@@ -3,7 +3,7 @@ import { MapContainer, TileLayer } from 'react-leaflet';
 import { Fab } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { useNavigate } from 'react-router-dom';
-import { AddOfferForm } from '../add-offer-form/add-offer-form';
+
 
 export function OverviewMap() {
   const navigate = useNavigate();
