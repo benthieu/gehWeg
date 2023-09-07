@@ -5,11 +5,15 @@ import { Tables } from './supabase/database.types';
 interface State {
   users: Tables<'User'>[];
   offers: Tables<'Offer'>[];
+  activeUser: Tables<'User'> | null;
+  setUserActive: (id: number) => void
 }
 
 const StateContext = createContext<State>({
   users: [],
   offers: [],
+  activeUser: null,
+  setUserActive: () => {}
 });
 
 interface StateProviderProperties {
@@ -18,6 +22,7 @@ interface StateProviderProperties {
 export const StateProvider = ({ children }: StateProviderProperties) => {
   const [users, setUsers] = useState<Tables<'User'>[]>([]);
   const [offers, setOffers] = useState<Tables<'Offer'>[]>([]);
+  const [activeUser, setActiveUser] = useState<Tables<'User'> | null>(null);
   const supabaseClient = useSupabaseClient();
 
   useEffect(() => {
@@ -26,6 +31,7 @@ export const StateProvider = ({ children }: StateProviderProperties) => {
       const result = await query;
       if (result.data) {
         setUsers(result.data);
+        setActiveUser(result.data[0]);
       }
     };
     const getOffers = async () => {
@@ -39,8 +45,15 @@ export const StateProvider = ({ children }: StateProviderProperties) => {
     getUsers();
   }, []);
 
+  function setUserActive(id: number): void {
+    const foundUser = users.find((user) => user.id === id);
+    if (foundUser) {
+      setActiveUser(foundUser);
+    }
+  }
+
   return (
-    <StateContext.Provider value={{ users, offers }}>
+    <StateContext.Provider value={{ users, offers, activeUser, setUserActive }}>
       {children}
     </StateContext.Provider>
   );
