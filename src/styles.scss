@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css?family=Open+Sans:regular,bold');
+@import url('https://fonts.googleapis.com/css?family=Open+Sans:light,regular,bold');
 
 body,
 html {
@@ -13,6 +13,7 @@ html {
   flex-direction: column;
   > .main-content {
     width: 100%;
+    background: #fafafa;
     height: calc(100vh - 80px);
   }
   > .nav-bar {
@@ -22,17 +23,18 @@ html {
     flex-direction: row;
     align-items: center;
     justify-content: center;
+    border-top: 1px solid rgb(234, 235, 236);
     > ul {
+      width: 100%;
       list-style-type: none;
       display: flex;
       flex-direction: row;
+      justify-content: space-evenly;
       margin: 0;
-      padding: 5px;
-      border: 1px solid #999;
-      border-radius: 10px;
-      box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
+      padding: 0;
       background-color: white;
       li {
+        width: 60px;
         margin: 0;
         padding: 0 25px;
         > a {
@@ -41,13 +43,11 @@ html {
           flex-direction: column;
           align-items: center;
           justify-content: center;
-          color: #0c460c;
-          &.active,
-          &:hover {
-            color: #3b893b;
-          }
+          color: rgb(150, 155, 160);
+          font-weight: 300;
           &.active {
-            text-decoration: underline;
+            color: #3b893b;
+            font-weight: bold;
           }
           > span {
             display: block;
@@ -61,7 +61,6 @@ html {
       }
     }
   }
-
   .add-offer-button {
     background-color: rgb(157, 255, 0);
     color: #0c460c;
@@ -89,10 +88,29 @@ html {
       height: 100%;
     }
   }
+  .header {
+    border-bottom: 1px solid rgb(234, 235, 236);
+    width: 100%;
+    height: 50px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    background: white;
+    > h3 {
+      line-height: 50px;
+      display: block;
+      padding: 0;
+      margin: 0;
+      color: #3b893b;
+      font-weight: 400;
+    }
+  }
+  .list-item-image {
+    width: 60px;
+    margin-right: 10px;
+  }
 }
 .leaflet-container {
-  display: inline-flex;
-  flex-direction: column;
   width: 100%;
   height: 100%;
 }
