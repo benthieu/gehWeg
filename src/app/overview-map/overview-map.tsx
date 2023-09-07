@@ -19,20 +19,20 @@ export function OverviewMap() {
 
   function OfferMarkers() {
     return offers.map(offer => {
-        const sub = offer.subject;
-        const coordinates = JSON.parse(offer.location).coordinates as LatLngTuple;
-        const desc = offer.description;
-        const key = offer.id;
+      const sub = offer.subject;
+      const coordinates: LatLngTuple = offer.location ? JSON.parse(offer.location).coordinates : [46.947707374681514, 7.445807175401288];
+      const cat = offer.category;
+      const key = offer.id;
 
-        return <Marker key = {key} position={coordinates} eventHandlers={{
-          click: () => {
-            console.log('clicked on', sub)
-          },
-        }}>
-          <Popup>
-            {sub} <br/> {desc}
-          </Popup>
-        </Marker>
+      return <Marker key={key} position={coordinates} eventHandlers={{
+        click: () => {
+          console.log('clicked on', cat, sub)
+        },
+      }}>
+        <Popup>
+          {cat} <br/> {sub}
+        </Popup>
+      </Marker>
       }
     );
   }
@@ -44,7 +44,7 @@ export function OverviewMap() {
       </header>
       <main>
         <section>
-          <OfferMarkers />
+          <OfferMarkers/>
         </section>
       </main>
       <aside>
