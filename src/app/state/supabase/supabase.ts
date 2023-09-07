@@ -28,30 +28,26 @@ export interface Database {
             columns: ["offer"]
             referencedRelation: "Offer"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "Binary_offer_fkey"
+            columns: ["offer"]
+            referencedRelation: "offer_json"
+            referencedColumns: ["id"]
           }
         ]
       }
       Category: {
         Row: {
           name: string
-          tag: number | null
         }
         Insert: {
           name: string
-          tag?: number | null
         }
         Update: {
           name?: string
-          tag?: number | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "Category_tag_fkey"
-            columns: ["tag"]
-            referencedRelation: "Tag"
-            referencedColumns: ["id"]
-          }
-        ]
+        Relationships: []
       }
       Message: {
         Row: {
@@ -86,6 +82,12 @@ export interface Database {
             foreignKeyName: "Message_created_for_fkey"
             columns: ["created_for"]
             referencedRelation: "Offer"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "Message_created_for_fkey"
+            columns: ["created_for"]
+            referencedRelation: "offer_json"
             referencedColumns: ["id"]
           }
         ]
@@ -151,6 +153,43 @@ export interface Database {
           }
         ]
       }
+      Reservation: {
+        Row: {
+          reserved_at: string
+          reserved_by: number
+          reserved_for: number
+        }
+        Insert: {
+          reserved_at?: string
+          reserved_by?: number
+          reserved_for?: number
+        }
+        Update: {
+          reserved_at?: string
+          reserved_by?: number
+          reserved_for?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "Reservation_reserved_by_fkey"
+            columns: ["reserved_by"]
+            referencedRelation: "User"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "Reservation_reserved_for_fkey"
+            columns: ["reserved_for"]
+            referencedRelation: "Offer"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "Reservation_reserved_for_fkey"
+            columns: ["reserved_for"]
+            referencedRelation: "offer_json"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
       Status: {
         Row: {
           name: string
@@ -163,52 +202,87 @@ export interface Database {
         }
         Relationships: []
       }
-      Tag: {
-        Row: {
-          id: number
-          path: string
-        }
-        Insert: {
-          id?: number
-          path: string
-        }
-        Update: {
-          id?: number
-          path?: string
-        }
-        Relationships: []
-      }
       User: {
         Row: {
-          avatar: number | null
           id: number
           name: string
           role: string | null
         }
         Insert: {
-          avatar?: number | null
           id?: number
           name: string
           role?: string | null
         }
         Update: {
-          avatar?: number | null
           id?: number
           name?: string
           role?: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "User_avatar_fkey"
-            columns: ["avatar"]
-            referencedRelation: "Avatar"
-            referencedColumns: ["id"]
-          }
-        ]
+        Relationships: []
       }
     }
     Views: {
-      [_ in never]: never
+      offer_json: {
+        Row: {
+          category: string | null
+          city: string | null
+          created_at: string | null
+          created_by: number | null
+          description: string | null
+          id: number | null
+          location: string | null
+          postal_code: number | null
+          status: string | null
+          street: string | null
+          subject: string | null
+        }
+        Insert: {
+          category?: string | null
+          city?: string | null
+          created_at?: string | null
+          created_by?: number | null
+          description?: string | null
+          id?: number | null
+          location?: never
+          postal_code?: number | null
+          status?: string | null
+          street?: string | null
+          subject?: string | null
+        }
+        Update: {
+          category?: string | null
+          city?: string | null
+          created_at?: string | null
+          created_by?: number | null
+          description?: string | null
+          id?: number | null
+          location?: never
+          postal_code?: number | null
+          status?: string | null
+          street?: string | null
+          subject?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "Offer_category_fkey"
+            columns: ["category"]
+            referencedRelation: "Category"
+            referencedColumns: ["name"]
+          },
+          {
+            foreignKeyName: "Offer_created_by_fkey"
+            columns: ["created_by"]
+            referencedRelation: "User"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "Offer_status_fkey"
+            columns: ["status"]
+            referencedRelation: "Status"
+            referencedColumns: ["name"]
+          }
+        ]
+      }
     }
     Functions: {
       [_ in never]: never
