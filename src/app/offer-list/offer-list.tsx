@@ -17,7 +17,7 @@ export function OfferList() {
   }, [offers]);
 
   return (
-    <div>
+    <>
       <div className="header">
         <h3>Angebote</h3>
       </div>
@@ -46,7 +46,7 @@ export function OfferList() {
           </>
         );
       })}
-    </div>
+    </>
   );
 }
 
