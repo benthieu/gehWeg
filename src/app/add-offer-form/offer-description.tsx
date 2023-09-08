@@ -1,17 +1,33 @@
-import { ListItem, ListItemButton, ListItemText, Typography, Divider } from "@mui/material";
+import {
+  ListItem,
+  ListItemButton,
+  ListItemText,
+  Divider,
+  TextField,
+} from '@mui/material';
 
 type OfferDescriptionProps = {
-    description: string;
-}
+  description: string;
+  updateDescription: (description: string) => void;
+};
 
-export function OfferDescription(props: OfferDescriptionProps) {
+export function OfferDescription({
+  description,
+  updateDescription,
+}: OfferDescriptionProps) {
   return (
     <>
       <ListItem alignItems="flex-start" disablePadding>
         <ListItemButton>
-          <ListItemText
-            primary={'Beschreibung'}
-          ></ListItemText>
+          <ListItemText primary={'Beschreibung'}></ListItemText>
+          <TextField
+            id="offer-description"
+            label="Titel"
+            variant="outlined"
+            onChange={(event) => {
+              updateDescription(event.target.value);
+            }}
+          />
         </ListItemButton>
       </ListItem>
       <Divider />

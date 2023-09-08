@@ -105,6 +105,7 @@ export interface Database {
           status: string
           street: string | null
           subject: string
+          images: string[] | null
         }
         Insert: {
           category?: string | null
@@ -118,6 +119,8 @@ export interface Database {
           status: string
           street?: string | null
           subject: string
+          images: string[] | null
+
         }
         Update: {
           category?: string | null
@@ -131,6 +134,8 @@ export interface Database {
           status?: string
           street?: string | null
           subject?: string
+          images: string[] | null
+
         }
         Relationships: [
           {
