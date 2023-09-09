@@ -1,19 +1,19 @@
 import { useSupabaseClient } from '@supabase/auth-helpers-react';
 import { createContext, useEffect, useState } from 'react';
-import { Tables } from './supabase/database.types';
+import { Offer, Tables } from './supabase/database.types';
 
 interface State {
   users: Tables<'User'>[];
-  offers: Tables<'Offer'>[];
+  offers: Offer[];
   activeUser: Tables<'User'> | null;
-  setUserActive: (id: number) => void
+  setUserActive: (id: number) => void;
 }
 
 const StateContext = createContext<State>({
   users: [],
   offers: [],
   activeUser: null,
-  setUserActive: () => {}
+  setUserActive: () => {},
 });
 
 interface StateProviderProperties {
@@ -21,7 +21,7 @@ interface StateProviderProperties {
 }
 export const StateProvider = ({ children }: StateProviderProperties) => {
   const [users, setUsers] = useState<Tables<'User'>[]>([]);
-  const [offers, setOffers] = useState<Tables<'Offer'>[]>([]);
+  const [offers, setOffers] = useState<Offer[]>([]);
   const [activeUser, setActiveUser] = useState<Tables<'User'> | null>(null);
   const supabaseClient = useSupabaseClient();
 
@@ -38,7 +38,18 @@ export const StateProvider = ({ children }: StateProviderProperties) => {
       const query = supabaseClient.from('offer_json').select('*');
       const result = await query;
       if (result.data) {
-        setOffers(result.data);
+        setOffers(
+          result.data.map((offer) => {
+            const location = JSON.parse(offer.location);
+            if (location) {
+              offer.location = {
+                lat: location.coordinates[0],
+                lng: location.coordinates[1],
+              };
+            }
+            return offer;
+          })
+        );
       }
     };
     getOffers();

@@ -21,10 +21,9 @@ export function Profile() {
         {users.map((user, index) => {
           const isActiveUser = user.id === activeUser?.id;
           return (
-            <>
+            <div key={index}>
               <ListItem
                 className={isActiveUser ? `active` : ``}
-                key={index}
                 alignItems="flex-start"
                 disablePadding
               >
@@ -34,7 +33,7 @@ export function Profile() {
                 </ListItemButton>
               </ListItem>
               <Divider />
-            </>
+            </div>
           );
         })}
       </List>
