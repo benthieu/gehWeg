@@ -63,12 +63,17 @@ export function AddOfferForm() {
 
   function saveImages(images: string[]) {
     images.forEach((imageUrl) => {
-      const image = fetch(imageUrl).then((r) => r.blob());
-      image.then((image) => storeImagesToSupabase(image));
+      fetch(imageUrl)
+        .then((r) => {
+          console.log('fetched from imageUrl: ', r);
+          return r.blob();
+        })
+        .then((image) => storeImagesToSupabase(image));
     });
   }
 
   const storeImagesToSupabase = async function (image: Blob) {
+    console.log('image file', image);
     const imageId = uuidv4();
     const { error } = await supabase.storage
       .from('images')
@@ -104,7 +109,7 @@ export function AddOfferForm() {
   }
 
   async function saveOffer() {
-    await saveImages(images.map((image) => image.imageId));
+    await saveImages(images.map((image) => image.imageUrl));
     const offerToBeSaved = buildOffer();
     const { error } = await supabase
       .from('Offer')
@@ -118,7 +123,13 @@ export function AddOfferForm() {
   }
 
   function buildOffer() {
-    return { ...offer, created_by: activeUser?.id, status: 'new', id: undefined, created_at: undefined };
+    return {
+      ...offer,
+      created_by: activeUser?.id,
+      status: 'new',
+      id: undefined,
+      created_at: undefined,
+    };
   }
 
   return (
