@@ -1,4 +1,4 @@
-import { ListItem, ListItemButton, ListItemText, Typography, Divider } from "@mui/material";
+import { Typography, Box, Stack } from "@mui/material";
 
 type OfferCategoryProps = {
     categories: string[];
@@ -6,16 +6,14 @@ type OfferCategoryProps = {
 
 export function OfferCategory(props: OfferCategoryProps) {
   return (
-    <>
-      <ListItem alignItems="flex-start" disablePadding>
-        <ListItemButton>
-          <ListItemText
-            primary={'Kategorie'}
-          ></ListItemText>
-        </ListItemButton>
-      </ListItem>
-      <Divider />
-    </>
+    <Box mx={1}>
+      <Stack direction="row" m={1}>
+        <Typography variant="h6" mx={1}>
+          Kategorie
+        </Typography>
+  
+      </Stack>
+    </Box>
   );
 }
 

@@ -3,8 +3,8 @@ import OfferTitle from './offer-title';
 import OfferCategory from './offer-category';
 import OfferDescription from './offer-description';
 import OfferGeolocation from './offer-geolocation';
-import { Button, Grid } from '@mui/material';
-import { useState } from 'react';
+import { Button } from '@mui/material';
+import { useEffect, useState } from 'react';
 import { Tables } from '.././state/supabase/database.types';
 import { v4 as uuidv4 } from 'uuid';
 import { useSupabaseClient } from '@supabase/auth-helpers-react';
@@ -19,50 +19,38 @@ export function AddOfferForm() {
   const [offer, setOffer] = useState<Tables<'Offer'>>();
   const supabase = useSupabaseClient();
 
-  async function addImage(event: any) {
-    console.log('images before add: ', images);
-    const newImageUrl = URL.createObjectURL(event.target.files[0]);
-    const image: Image = { imageUrl: newImageUrl, imageId: uuidv4() };
-    await setImages((images) => [...images, image]);
-    updateOffer(image.imageId);
-  }
+  useEffect(() => updateOffer(), [images]);
 
-  function updateOffer(imageId: string) {
-    console.log('Updating offer..', offer);
-    console.log('images:', images);
+  function updateOffer() {
     const imageIds = images.map((image) => image.imageId);
-    const newOffer = { ...offer };
-    newOffer.images
-      ? (newOffer.images = [...imageIds, imageId])
-      : (newOffer.images = [imageId]);
+    const newOffer = { ...offer, images: imageIds };
     setOffer((offer) => {
       return { ...offer, ...newOffer };
     });
-    console.log('newOffer', newOffer);
+  }
+
+  function addImage(event: any) {
+    const newImageUrl = URL.createObjectURL(event.target.files[0]);
+    const image: Image = { imageUrl: newImageUrl, imageId: uuidv4() };
+    setImages((images) => [...images, image]);
   }
 
   async function removeImage(imageId: string) {
-    console.log('images before remove: ', images);
     await setImages((images) =>
       images.filter((element) => {
         return element.imageId !== imageId;
       })
     );
-    updateOffer(imageId);
   }
 
-  async function getBlobFromUrl(url: string) {
-    return fetch(url).then((r) => r.blob());
-  }
-
-  async function uploadImages(images: string[]): Promise<void> {
+  function saveImages(images: string[]) {
     images.forEach((imageUrl) => {
-      const image = getBlobFromUrl(imageUrl);
-      image.then((image) => storeImage(image));
+      const image = fetch(imageUrl).then((r) => r.blob());
+      image.then((image) => storeImagesToSupabase(image));
     });
   }
 
-  const storeImage = async function (image: Blob) {
+  const storeImagesToSupabase = async function (image: Blob) {
     const imageId = uuidv4();
     const { error } = await supabase.storage
       .from('images')
@@ -71,42 +59,38 @@ export function AddOfferForm() {
       console.log('error: ' + typeof error, error);
       alert('error: ' + error.error + ', ' + error.message);
     } else {
-      alert('image stored');
+      console.log('image saved: ', imageId);
     }
   };
 
   function updateTitle(title: any) {
-    console.log('offer before update title: ', offer);
-    console.log('event: ', title);
-
     const newOffer = { ...offer, subject: title };
-    console.log('new offer to update title: ', newOffer);
     setOffer((prevOffer) => {
       return { ...prevOffer, ...newOffer };
     });
-    console.log('updated title: offer:', offer);
+    console.log('Updated title. Offer: ', offer);
   }
 
   function updateDescription(description: any) {
-    console.log('offer before update description: ', offer);
-    console.log('event: ', description);
-
     const newOffer = { ...offer, description: description };
-    console.log('new offer to update title: ', newOffer);
     setOffer((prevOffer) => {
       return { ...prevOffer, ...newOffer };
     });
-    console.log('updated description: offer:', offer);
+    console.log('Updated description. Offer: ', offer);
   }
 
   async function saveOffer() {
-    await uploadImages(images);
-
+    await saveImages(images.map((image) => image.imageId));
     const offerToBeSaved = buildOffer();
-
     const { error } = await supabase
       .from('Offer')
       .insert({ ...offerToBeSaved });
+
+    if (error) {
+      alert('error occured: ' + error);
+    }
+    console.log('Offer saved: ', offer);
+    alert('Angebot gespeichert');
   }
 
   function buildOffer() {
@@ -139,55 +123,6 @@ export function AddOfferForm() {
       >
         Speichern
       </Button>
-      <Button
-        onClick={() => {
-          console.log('images: ', images);
-          console.log('offer', offer);
-        }}
-      >
-        Log images
-      </Button>
     </>
-
-    // <>
-    //   <div className="header">
-    //     <h3>Angebot erfassen</h3>
-    //   </div>
-    //   <Grid
-    //     container
-    //     direction="column"
-    //     alignItems="center"
-    //     justifyContent="center"
-    //   >
-    //     <Grid item xs={3}>
-    //       <ImageLoader
-    //         images={images}
-    //         addImage={addImage}
-    //         removeImage={removeImage}
-    //       />
-    //     </Grid>
-    //     <Grid item xs={3}>
-    //       <OfferTitle title={''} updateTitle={updateTitle} />
-    //     </Grid>
-    //     <Grid item xs={3}>
-    //       <OfferDescription
-    //         description={''}
-    //         updateDescription={updateDescription}
-    //       />
-    //     </Grid>
-    //     <Grid item xs={3}>
-    //       <OfferCategory categories={[]} />
-    //     </Grid>
-    //     <Grid item xs={3}>
-    //       <OfferGeolocation title={''} />
-    //     </Grid>
-    //     <Grid mb={1}>
-    //       <Button onClick={saveOffer}>Speichern</Button>
-    //     </Grid>
-    //   </Grid>
-    // </>
   );
-}
-function useForm(): { register: any; handleSubmit: any; errors: any } {
-  throw new Error('Function not implemented.');
 }

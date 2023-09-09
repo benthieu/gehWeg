@@ -1,10 +1,4 @@
-import {
-  ListItem,
-  ListItemButton,
-  ListItemText,
-  Divider,
-  TextField,
-} from '@mui/material';
+import { TextField, Box, Stack, Typography } from '@mui/material';
 
 type OfferDescriptionProps = {
   description: string;
@@ -16,22 +10,23 @@ export function OfferDescription({
   updateDescription,
 }: OfferDescriptionProps) {
   return (
-    <>
-      <ListItem alignItems="flex-start" disablePadding>
-        <ListItemButton>
-          <ListItemText primary={'Beschreibung'}></ListItemText>
-          <TextField
-            multiline
-            id="offer-description"
-            variant="outlined"
-            onChange={(event) => {
-              updateDescription(event.target.value);
-            }}
-          />
-        </ListItemButton>
-      </ListItem>
-      <Divider />
-    </>
+    <Box mx={1}>
+      <Stack direction="row" m={1}>
+        <Typography variant="h6" mx={1}>
+          Beschreibung
+        </Typography>
+        <TextField
+          type="text"
+          required
+          id="offer-title"
+          multiline
+          variant="standard"
+          onChange={(event) => {
+            updateDescription(event.target.value);
+          }}
+        />
+      </Stack>
+    </Box>
   );
 }
 
