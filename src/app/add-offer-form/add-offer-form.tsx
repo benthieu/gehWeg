@@ -4,10 +4,11 @@ import OfferCategory from './offer-category';
 import OfferDescription from './offer-description';
 import OfferGeolocation from './offer-geolocation';
 import { Box, Button } from '@mui/material';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Tables } from '.././state/supabase/database.types';
 import { v4 as uuidv4 } from 'uuid';
 import { useSupabaseClient } from '@supabase/auth-helpers-react';
+import StateContext from '../state/state.context';
 
 type Image = {
   imageUrl: string;
@@ -15,6 +16,7 @@ type Image = {
 };
 
 export function AddOfferForm() {
+  const { activeUser } = useContext(StateContext);
   const [images, setImages] = useState<Image[]>([]);
   const [offer, setOffer] = useState<Tables<'Offer'>>();
   const supabase = useSupabaseClient();
@@ -94,7 +96,7 @@ export function AddOfferForm() {
   }
 
   function buildOffer() {
-    return { ...offer, created_by: 1, status: 'new' };
+    return { ...offer, created_by: activeUser?.id, status: 'new' };
   }
 
   return (
