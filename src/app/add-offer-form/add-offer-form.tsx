@@ -3,7 +3,7 @@ import OfferTitle from './offer-title';
 import OfferCategory from './offer-category';
 import OfferDescription from './offer-description';
 import OfferGeolocation from './offer-geolocation';
-import { Button } from '@mui/material';
+import { Box, Button } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { Tables } from '.././state/supabase/database.types';
 import { v4 as uuidv4 } from 'uuid';
@@ -99,6 +99,7 @@ export function AddOfferForm() {
 
   return (
     <>
+    <Box m={2}>
       <div className="header">
         <h3>Angebot erfassen</h3>
       </div>
@@ -115,14 +116,17 @@ export function AddOfferForm() {
       />
       <OfferCategory categories={[]} />
       <OfferGeolocation title={''} />
-      <Button
-        onClick={saveOffer}
-        color="primary"
-        variant="contained"
-        disabled={!offer?.subject}
-      >
-        Speichern
-      </Button>
+      </Box>
+      <Box m={2} justifyContent="center" display="flex">
+        <Button
+          onClick={saveOffer}
+          color="primary"
+          variant="contained"
+          disabled={!offer?.subject}
+        >
+          Speichern
+        </Button>
+      </Box>
     </>
   );
 }

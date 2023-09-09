@@ -36,7 +36,8 @@ function ImageLoader({images, addImage, removeImage}) {
             <PhotoCamera />
           </IconButton>
         </Stack>
-        <ImageList sx={{ maxWidth: 200, maxHeight: 200 }} cols={1}>
+        <Stack direction="column" alignItems="center" spacing={2}>
+        <ImageList sx={{ maxWidth: 210, maxHeight: 210 }} cols={1}>
           {images?.map((image) => (
             <ImageListItem key={image.imageId}>
               <img src={image.imageUrl} alt={image.imageUrl} loading="lazy" />
@@ -44,6 +45,7 @@ function ImageLoader({images, addImage, removeImage}) {
             </ImageListItem>
           ))}
         </ImageList>
+        </Stack>
       </ErrorBoundary>
     </Container>
   );
