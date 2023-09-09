@@ -18,7 +18,18 @@ export interface Image {
 export function AddOfferForm() {
   const { activeUser } = useContext(StateContext);
   const [images, setImages] = useState<Image[]>([]);
-  const [offer, setOffer] = useState<Tables<'Offer'>>();
+  const [offer, setOffer] = useState<Tables<'Offer'>>({     category: null,
+    city: null,
+    created_at: '',
+    created_by: 1, 
+    description: null,
+    id: null, 
+    location: null,
+    postal_code: null,
+    status: '',
+    street:  null,
+    subject:  '',
+    images:  null});
   const supabase = useSupabaseClient();
 
   useEffect(() => updateOffer(), [images]);
@@ -28,9 +39,6 @@ export function AddOfferForm() {
     const newOffer = {
       ...offer,
       images: imageIds,
-      created_by: activeUser ? activeUser.id : 1,
-      status: 'new',
-      subject: offer ? offer.subject : '',
     };
     setOffer((offer) => {
       return { ...offer, ...newOffer };
@@ -74,9 +82,6 @@ export function AddOfferForm() {
   function updateTitle(title: string) {
     const newOffer = {
       ...offer,
-      images: offer ? offer.images : [],
-      created_by: activeUser ? activeUser.id : 1,
-      status: offer? offer.status : 'new',
       subject: title,
     };
     setOffer((prevOffer) => {
@@ -85,14 +90,10 @@ export function AddOfferForm() {
     console.log('Updated title. Offer: ', offer);
   }
 
-  function updateDescription(description: any) {
+  function updateDescription(description: string) {
     const newOffer = {
       ...offer,
       description: description,
-      images: offer ? offer.images : [],
-      created_by: activeUser ? activeUser.id : 1,
-      status: offer? offer.status : 'new',
-      subject: offer? offer.subject : '',
     };
     setOffer((prevOffer) => {
       return { ...prevOffer, ...newOffer };

@@ -99,7 +99,7 @@ export interface Database {
           created_at: string
           created_by: number
           description: string | null
-          id: number
+          id: number | null
           location: string | null
           postal_code: number | null
           status: string
