@@ -8,12 +8,20 @@ import {
 } from '@mui/material';
 import { ErrorBoundary } from 'react-error-boundary';
 import PhotoCamera from '@mui/icons-material/PhotoCamera';
+import { Image } from './add-offer-form';
 
 // Link base url to load images, image id added in functions uploadFile and getImages
 const CDNURL =
   'https://sjnxrpazstalmggosrcy.supabase.co/storage/v1/object/public/images/admin/';
 
-function ImageLoader({images, addImage, removeImage}) {
+
+type ImageLoaderProps = {
+  images: Image[],
+  addImage: (event: any) => void;
+  removeImage: (imageId: string) => void;
+  
+}
+function ImageLoader({images, addImage, removeImage}: ImageLoaderProps) {
 
   return (
     <Container maxWidth="md" sx={{ mt: 2 }}>

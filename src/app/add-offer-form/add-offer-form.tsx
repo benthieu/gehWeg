@@ -10,7 +10,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { useSupabaseClient } from '@supabase/auth-helpers-react';
 import StateContext from '../state/state.context';
 
-type Image = {
+export interface Image {
   imageUrl: string;
   imageId: string;
 };
@@ -18,7 +18,7 @@ type Image = {
 export function AddOfferForm() {
   const { activeUser } = useContext(StateContext);
   const [images, setImages] = useState<Image[]>([]);
-  const [offer, setOffer] = useState<Tables<'Offer'>>();
+  const [offer, setOffer] = useState<Tables<'Offer'> | any>();
   const supabase = useSupabaseClient();
 
   useEffect(() => updateOffer(), [images]);
