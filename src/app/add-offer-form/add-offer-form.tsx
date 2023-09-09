@@ -66,21 +66,18 @@ export function AddOfferForm() {
     }
   };
 
-
-
   function updateTitle(title: any) {
     console.log('offer before update title: ', offer);
     console.log('event: ', title);
 
-    const newOffer = { ...offer, title: title };
+    const newOffer = { ...offer, subject: title };
     console.log('new offer to update title: ', newOffer);
     setOffer((prevOffer) => {
-      return { ...prevOffer, ...newOffer};
+      return { ...prevOffer, ...newOffer };
     });
     console.log('updated title: offer:', offer);
   }
 
-  
   function updateDescription(description: any) {
     console.log('offer before update description: ', offer);
     console.log('event: ', description);
@@ -88,41 +85,23 @@ export function AddOfferForm() {
     const newOffer = { ...offer, description: description };
     console.log('new offer to update title: ', newOffer);
     setOffer((prevOffer) => {
-      return { ...prevOffer, ...newOffer};
+      return { ...prevOffer, ...newOffer };
     });
     console.log('updated description: offer:', offer);
   }
 
   async function saveOffer() {
+    await uploadImages(images);
 
+    const offerToBeSaved = buildOffer();
 
-
-
-    await uploadImages(images).then(
-      
-    );
-
-    const { error } = await supabase.storage
-    .from('images')
-    .upload('admin/' + imageId, image);
-  if (error) {
-    console.log('error: ' + typeof error, error);
-    alert('error: ' + error.error + ', ' + error.message);
-  } else {
-    console.log('images stored sucessfully');
-    const newOffer = { ...offer };
-    newOffer.images
-      ? (newOffer.images = [...images, imageId])
-      : (newOffer.images = [[], imageId]);
-    setOffer((offer) => {
-      return { ...offer, ...newOffer };
-    });
-    console.log('offer', offer);
-    console.log('newOffer', newOffer);
+    const { error } = await supabase
+      .from('Offer')
+      .insert({ ...offerToBeSaved });
   }
 
-
-    console.log('images saved')
+  function buildOffer() {
+    return { ...offer, created_by: 1, status: 'new' };
   }
 
   return (
@@ -130,35 +109,57 @@ export function AddOfferForm() {
       <div className="header">
         <h3>Angebot erfassen</h3>
       </div>
-      <Grid
-        container
-        direction="column"
-        alignItems="center"
-        justifyContent="center"
-      >
-        <Grid item xs={3}>
-          <ImageLoader
-            images={images}
-            addImage={addImage}
-            removeImage={removeImage}
-          />
-        </Grid>
-        <Grid item xs={3}>
-          <OfferTitle title={''} updateTitle={updateTitle}/>
-        </Grid>
-        <Grid item xs={3}>
-          <OfferDescription description={''} updateDescription={updateDescription} />
-        </Grid>
-        <Grid item xs={3}>
-          <OfferCategory categories={[]} />
-        </Grid>
-        <Grid item xs={3}>
-          <OfferGeolocation title={''} />
-        </Grid>
-        <Grid mb={1}>
-          <Button onClick={saveOffer}>Speichern</Button>
-        </Grid>
-      </Grid>
+      <ImageLoader
+        images={images}
+        addImage={addImage}
+        removeImage={removeImage}
+      />
+      <OfferTitle title={''} updateTitle={updateTitle} />
+      <OfferDescription
+        description={''}
+        updateDescription={updateDescription}
+      />
+      <OfferCategory categories={[]} />
+      <OfferGeolocation title={''} />
+      <Button onClick={saveOffer}>Speichern</Button>
     </>
+
+    // <>
+    //   <div className="header">
+    //     <h3>Angebot erfassen</h3>
+    //   </div>
+    //   <Grid
+    //     container
+    //     direction="column"
+    //     alignItems="center"
+    //     justifyContent="center"
+    //   >
+    //     <Grid item xs={3}>
+    //       <ImageLoader
+    //         images={images}
+    //         addImage={addImage}
+    //         removeImage={removeImage}
+    //       />
+    //     </Grid>
+    //     <Grid item xs={3}>
+    //       <OfferTitle title={''} updateTitle={updateTitle} />
+    //     </Grid>
+    //     <Grid item xs={3}>
+    //       <OfferDescription
+    //         description={''}
+    //         updateDescription={updateDescription}
+    //       />
+    //     </Grid>
+    //     <Grid item xs={3}>
+    //       <OfferCategory categories={[]} />
+    //     </Grid>
+    //     <Grid item xs={3}>
+    //       <OfferGeolocation title={''} />
+    //     </Grid>
+    //     <Grid mb={1}>
+    //       <Button onClick={saveOffer}>Speichern</Button>
+    //     </Grid>
+    //   </Grid>
+    // </>
   );
 }

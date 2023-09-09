@@ -21,8 +21,8 @@ export function OfferDescription({
         <ListItemButton>
           <ListItemText primary={'Beschreibung'}></ListItemText>
           <TextField
+            multiline
             id="offer-description"
-            label="Titel"
             variant="outlined"
             onChange={(event) => {
               updateDescription(event.target.value);

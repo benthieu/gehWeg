@@ -91,7 +91,7 @@ function ImageLoader({images, addImage, removeImage}) {
             <PhotoCamera />
           </IconButton>
         </Stack>
-        <ImageList sx={{ maxWidth: 300, maxHeight: 300 }} cols={1}>
+        <ImageList sx={{ maxWidth: 200, maxHeight: 200 }} cols={1}>
           {images?.map((image) => (
             <ImageListItem key={image}>
               <img src={image} alt={image} loading="lazy" />

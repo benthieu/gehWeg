@@ -20,7 +20,6 @@ export function OfferTitle({ title, updateTitle }: OfferTitleProps) {
           <ListItemText primary={'Titel'}></ListItemText>
           <TextField
             id="offer-title"
-            label="Titel"
             variant="outlined"
             onChange={(event) => {
               updateTitle(event.target.value);
