@@ -133,7 +133,7 @@ export interface Database {
           postal_code?: number | null
           status?: string
           street?: string | null
-          subject: string
+          subject?: string
           images: string[] | null
 
         }
