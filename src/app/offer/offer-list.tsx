@@ -7,28 +7,29 @@ import {
 } from '@mui/material';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
-import { useContext, useEffect } from 'react';
+import { useContext, useState } from 'react';
 import StateContext from '../state/state.context';
+import { Offer } from '../state/supabase/database.types';
+import OfferDetailModal from './offer-detail-modal';
 
 export function OfferList() {
   const { offers } = useContext(StateContext);
-  useEffect(() => {
-    console.log('offers', offers);
-  }, [offers]);
-
+  const [activeOffer, setOfferActive] = useState<Offer | null>(null);
   return (
     <>
       <div className="header">
         <h3>Angebote</h3>
       </div>
       <List sx={{ width: '100%' }}></List>
+      {activeOffer ? <OfferDetailModal offer={activeOffer} offerClosed={() => setOfferActive(null)} /> : null}
       {offers.map((offer, index) => {
-        const offerDate = new Date(offer.created_at);
-        const formattedDate = offerDate.toLocaleDateString('de-CH');
+        const formattedDate = offer.created_at
+          ? new Date(offer.created_at).toLocaleDateString('de-CH')
+          : '';
         return (
-          <>
-            <ListItem key={index} alignItems="flex-start" disablePadding>
-              <ListItemButton>
+          <div key={index}>
+            <ListItem alignItems="flex-start" disablePadding>
+              <ListItemButton onClick={() => setOfferActive(offer)}>
                 <img
                   className="list-item-image"
                   src={`https://picsum.photos/200?test=${index}`}
@@ -43,7 +44,7 @@ export function OfferList() {
               </ListItemButton>
             </ListItem>
             <Divider />
-          </>
+          </div>
         );
       })}
     </>

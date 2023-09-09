@@ -2,11 +2,11 @@ import { StrictMode } from 'react';
 import * as ReactDOM from 'react-dom/client';
 
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
+import { AddOfferForm } from './app/add-offer-form/add-offer-form';
 import App from './app/app';
-import OfferList from './app/offer-list/offer-list';
+import OfferList from './app/offer/offer-list';
 import OverviewMap from './app/overview-map/overview-map';
 import { Profile } from './app/profile/profile';
-import { AddOfferForm } from './app/add-offer-form/add-offer-form';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
