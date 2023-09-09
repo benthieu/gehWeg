@@ -13,19 +13,25 @@ import StateContext from '../state/state.context';
 export interface Image {
   imageUrl: string;
   imageId: string;
-};
+}
 
 export function AddOfferForm() {
   const { activeUser } = useContext(StateContext);
   const [images, setImages] = useState<Image[]>([]);
-  const [offer, setOffer] = useState<Tables<'Offer'> | any>();
+  const [offer, setOffer] = useState<Tables<'Offer'>>();
   const supabase = useSupabaseClient();
 
   useEffect(() => updateOffer(), [images]);
 
   function updateOffer() {
     const imageIds = images.map((image) => image.imageId);
-    const newOffer = { ...offer, images: imageIds };
+    const newOffer = {
+      ...offer,
+      images: imageIds,
+      created_by: activeUser ? activeUser.id : 1,
+      status: 'new',
+      subject: offer ? offer.subject : '',
+    };
     setOffer((offer) => {
       return { ...offer, ...newOffer };
     });
@@ -59,14 +65,20 @@ export function AddOfferForm() {
       .upload('admin/' + imageId, image);
     if (error) {
       console.log('error: ' + typeof error, error);
-      alert('error: ' + error.error + ', ' + error.message);
+      alert('error: ' + error + ', ' + error.message);
     } else {
       console.log('image saved: ', imageId);
     }
   };
 
-  function updateTitle(title: any) {
-    const newOffer = { ...offer, subject: title };
+  function updateTitle(title: string) {
+    const newOffer = {
+      ...offer,
+      images: offer ? offer.images : [],
+      created_by: activeUser ? activeUser.id : 1,
+      status: offer? offer.status : 'new',
+      subject: title,
+    };
     setOffer((prevOffer) => {
       return { ...prevOffer, ...newOffer };
     });
@@ -74,7 +86,14 @@ export function AddOfferForm() {
   }
 
   function updateDescription(description: any) {
-    const newOffer = { ...offer, description: description };
+    const newOffer = {
+      ...offer,
+      description: description,
+      images: offer ? offer.images : [],
+      created_by: activeUser ? activeUser.id : 1,
+      status: offer? offer.status : 'new',
+      subject: offer? offer.subject : '',
+    };
     setOffer((prevOffer) => {
       return { ...prevOffer, ...newOffer };
     });
