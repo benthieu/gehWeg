@@ -50,9 +50,6 @@ export function OverviewMap() {
               <AddIcon />
             </Fab>
           </section>
-          <section>
-            <h1>Add offer</h1>
-          </section>
         </aside>
       </MapContainer>
       {activeOffer ? (
