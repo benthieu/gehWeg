@@ -35,7 +35,7 @@ export const StateProvider = ({ children }: StateProviderProperties) => {
       }
     };
     const getOffers = async () => {
-      const query = supabaseClient.from('Offer').select('*');
+      const query = supabaseClient.from('offer_json').select('*');
       const result = await query;
       if (result.data) {
         setOffers(result.data);
