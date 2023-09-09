@@ -101,23 +101,22 @@ export function AddOfferForm() {
 
   return (
     <>
-    <Box m={2}>
-      <div className="header">
-        <h3>Angebot erfassen</h3>
-      </div>
-
-      <ImageLoader
-        images={images}
-        addImage={addImage}
-        removeImage={removeImage}
-      />
-      <OfferTitle title={''} updateTitle={updateTitle} />
-      <OfferDescription
-        description={''}
-        updateDescription={updateDescription}
-      />
-      <OfferCategory categories={[]} />
-      <OfferGeolocation title={''} />
+      <Box m={2}>
+        <div className="header">
+          <h3>Etwas auf den Gehweg stellen</h3>
+        </div>
+        <ImageLoader
+          images={images}
+          addImage={addImage}
+          removeImage={removeImage}
+        />
+        <OfferTitle title={''} updateTitle={updateTitle} />
+        <OfferDescription
+          description={''}
+          updateDescription={updateDescription}
+        />
+        <OfferCategory categories={[]} />
+        <OfferGeolocation title={''} />
       </Box>
       <Box m={2} justifyContent="center" display="flex">
         <Button

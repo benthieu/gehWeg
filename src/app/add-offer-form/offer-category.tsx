@@ -1,8 +1,8 @@
-import { Typography, Box, Stack } from "@mui/material";
+import { Typography, Box, Stack, TextField } from '@mui/material';
 
 type OfferCategoryProps = {
-    categories: string[];
-}
+  categories: string[];
+};
 
 export function OfferCategory(props: OfferCategoryProps) {
   return (
@@ -11,7 +11,12 @@ export function OfferCategory(props: OfferCategoryProps) {
         <Typography variant="h6" mx={1}>
           Kategorie
         </Typography>
-  
+        <TextField
+          type="text"
+          id="offer-title"
+          multiline
+          variant="standard"
+        />
       </Stack>
     </Box>
   );

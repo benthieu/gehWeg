@@ -14,6 +14,11 @@ export function OverviewMap() {
 
   return (
     <>
+      <div className="header">
+        <h3>
+          gehWeg
+        </h3>
+      </div>
       <MapContainer
         center={{
           lat: 46.947707374681514,

@@ -2,6 +2,7 @@ import {
   Typography,
   Box,
   Stack,
+  TextField,
 } from '@mui/material';
 
 type OfferGeolocationProps = {
@@ -15,6 +16,12 @@ export function OfferGeolocation(props: OfferGeolocationProps) {
         <Typography variant="h6" mx={1}>
           Standort
         </Typography>
+        <TextField
+          type="text"
+          id="offer-title"
+          multiline
+          variant="standard"
+        />
       </Stack>
     </Box>
   );

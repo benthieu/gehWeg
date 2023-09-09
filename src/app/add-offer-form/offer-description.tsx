@@ -17,7 +17,6 @@ export function OfferDescription({
         </Typography>
         <TextField
           type="text"
-          required
           id="offer-title"
           multiline
           variant="standard"
