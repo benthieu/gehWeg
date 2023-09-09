@@ -5,7 +5,10 @@ import {
   Typography,
   Divider,
   TextField,
+  Stack,
+  Box,
 } from '@mui/material';
+import { useState } from 'react';
 
 type OfferTitleProps = {
   title: string;
@@ -13,22 +16,29 @@ type OfferTitleProps = {
 };
 
 export function OfferTitle({ title, updateTitle }: OfferTitleProps) {
+  // Variable zur Umsetzung der Input-Validierung: Wert muss vorhanden sein
+  const [value, setValue] = useState('');
   return (
-    <>
-      <ListItem alignItems="flex-start" disablePadding>
-        <ListItemButton>
-          <ListItemText primary={'Titel'}></ListItemText>
-          <TextField
-            id="offer-title"
-            variant="outlined"
-            onChange={(event) => {
-              updateTitle(event.target.value);
-            }}
-          />
-        </ListItemButton>
-      </ListItem>
-      <Divider />
-    </>
+    <Box mx={3}>
+      <Stack direction="row" m={3}>
+        <Typography variant="h5" mx={3}>
+          Titel
+        </Typography>
+        <TextField
+          type="text"
+          required
+          id="offer-title"
+          variant="standard"
+          error={!value}
+          value={value}
+          onChange={(event) => {
+            setValue(event.target.value);
+            updateTitle(event.target.value);
+          }}
+          helperText={!value ? 'Bitte Titel eingeben' : ''}
+        />
+      </Stack>
+    </Box>
   );
 }
 

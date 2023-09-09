@@ -93,9 +93,9 @@ function ImageLoader({images, addImage, removeImage}) {
         </Stack>
         <ImageList sx={{ maxWidth: 200, maxHeight: 200 }} cols={1}>
           {images?.map((image) => (
-            <ImageListItem key={image}>
-              <img src={image} alt={image} loading="lazy" />
-              <Button onClick={() => removeImage(image)}>Delete</Button>
+            <ImageListItem key={image.imageId}>
+              <img src={image.imageUrl} alt={image.imageUrl} loading="lazy" />
+              <Button onClick={() => removeImage(image.imageId)}>Delete</Button>
             </ImageListItem>
           ))}
         </ImageList>

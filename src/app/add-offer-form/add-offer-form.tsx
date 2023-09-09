@@ -9,28 +9,46 @@ import { Tables } from '.././state/supabase/database.types';
 import { v4 as uuidv4 } from 'uuid';
 import { useSupabaseClient } from '@supabase/auth-helpers-react';
 
+type Image = {
+  imageUrl: string;
+  imageId: string;
+};
+
 export function AddOfferForm() {
-  const [images, setImages] = useState<string[]>([]);
+  const [images, setImages] = useState<Image[]>([]);
   const [offer, setOffer] = useState<Tables<'Offer'>>();
   const supabase = useSupabaseClient();
 
   async function addImage(event: any) {
     console.log('images before add: ', images);
-
     const newImageUrl = URL.createObjectURL(event.target.files[0]);
-    await setImages((images) => [...images, newImageUrl]);
-    setTimeout(() => console.log('images after add: ', images), 500);
+    const image: Image = { imageUrl: newImageUrl, imageId: uuidv4() };
+    await setImages((images) => [...images, image]);
+    updateOffer(image.imageId);
   }
 
-  async function removeImage(image: string) {
-    console.log('images before remove: ', images);
+  function updateOffer(imageId: string) {
+    console.log('Updating offer..', offer);
+    console.log('images:', images);
+    const imageIds = images.map((image) => image.imageId);
+    const newOffer = { ...offer };
+    newOffer.images
+      ? (newOffer.images = [...imageIds, imageId])
+      : (newOffer.images = [imageId]);
+    setOffer((offer) => {
+      return { ...offer, ...newOffer };
+    });
+    console.log('newOffer', newOffer);
+  }
 
+  async function removeImage(imageId: string) {
+    console.log('images before remove: ', images);
     await setImages((images) =>
       images.filter((element) => {
-        return element !== image;
+        return element.imageId !== imageId;
       })
     );
-    setTimeout(() => console.log('images after remove: ', images), 500);
+    updateOffer(imageId);
   }
 
   async function getBlobFromUrl(url: string) {
@@ -53,16 +71,7 @@ export function AddOfferForm() {
       console.log('error: ' + typeof error, error);
       alert('error: ' + error.error + ', ' + error.message);
     } else {
-      console.log('images stored sucessfully');
-      const newOffer = { ...offer };
-      newOffer.images
-        ? (newOffer.images = [...images, imageId])
-        : (newOffer.images = [[], imageId]);
-      setOffer((offer) => {
-        return { ...offer, ...newOffer };
-      });
-      console.log('offer', offer);
-      console.log('newOffer', newOffer);
+      alert('image stored');
     }
   };
 
@@ -109,6 +118,7 @@ export function AddOfferForm() {
       <div className="header">
         <h3>Angebot erfassen</h3>
       </div>
+
       <ImageLoader
         images={images}
         addImage={addImage}
@@ -121,7 +131,22 @@ export function AddOfferForm() {
       />
       <OfferCategory categories={[]} />
       <OfferGeolocation title={''} />
-      <Button onClick={saveOffer}>Speichern</Button>
+      <Button
+        onClick={saveOffer}
+        color="primary"
+        variant="contained"
+        disabled={!offer?.subject}
+      >
+        Speichern
+      </Button>
+      <Button
+        onClick={() => {
+          console.log('images: ', images);
+          console.log('offer', offer);
+        }}
+      >
+        Log images
+      </Button>
     </>
 
     // <>
@@ -162,4 +187,7 @@ export function AddOfferForm() {
     //   </Grid>
     // </>
   );
+}
+function useForm(): { register: any; handleSubmit: any; errors: any } {
+  throw new Error('Function not implemented.');
 }
