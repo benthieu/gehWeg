@@ -96,7 +96,7 @@ export interface Database {
         Row: {
           category: string | null
           city: string | null
-          created_at: string
+          created_at: string | null
           created_by: number
           description: string | null
           id: number | null

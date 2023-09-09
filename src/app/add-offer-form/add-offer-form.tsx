@@ -18,18 +18,20 @@ export interface Image {
 export function AddOfferForm() {
   const { activeUser } = useContext(StateContext);
   const [images, setImages] = useState<Image[]>([]);
-  const [offer, setOffer] = useState<Tables<'Offer'>>({     category: null,
+  const [offer, setOffer] = useState<Tables<'Offer'>>({
+    category: null,
     city: null,
-    created_at: '',
-    created_by: 1, 
+    created_at: null,
+    created_by: activeUser ? activeUser.id : 1,
     description: null,
-    id: null, 
+    id: null,
     location: null,
     postal_code: null,
     status: '',
-    street:  null,
-    subject:  '',
-    images:  null});
+    street: null,
+    subject: '',
+    images: null,
+  });
   const supabase = useSupabaseClient();
 
   useEffect(() => updateOffer(), [images]);
@@ -116,7 +118,7 @@ export function AddOfferForm() {
   }
 
   function buildOffer() {
-    return { ...offer, created_by: activeUser?.id, status: 'new' };
+    return { ...offer, created_by: activeUser?.id, status: 'new', id: undefined, created_at: undefined };
   }
 
   return (
