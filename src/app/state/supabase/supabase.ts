@@ -96,15 +96,16 @@ export interface Database {
         Row: {
           category: string | null
           city: string | null
-          created_at: string
+          created_at: string | null
           created_by: number
           description: string | null
-          id: number
+          id: number | null
           location: string | null
           postal_code: number | null
           status: string
           street: string | null
           subject: string
+          images: string[] | null
         }
         Insert: {
           category?: string | null
@@ -118,6 +119,8 @@ export interface Database {
           status: string
           street?: string | null
           subject: string
+          images: string[] | null
+
         }
         Update: {
           category?: string | null
@@ -131,6 +134,8 @@ export interface Database {
           status?: string
           street?: string | null
           subject?: string
+          images: string[] | null
+
         }
         Relationships: [
           {
