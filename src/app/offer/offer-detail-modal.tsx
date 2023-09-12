@@ -2,6 +2,7 @@ import { Box, Modal, Typography } from '@mui/material';
 import { useState } from 'react';
 import { MapContainer, Marker, TileLayer } from 'react-leaflet';
 import { Offer } from '../state/supabase/database.types';
+import { formatCHDate } from '../utils/date-utils';
 
 const style = {
   position: 'absolute' as 'absolute',
@@ -66,6 +67,9 @@ export default function OfferDetailModal({
             <Typography sx={{ mt: 2 }}>
               {offer.street}<br/>
               {offer.city} {offer.postal_code}
+            </Typography>
+            <Typography sx={{ mt: 2 }}>
+              Geteilt am: {formatCHDate(offer.created_at)}
             </Typography>
           </div>
         </Box>
