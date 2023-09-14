@@ -1,14 +1,14 @@
+import { Box, Button } from '@mui/material';
+import { useSupabaseClient } from '@supabase/auth-helpers-react';
+import { useContext, useEffect, useState } from 'react';
+import { v4 as uuidv4 } from 'uuid';
+import { Tables } from '.././state/supabase/database.types';
+import StateContext from '../state/state.context';
 import ImageLoader from './image-loader';
-import OfferTitle from './offer-title';
 import OfferCategory from './offer-category';
 import OfferDescription from './offer-description';
 import OfferGeolocation from './offer-geolocation';
-import { Box, Button } from '@mui/material';
-import { useContext, useEffect, useState } from 'react';
-import { Tables } from '.././state/supabase/database.types';
-import { v4 as uuidv4 } from 'uuid';
-import { useSupabaseClient } from '@supabase/auth-helpers-react';
-import StateContext from '../state/state.context';
+import OfferTitle from './offer-title';
 
 export interface Image {
   imageUrl: string;
@@ -18,13 +18,11 @@ export interface Image {
 export function AddOfferForm() {
   const { activeUser, categories } = useContext(StateContext);
   const [images, setImages] = useState<Image[]>([]);
-  const [offer, setOffer] = useState<Tables<'Offer'>>({
+  const [offer, setOffer] = useState<Partial<Tables<'Offer'>>>({
     category: null,
     city: null,
-    created_at: null,
     created_by: activeUser ? activeUser.id : 1,
     description: null,
-    id: null,
     location: null,
     postal_code: null,
     status: '',
@@ -133,9 +131,7 @@ export function AddOfferForm() {
     return {
       ...offer,
       created_by: activeUser?.id,
-      status: 'new',
-      id: undefined,
-      created_at: undefined,
+      status: 'new'
     };
   }
 
