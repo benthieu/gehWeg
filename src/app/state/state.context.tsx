@@ -1,20 +1,30 @@
 import { useSupabaseClient } from '@supabase/auth-helpers-react';
 import { createContext, useEffect, useState } from 'react';
-import { Offer, Tables } from './supabase/database.types';
 import { LatLngLiteral } from 'leaflet';
+import {
+  Functions,
+  Offer,
+  OffersInViewArgs,
+  Tables,
+  Views,
+} from './supabase/database.types';
 
 interface State {
   users: Tables<'User'>[];
   offers: Offer[];
+  categories: Tables<'Category'>[];
   activeUser: Tables<'User'> | null;
   setUserActive: (id: number) => void;
   currentLocation: LatLngLiteral | undefined;
   defaultLocation: LatLngLiteral;
+  loadListOffers: () => void;
+  loadMapOffers: (bounds: OffersInViewArgs) => void;
 }
 
 const StateContext = createContext<State>({
   users: [],
   offers: [],
+  categories: [],
   activeUser: null,
   setUserActive: () => {},
   currentLocation: undefined,
@@ -22,7 +32,21 @@ const StateContext = createContext<State>({
     lat: 46.947707374681514,
     lng: 7.445807175401288,
   },
+  loadListOffers: () => {},
+  loadMapOffers: () => {},
 });
+
+function mapOffer(offer_json: Views<'offer_json'>): Offer {
+  let location = null;
+  if (offer_json.location) {
+    const location_json = JSON.parse(offer_json.location);
+    location = {
+      lat: location_json.coordinates[0],
+      lng: location_json.coordinates[1],
+    };
+  }
+  return { ...offer_json, location };
+}
 
 interface StateProviderProperties {
   children: React.ReactNode;
@@ -31,6 +55,7 @@ interface StateProviderProperties {
 export const StateProvider = ({ children }: StateProviderProperties) => {
   const [users, setUsers] = useState<Tables<'User'>[]>([]);
   const [offers, setOffers] = useState<Offer[]>([]);
+  const [categories, setCategories] = useState<Tables<'Category'>[]>([{name: 'none'}])
   const [activeUser, setActiveUser] = useState<Tables<'User'> | null>(null);
   const supabaseClient = useSupabaseClient();
   const [currentLocation, setCurrentLocation] = useState<LatLngLiteral>();
@@ -39,39 +64,35 @@ export const StateProvider = ({ children }: StateProviderProperties) => {
     lng: 7.445807175401288,
   });
 
-  useEffect(() => {
-    const getUsers = async () => {
-      const query = supabaseClient.from('User').select('*');
-      const result = await query;
-      if (result.data) {
-        setUsers(result.data);
-        setActiveUser(result.data[0]);
-      }
-    };
-    const getOffers = async () => {
-      const query = supabaseClient
-        .from('offer_json')
-        .select('*')
-        .order('created_at', { ascending: false });
-      const result = await query;
-      if (result.data) {
-        setOffers(
-          result.data.map((offer) => {
-            const location = JSON.parse(offer.location);
-            if (location) {
-              offer.location = {
-                lat: location.coordinates[0],
-                lng: location.coordinates[1],
-              };
-            }
-            return offer;
-          })
-        );
-      }
-    };
-    const getCurrentLocation = () => {
-      if (!currentLocation) {
-        navigator.geolocation.getCurrentPosition(
+  async function getUsers() {
+    const query = supabaseClient.from('User').select('*');
+    const result = await query;
+    if (result.data) {
+      setUsers(result.data);
+      setActiveUser(result.data[0]);
+    }
+  }
+  async function loadListOffers() {
+    const query = supabaseClient
+      .from('offer_json')
+      .select('*')
+      .order('created_at', { ascending: false });
+    const result = await query;
+    if (result.data) {
+      setOffers(result.data.map((offer) => mapOffer(offer)));
+    }
+  }
+  async function getCategories() {
+    const query = supabaseClient.from('Category').select('*');
+    const result = await query;
+    if (result.data) {
+      setCategories(result.data);
+    }
+  };
+
+  const getCurrentLocation = () => {
+    if (!currentLocation) {
+      navigator.geolocation.getCurrentPosition(
           (e) => {
             const currentLocation = {
               lat: e.coords.latitude,
@@ -84,12 +105,14 @@ export const StateProvider = ({ children }: StateProviderProperties) => {
             const defaultLocation = { lat: 46.947707374681514, lng: 7.445807175401288 }; // Bern city
             setCurrentLocation(defaultLocation);
           }
-        );
-      }
-    };
-    getCurrentLocation();
-    getOffers();
+      );
+    }
+  };
+
+  useEffect(() => {
     getUsers();
+    getCategories();
+    getCurrentLocation();
   }, []);
 
   function setUserActive(id: number): void {
@@ -99,9 +122,25 @@ export const StateProvider = ({ children }: StateProviderProperties) => {
     }
   }
 
+  async function loadMapOffers(bounds: OffersInViewArgs) {
+    const { data } = await supabaseClient.rpc('offers_in_view', bounds);
+    const result: Functions<'offers_in_view'>['Returns'] = data;
+    setOffers(result.map((offer) => mapOffer(offer)));
+  }
+
   return (
     <StateContext.Provider
-      value={{ users, offers, activeUser, setUserActive, currentLocation, defaultLocation}}
+      value={{
+        users,
+        offers,
+        categories,
+        activeUser,
+        setUserActive,
+        loadMapOffers,
+        loadListOffers,
+        currentLocation,
+        defaultLocation
+      }}
     >
       {children}
     </StateContext.Provider>

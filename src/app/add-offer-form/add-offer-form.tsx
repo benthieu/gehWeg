@@ -1,14 +1,15 @@
-import ImageLoader from './image-loader';
-import OfferTitle from './offer-title';
-import OfferCategory from './offer-category';
-import OfferDescription from './offer-description';
-import OfferGeolocation from './offer-geolocation';
 import { Box, Button } from '@mui/material';
+import { useSupabaseClient } from '@supabase/auth-helpers-react';
 import { useContext, useEffect, useState } from 'react';
 import { Offer } from '.././state/supabase/database.types';
 import { v4 as uuidv4 } from 'uuid';
-import { useSupabaseClient } from '@supabase/auth-helpers-react';
+import { Tables } from '.././state/supabase/database.types';
 import StateContext from '../state/state.context';
+import ImageLoader from './image-loader';
+import OfferCategory from './offer-category';
+import OfferDescription from './offer-description';
+import OfferGeolocation from './offer-geolocation';
+import OfferTitle from './offer-title';
 
 export interface Image {
   imageUrl: string;
@@ -16,20 +17,19 @@ export interface Image {
 }
 
 export function AddOfferForm() {
-  const {activeUser, currentLocation, defaultLocation} = useContext(StateContext);
+  const { activeUser, categories, currentLocation, defaultLocation } = useContext(StateContext);
   const [images, setImages] = useState<Image[]>([]);
-  const [offer, setOffer] = useState<Offer>({
+  const [offer, setOffer] = useState<Partial<Tables<'Offer'>>>({
     category: null,
     city: null,
-    created_at: null,
     created_by: activeUser ? activeUser.id : 1,
     description: null,
-    location: currentLocation ?? defaultLocation,
-    id: null,
+    location: null,
     postal_code: null,
     status: '',
     street: null,
     subject: '',
+    images: null,
   });
   const supabase = useSupabaseClient();
 
@@ -107,6 +107,13 @@ export function AddOfferForm() {
     console.log('Updated description. Offer: ', offer);
   }
 
+  function updateCategory(category: string) {
+    const newOffer = { ...offer, category: category };
+    setOffer((previousOffer) => {
+      return { ...previousOffer, ...newOffer };
+    });
+  }
+
   async function saveOffer() {
     saveImages(images.map((image) => image.imageUrl));
     const offerToBeSaved = buildOffer();
@@ -125,9 +132,7 @@ export function AddOfferForm() {
     return {
       ...offer,
       created_by: activeUser?.id,
-      status: 'new',
-      id: undefined,
-      created_at: undefined,
+      status: 'new'
     };
   }
 
@@ -153,11 +158,11 @@ export function AddOfferForm() {
           description={''}
           updateDescription={updateDescription}
         />
-        <OfferCategory categories={[]} />
+        <OfferCategory categories={categories.map(c => c.name)} updateCategory={updateCategory} />
         <OfferGeolocation
-          location={offer.location ?? currentLocation}
-          handleClickOnMap={setOfferLocation}
-          defaultLocatio={defaultLocation}
+            location={offer.location ?? currentLocation}
+            handleClickOnMap={setOfferLocation}
+            defaultLocatio={defaultLocation}
         />
       </Box>
       <Box m={2} justifyContent="center" display="flex">

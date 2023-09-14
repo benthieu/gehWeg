@@ -1,16 +1,22 @@
 import AddIcon from '@mui/icons-material/Add';
 import { Fab } from '@mui/material';
-import { useContext, useState } from 'react';
+import { memo, useCallback, useContext, useState } from 'react';
 import { MapContainer, Marker, TileLayer } from 'react-leaflet';
 import { useNavigate } from 'react-router-dom';
 import OfferDetailModal from '../offer/offer-detail-modal';
 import StateContext from '../state/state.context';
-import { Offer } from '../state/supabase/database.types';
+import { Offer, OffersInViewArgs } from '../state/supabase/database.types';
+import { MapsBoundsListener } from './maps-bounds-listener';
+
+const MemoMapsBoundsListener= memo(MapsBoundsListener);
 
 export function OverviewMap() {
   const navigate = useNavigate();
-  const { offers} = useContext(StateContext);
+  const { offers, loadMapOffers } = useContext(StateContext);
   const [activeOffer, setOfferActive] = useState<Offer | null>(null);
+  const handleBoundsChange = useCallback((newBounds: OffersInViewArgs) => {
+    loadMapOffers(newBounds);
+  }, []);
 
   return (
     <>
@@ -24,9 +30,10 @@ export function OverviewMap() {
           lat: 46.947707374681514,
           lng: 7.445807175401288,
         }}
-        zoom={13}
+        zoom={15}
         scrollWheelZoom={false}
       >
+        <MemoMapsBoundsListener boundsChanged={handleBoundsChange}></MemoMapsBoundsListener>
         <header className="map">
           <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
         </header>
