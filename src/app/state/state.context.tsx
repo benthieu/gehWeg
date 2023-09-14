@@ -59,10 +59,7 @@ export const StateProvider = ({ children }: StateProviderProperties) => {
   const [activeUser, setActiveUser] = useState<Tables<'User'> | null>(null);
   const supabaseClient = useSupabaseClient();
   const [currentLocation, setCurrentLocation] = useState<LatLngLiteral>();
-  const [defaultLocation] = useState<LatLngLiteral>({
-    lat: 46.947707374681514,
-    lng: 7.445807175401288,
-  });
+  const [defaultLocation] = useState<LatLngLiteral>();
 
   async function getUsers() {
     const query = supabaseClient.from('User').select('*');
