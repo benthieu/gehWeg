@@ -16,8 +16,7 @@ export interface Image {
 }
 
 export function AddOfferForm() {
-  const { activeUser } = useContext(StateContext);
-  const { categories } = useContext(StateContext);
+  const { activeUser, categories } = useContext(StateContext);
   const [images, setImages] = useState<Image[]>([]);
   const [offer, setOffer] = useState<Tables<'Offer'>>({
     category: null,
