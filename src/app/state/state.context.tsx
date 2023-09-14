@@ -58,6 +58,7 @@ export const StateProvider = ({ children }: StateProviderProperties) => {
       setActiveUser(result.data[0]);
     }
   }
+
   async function loadListOffers() {
     const query = supabaseClient
       .from('offer_json')
@@ -68,6 +69,21 @@ export const StateProvider = ({ children }: StateProviderProperties) => {
       setOffers(result.data.map((offer) => mapOffer(offer)));
     }
   }
+
+  async function loadFilterListOffers(category: string | null, subject: string | null) {
+    const query = supabaseClient
+      .from( 'offer_json' )
+      .select( '*' )
+      .eq( 'category', category ? category : '%' )
+      .ilike( 'subject', subject ? '%' + subject + '%' : '%' )
+      .eq( 'status', 'new' )
+      .order( 'created_at', { ascending: false });
+    const result = await query;
+    if (result.data) {
+      setOffers(result.data.map((offer) => mapOffer(offer)));
+    }
+  }
+
   async function getCategories() {
     const query = supabaseClient.from('Category').select('*');
     const result = await query;
