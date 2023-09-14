@@ -1,27 +1,48 @@
-import {
-  Typography,
-  Box,
-  Stack,
-  TextField,
-} from '@mui/material';
+import { Typography, Box, Stack } from '@mui/material';
+import { MapContainer, Marker, TileLayer, useMapEvents } from 'react-leaflet';
+import { LatLngLiteral } from 'leaflet';
 
-type OfferGeolocationProps = {
-  title: string;
+type AddOfferLocationProps = {
+  location: LatLngLiteral | undefined;
+  handleClickOnMap: (event: any) => void;
 };
 
-export function OfferGeolocation(props: OfferGeolocationProps) {
+export function OfferGeolocation({
+  location,
+  handleClickOnMap,
+}: AddOfferLocationProps) {
+  const MapEvents = () => {
+    useMapEvents({
+      click(e) {
+        handleClickOnMap(e);
+      },
+    });
+    return false;
+  };
+
   return (
     <Box mx={1}>
-      <Stack direction="row" m={1}>
+      <Stack direction="column" m={1}>
         <Typography variant="h6" mx={1}>
-          Standort
+          Wo steht das Angebot?
         </Typography>
-        <TextField
-          type="text"
-          id="offer-title"
-          multiline
-          variant="standard"
-        />
+        <MapContainer
+          style={{ height: `300px`, width: `300px` }}
+          center={location}
+          zoom={16}
+          scrollWheelZoom={false}
+          doubleClickZoom
+        >
+          <header className="map">
+            <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+          </header>
+          <MapEvents />
+          <main>
+            <section>
+              {location ? <Marker position={location}></Marker> : null}
+            </section>
+          </main>
+        </MapContainer>
       </Stack>
     </Box>
   );

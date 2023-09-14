@@ -5,7 +5,7 @@ import OfferDescription from './offer-description';
 import OfferGeolocation from './offer-geolocation';
 import { Box, Button } from '@mui/material';
 import { useContext, useEffect, useState } from 'react';
-import { Tables } from '.././state/supabase/database.types';
+import { Offer } from '.././state/supabase/database.types';
 import { v4 as uuidv4 } from 'uuid';
 import { useSupabaseClient } from '@supabase/auth-helpers-react';
 import StateContext from '../state/state.context';
@@ -16,21 +16,23 @@ export interface Image {
 }
 
 export function AddOfferForm() {
-  const { activeUser } = useContext(StateContext);
+  const { activeUser, currentLocation } = useContext(StateContext);
   const [images, setImages] = useState<Image[]>([]);
-  const [offer, setOffer] = useState<Tables<'Offer'>>({
+  const [offer, setOffer] = useState<Offer>({
     category: null,
     city: null,
     created_at: null,
     created_by: activeUser ? activeUser.id : 1,
     description: null,
+    location: currentLocation ?? {
+      lat: 46.947707374681514,
+      lng: 7.445807175401288,
+    },
     id: null,
-    location: null,
     postal_code: null,
     status: '',
     street: null,
     subject: '',
-    images: null,
   });
   const supabase = useSupabaseClient();
 
@@ -47,14 +49,14 @@ export function AddOfferForm() {
     });
   }
 
-  function addImage(event: any) {
+  function addImage(event: { target: { files: (Blob | MediaSource)[]; }; }) {
     const newImageUrl = URL.createObjectURL(event.target.files[0]);
     const image: Image = { imageUrl: newImageUrl, imageId: uuidv4() };
     setImages((images) => [...images, image]);
   }
 
-  async function removeImage(imageId: string) {
-    await setImages((images) =>
+  function removeImage(imageId: string) {
+    setImages((images) =>
       images.filter((element) => {
         return element.imageId !== imageId;
       })
@@ -109,7 +111,7 @@ export function AddOfferForm() {
   }
 
   async function saveOffer() {
-    await saveImages(images.map((image) => image.imageUrl));
+    saveImages(images.map((image) => image.imageUrl));
     const offerToBeSaved = buildOffer();
     const { error } = await supabase
       .from('Offer')
@@ -132,11 +134,16 @@ export function AddOfferForm() {
     };
   }
 
+  function setOfferLocation(e: { latlng: { lat: number; lng: number } }) {
+    const newLocation = { lat: e.latlng.lat, lng: e.latlng.lng };
+    setOffer({ ...offer, location: newLocation });
+  }
+
   return (
     <>
       <Box m={2}>
         <div className="header">
-          <h3>Etwas auf den Gehweg stellen</h3>
+          <h3>Angebot erstellen</h3>
         </div>
         <ImageLoader
           images={images}
@@ -149,14 +156,17 @@ export function AddOfferForm() {
           updateDescription={updateDescription}
         />
         <OfferCategory categories={[]} />
-        <OfferGeolocation title={''} />
+        <OfferGeolocation
+          location={offer.location ?? currentLocation}
+          handleClickOnMap={setOfferLocation}
+        />
       </Box>
       <Box m={2} justifyContent="center" display="flex">
         <Button
           onClick={saveOffer}
           color="primary"
           variant="contained"
-          disabled={!offer?.subject}
+          disabled={!offer.subject}
         >
           Speichern
         </Button>

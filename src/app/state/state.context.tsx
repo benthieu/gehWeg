@@ -1,12 +1,14 @@
 import { useSupabaseClient } from '@supabase/auth-helpers-react';
 import { createContext, useEffect, useState } from 'react';
 import { Offer, Tables } from './supabase/database.types';
+import { LatLngLiteral } from 'leaflet';
 
 interface State {
   users: Tables<'User'>[];
   offers: Offer[];
   activeUser: Tables<'User'> | null;
   setUserActive: (id: number) => void;
+  currentLocation: LatLngLiteral | undefined;
 }
 
 const StateContext = createContext<State>({
@@ -14,16 +16,19 @@ const StateContext = createContext<State>({
   offers: [],
   activeUser: null,
   setUserActive: () => {},
+  currentLocation: undefined,
 });
 
 interface StateProviderProperties {
   children: React.ReactNode;
 }
 export const StateProvider = ({ children }: StateProviderProperties) => {
+  const defaultLocation = { lat: 46.947707374681514, lng: 7.445807175401288 }; // Bern city
   const [users, setUsers] = useState<Tables<'User'>[]>([]);
   const [offers, setOffers] = useState<Offer[]>([]);
   const [activeUser, setActiveUser] = useState<Tables<'User'> | null>(null);
   const supabaseClient = useSupabaseClient();
+  const [currentLocation, setCurrentLocation] = useState<LatLngLiteral>();
 
   useEffect(() => {
     const getUsers = async () => {
@@ -35,7 +40,10 @@ export const StateProvider = ({ children }: StateProviderProperties) => {
       }
     };
     const getOffers = async () => {
-      const query = supabaseClient.from('offer_json').select('*').order("created_at", {ascending: false});
+      const query = supabaseClient
+        .from('offer_json')
+        .select('*')
+        .order('created_at', { ascending: false });
       const result = await query;
       if (result.data) {
         setOffers(
@@ -52,6 +60,24 @@ export const StateProvider = ({ children }: StateProviderProperties) => {
         );
       }
     };
+    const getCurrentLocation = () => {
+      if (!currentLocation) {
+        navigator.geolocation.getCurrentPosition(
+          (e) => {
+            const currentLocation = {
+              lat: e.coords.latitude,
+              lng: e.coords.longitude,
+            };
+            setCurrentLocation(currentLocation);
+          },
+          () => {
+            console.log('error getting geolocation: ');
+            setCurrentLocation(defaultLocation);
+          }
+        );
+      }
+    };
+    getCurrentLocation();
     getOffers();
     getUsers();
   }, []);
@@ -64,7 +90,9 @@ export const StateProvider = ({ children }: StateProviderProperties) => {
   }
 
   return (
-    <StateContext.Provider value={{ users, offers, activeUser, setUserActive }}>
+    <StateContext.Provider
+      value={{ users, offers, activeUser, setUserActive, currentLocation}}
+    >
       {children}
     </StateContext.Provider>
   );
