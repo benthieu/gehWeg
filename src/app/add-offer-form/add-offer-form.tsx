@@ -16,7 +16,7 @@ export interface Image {
 }
 
 export function AddOfferForm() {
-  const { activeUser } = useContext(StateContext);
+  const { activeUser, categories } = useContext(StateContext);
   const [images, setImages] = useState<Image[]>([]);
   const [offer, setOffer] = useState<Partial<Tables<'Offer'>>>({
     category: null,
@@ -106,6 +106,13 @@ export function AddOfferForm() {
     console.log('Updated description. Offer: ', offer);
   }
 
+  function updateCategory(category: string) {
+    const newOffer = { ...offer, category: category };
+    setOffer((previousOffer) => {
+      return { ...previousOffer, ...newOffer };
+    });
+  }
+
   async function saveOffer() {
     await saveImages(images.map((image) => image.imageUrl));
     const offerToBeSaved = buildOffer();
@@ -144,7 +151,7 @@ export function AddOfferForm() {
           description={''}
           updateDescription={updateDescription}
         />
-        <OfferCategory categories={[]} />
+        <OfferCategory categories={categories.map(c => c.name)} updateCategory={updateCategory} />
         <OfferGeolocation title={''} />
       </Box>
       <Box m={2} justifyContent="center" display="flex">

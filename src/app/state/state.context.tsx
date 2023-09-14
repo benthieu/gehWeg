@@ -11,6 +11,7 @@ import {
 interface State {
   users: Tables<'User'>[];
   offers: Offer[];
+  categories: Tables<'Category'>[];
   activeUser: Tables<'User'> | null;
   setUserActive: (id: number) => void;
   loadListOffers: () => void;
@@ -20,6 +21,7 @@ interface State {
 const StateContext = createContext<State>({
   users: [],
   offers: [],
+  categories: [],
   activeUser: null,
   setUserActive: () => {},
   loadListOffers: () => {},
@@ -44,6 +46,7 @@ interface StateProviderProperties {
 export const StateProvider = ({ children }: StateProviderProperties) => {
   const [users, setUsers] = useState<Tables<'User'>[]>([]);
   const [offers, setOffers] = useState<Offer[]>([]);
+  const [categories, setCategories] = useState<Tables<'Category'>[]>([{name: 'none'}])
   const [activeUser, setActiveUser] = useState<Tables<'User'> | null>(null);
   const supabaseClient = useSupabaseClient();
 
@@ -65,9 +68,17 @@ export const StateProvider = ({ children }: StateProviderProperties) => {
       setOffers(result.data.map((offer) => mapOffer(offer)));
     }
   }
+  async function getCategories() {
+    const query = supabaseClient.from('Category').select('*');
+    const result = await query;
+    if (result.data) {
+      setCategories(result.data);
+    }
+  };
 
   useEffect(() => {
     getUsers();
+    getCategories();
   }, []);
 
   function setUserActive(id: number): void {
@@ -88,6 +99,7 @@ export const StateProvider = ({ children }: StateProviderProperties) => {
       value={{
         users,
         offers,
+        categories,
         activeUser,
         setUserActive,
         loadMapOffers,

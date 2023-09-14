@@ -1,7 +1,9 @@
-import { Typography, Box, Stack, TextField } from '@mui/material';
+import {Box, MenuItem, Stack, TextField, Typography} from '@mui/material';
+import {useState} from "react";
 
 type OfferCategoryProps = {
   categories: string[];
+  updateCategory: (category: string) => void;
 };
 
 export function OfferCategory(props: OfferCategoryProps) {
@@ -12,11 +14,17 @@ export function OfferCategory(props: OfferCategoryProps) {
           Kategorie
         </Typography>
         <TextField
-          type="text"
-          id="offer-title"
-          multiline
+          id="offer-category"
+          select
           variant="standard"
-        />
+          onChange={(event) => {props.updateCategory(event.target.value)}}
+        >
+          {props.categories.map((category) => (
+            <MenuItem key={category} value={category}>
+              {category}
+            </MenuItem>
+          ))}
+        </TextField>
       </Stack>
     </Box>
   );
