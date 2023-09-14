@@ -9,7 +9,7 @@ import { Offer } from '../state/supabase/database.types';
 
 export function OverviewMap() {
   const navigate = useNavigate();
-  const { offers } = useContext(StateContext);
+  const { offers} = useContext(StateContext);
   const [activeOffer, setOfferActive] = useState<Offer | null>(null);
 
   return (

@@ -9,6 +9,7 @@ interface State {
   activeUser: Tables<'User'> | null;
   setUserActive: (id: number) => void;
   currentLocation: LatLngLiteral | undefined;
+  defaultLocation: LatLngLiteral;
 }
 
 const StateContext = createContext<State>({
@@ -17,18 +18,26 @@ const StateContext = createContext<State>({
   activeUser: null,
   setUserActive: () => {},
   currentLocation: undefined,
+  defaultLocation: {
+    lat: 46.947707374681514,
+    lng: 7.445807175401288,
+  },
 });
 
 interface StateProviderProperties {
   children: React.ReactNode;
 }
+
 export const StateProvider = ({ children }: StateProviderProperties) => {
-  const defaultLocation = { lat: 46.947707374681514, lng: 7.445807175401288 }; // Bern city
   const [users, setUsers] = useState<Tables<'User'>[]>([]);
   const [offers, setOffers] = useState<Offer[]>([]);
   const [activeUser, setActiveUser] = useState<Tables<'User'> | null>(null);
   const supabaseClient = useSupabaseClient();
   const [currentLocation, setCurrentLocation] = useState<LatLngLiteral>();
+  const [defaultLocation] = useState<LatLngLiteral>({
+    lat: 46.947707374681514,
+    lng: 7.445807175401288,
+  });
 
   useEffect(() => {
     const getUsers = async () => {
@@ -72,6 +81,7 @@ export const StateProvider = ({ children }: StateProviderProperties) => {
           },
           () => {
             console.log('error getting geolocation: ');
+            const defaultLocation = { lat: 46.947707374681514, lng: 7.445807175401288 }; // Bern city
             setCurrentLocation(defaultLocation);
           }
         );
@@ -91,7 +101,7 @@ export const StateProvider = ({ children }: StateProviderProperties) => {
 
   return (
     <StateContext.Provider
-      value={{ users, offers, activeUser, setUserActive, currentLocation}}
+      value={{ users, offers, activeUser, setUserActive, currentLocation, defaultLocation}}
     >
       {children}
     </StateContext.Provider>

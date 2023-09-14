@@ -16,7 +16,7 @@ export interface Image {
 }
 
 export function AddOfferForm() {
-  const { activeUser, currentLocation } = useContext(StateContext);
+  const {activeUser, currentLocation, defaultLocation} = useContext(StateContext);
   const [images, setImages] = useState<Image[]>([]);
   const [offer, setOffer] = useState<Offer>({
     category: null,
@@ -24,10 +24,7 @@ export function AddOfferForm() {
     created_at: null,
     created_by: activeUser ? activeUser.id : 1,
     description: null,
-    location: currentLocation ?? {
-      lat: 46.947707374681514,
-      lng: 7.445807175401288,
-    },
+    location: currentLocation ?? defaultLocation,
     id: null,
     postal_code: null,
     status: '',
@@ -135,6 +132,7 @@ export function AddOfferForm() {
   }
 
   function setOfferLocation(e: { latlng: { lat: number; lng: number } }) {
+    console.log('setOfferLoaction called. input: ', e)
     const newLocation = { lat: e.latlng.lat, lng: e.latlng.lng };
     setOffer({ ...offer, location: newLocation });
   }
@@ -159,6 +157,7 @@ export function AddOfferForm() {
         <OfferGeolocation
           location={offer.location ?? currentLocation}
           handleClickOnMap={setOfferLocation}
+          defaultLocatio={defaultLocation}
         />
       </Box>
       <Box m={2} justifyContent="center" display="flex">
