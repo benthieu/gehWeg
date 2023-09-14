@@ -1,7 +1,6 @@
 import { Box, Button } from '@mui/material';
 import { useSupabaseClient } from '@supabase/auth-helpers-react';
 import { useContext, useEffect, useState } from 'react';
-import { Offer } from '.././state/supabase/database.types';
 import { v4 as uuidv4 } from 'uuid';
 import { Tables } from '.././state/supabase/database.types';
 import StateContext from '../state/state.context';
@@ -17,14 +16,15 @@ export interface Image {
 }
 
 export function AddOfferForm() {
-  const { activeUser, categories, currentLocation, defaultLocation } = useContext(StateContext);
+  const { activeUser, categories, currentLocation, defaultLocation } =
+    useContext(StateContext);
   const [images, setImages] = useState<Image[]>([]);
   const [offer, setOffer] = useState<Partial<Tables<'Offer'>>>({
-    category: null,
+    category: '',
     city: null,
     created_by: activeUser ? activeUser.id : 1,
     description: null,
-    location: null,
+    location: currentLocation,
     postal_code: null,
     status: '',
     street: null,
@@ -40,13 +40,14 @@ export function AddOfferForm() {
     const newOffer = {
       ...offer,
       images: imageIds,
+      location: currentLocation
     };
     setOffer((offer) => {
       return { ...offer, ...newOffer };
     });
   }
 
-  function addImage(event: { target: { files: (Blob | MediaSource)[]; }; }) {
+  function addImage(event: { target: { files: (Blob | MediaSource)[] } }) {
     const newImageUrl = URL.createObjectURL(event.target.files[0]);
     const image: Image = { imageUrl: newImageUrl, imageId: uuidv4() };
     setImages((images) => [...images, image]);
@@ -132,12 +133,12 @@ export function AddOfferForm() {
     return {
       ...offer,
       created_by: activeUser?.id,
-      status: 'new'
+      status: 'new',
     };
   }
 
   function setOfferLocation(e: { latlng: { lat: number; lng: number } }) {
-    console.log('setOfferLoaction called. input: ', e)
+    console.log('setOfferLoaction called. input: ', e);
     const newLocation = { lat: e.latlng.lat, lng: e.latlng.lng };
     setOffer({ ...offer, location: newLocation });
   }
@@ -158,11 +159,14 @@ export function AddOfferForm() {
           description={''}
           updateDescription={updateDescription}
         />
-        <OfferCategory categories={categories.map(c => c.name)} updateCategory={updateCategory} />
+        <OfferCategory
+          categories={categories.map((c) => c.name)}
+          updateCategory={updateCategory}
+        />
         <OfferGeolocation
-            location={offer.location ?? currentLocation}
-            handleClickOnMap={setOfferLocation}
-            defaultLocatio={defaultLocation}
+          location={offer.location}
+          handleClickOnMap={setOfferLocation}
+          defaultLocation={defaultLocation}
         />
       </Box>
       <Box m={2} justifyContent="center" display="flex">

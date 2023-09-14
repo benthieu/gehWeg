@@ -19,7 +19,7 @@ export function OfferDescription({
           type="text"
           id="offer-title"
           multiline
-          variant="standard"
+          variant="outlined"
           onChange={(event) => {
             updateDescription(event.target.value);
           }}
