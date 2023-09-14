@@ -7,15 +7,18 @@ import {
 } from '@mui/material';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import StateContext from '../state/state.context';
 import { Offer } from '../state/supabase/database.types';
 import { formatCHDate } from '../utils/date-utils';
 import OfferDetailModal from './offer-detail-modal';
 
 export function OfferList() {
-  const { offers } = useContext(StateContext);
+  const { offers, loadListOffers } = useContext(StateContext);
   const [activeOffer, setOfferActive] = useState<Offer | null>(null);
+  useEffect(() => {
+    loadListOffers()
+  }, [])
   return (
     <>
       <div className="header">

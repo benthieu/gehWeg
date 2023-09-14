@@ -39,9 +39,9 @@ export default function OfferDetailModal({
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
-          <div className='modal-header'>
+          <div className="modal-header">
             <MapContainer
-              center={offer.location}
+              center={offer.location || undefined}
               zoom={16}
               scrollWheelZoom={false}
             >
@@ -65,7 +65,8 @@ export default function OfferDetailModal({
               {offer.description}
             </Typography>
             <Typography sx={{ mt: 2 }}>
-              {offer.street}<br/>
+              {offer.street}
+              <br />
               {offer.city} {offer.postal_code}
             </Typography>
             <Typography sx={{ mt: 2 }}>

@@ -96,16 +96,16 @@ export interface Database {
         Row: {
           category: string | null
           city: string | null
-          created_at: string | null
+          created_at: string
           created_by: number
           description: string | null
-          id: number | null
-          location: string | null
+          id: number
+          images: string[] | null
+          location: unknown | null
           postal_code: number | null
           status: string
           street: string | null
           subject: string
-          images: string[] | null
         }
         Insert: {
           category?: string | null
@@ -114,13 +114,12 @@ export interface Database {
           created_by: number
           description?: string | null
           id?: number
+          images?: string[] | null
           location?: unknown | null
           postal_code?: number | null
           status: string
           street?: string | null
           subject: string
-          images: string[] | null
-
         }
         Update: {
           category?: string | null
@@ -129,13 +128,12 @@ export interface Database {
           created_by?: number
           description?: string | null
           id?: number
+          images?: string[] | null
           location?: unknown | null
           postal_code?: number | null
           status?: string
           street?: string | null
           subject?: string
-          images: string[] | null
-
         }
         Relationships: [
           {
@@ -155,43 +153,6 @@ export interface Database {
             columns: ["status"]
             referencedRelation: "Status"
             referencedColumns: ["name"]
-          }
-        ]
-      }
-      Reservation: {
-        Row: {
-          reserved_at: string
-          reserved_by: number
-          reserved_for: number
-        }
-        Insert: {
-          reserved_at?: string
-          reserved_by?: number
-          reserved_for?: number
-        }
-        Update: {
-          reserved_at?: string
-          reserved_by?: number
-          reserved_for?: number
-        }
-        Relationships: [
-          {
-            foreignKeyName: "Reservation_reserved_by_fkey"
-            columns: ["reserved_by"]
-            referencedRelation: "User"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "Reservation_reserved_for_fkey"
-            columns: ["reserved_for"]
-            referencedRelation: "Offer"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "Reservation_reserved_for_fkey"
-            columns: ["reserved_for"]
-            referencedRelation: "offer_json"
-            referencedColumns: ["id"]
           }
         ]
       }
@@ -290,7 +251,28 @@ export interface Database {
       }
     }
     Functions: {
-      [_ in never]: never
+      offers_in_view: {
+        Args: {
+          min_lat: number
+          min_long: number
+          max_lat: number
+          max_long: number
+        }
+        Returns: {
+          id: number
+          created_at: string
+          created_by: number
+          subject: string
+          status: string
+          description: string
+          category: string
+          city: string
+          postal_code: number
+          street: string
+          images: string[]
+          location: string
+        }[]
+      }
     }
     Enums: {
       [_ in never]: never
