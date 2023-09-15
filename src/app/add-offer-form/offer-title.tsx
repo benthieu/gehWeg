@@ -35,7 +35,7 @@ export function OfferTitle({ title, updateTitle }: OfferTitleProps) {
             setValue(event.target.value);
             updateTitle(event.target.value);
           }}
-          helperText={!value ? 'Bitte Titel eingeben' : ''}
+          helperText={!value ? 'Titel eingeben' : ''}
         />
       </Stack>
     </Box>
