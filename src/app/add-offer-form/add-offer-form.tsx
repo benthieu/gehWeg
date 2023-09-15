@@ -164,8 +164,6 @@ export function AddOfferForm() {
           location={offer.location ? offer.location : defaultLocation}
           handleClickOnMap={setOfferLocation}
         />
-      </Box>
-      <Box m={2} justifyContent="center" display="flex">
         <Button
           onClick={saveOffer}
           color="primary"

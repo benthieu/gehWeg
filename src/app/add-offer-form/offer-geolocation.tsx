@@ -85,10 +85,10 @@ export function OfferGeolocation({
   }
 
   return (
-    <Stack direction="column" m={1}>
-      <Typography variant="h6" mx={1}>
+    <Stack direction="column" m={1} mt={3}>
+      {/* <Typography variant="h6" mx={1}>
         Standort
-      </Typography>
+      </Typography> */}
       <Typography mx={1}>{addressDisplay}</Typography>
       <Box>
         <MapContainer
