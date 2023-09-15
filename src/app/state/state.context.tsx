@@ -28,10 +28,7 @@ const StateContext = createContext<State>({
   activeUser: null,
   setUserActive: () => {},
   currentLocation: undefined,
-  defaultLocation: {
-    lat: 46.947707374681514,
-    lng: 7.445807175401288,
-  },
+  defaultLocation: { lat: 0, lng: 0 },
   loadListOffers: () => {},
   loadMapOffers: () => {},
 });
@@ -55,11 +52,16 @@ interface StateProviderProperties {
 export const StateProvider = ({ children }: StateProviderProperties) => {
   const [users, setUsers] = useState<Tables<'User'>[]>([]);
   const [offers, setOffers] = useState<Offer[]>([]);
-  const [categories, setCategories] = useState<Tables<'Category'>[]>([{name: 'none'}])
+  const [categories, setCategories] = useState<Tables<'Category'>[]>([
+    { name: 'none' },
+  ]);
   const [activeUser, setActiveUser] = useState<Tables<'User'> | null>(null);
   const supabaseClient = useSupabaseClient();
   const [currentLocation, setCurrentLocation] = useState<LatLngLiteral>();
-  const [defaultLocation] = useState<LatLngLiteral>();
+  const [defaultLocation] = useState<LatLngLiteral>({
+    lat: 46.947707374681514,
+    lng: 7.445807175401288,
+  });
 
   async function getUsers() {
     const query = supabaseClient.from('User').select('*');
@@ -85,23 +87,22 @@ export const StateProvider = ({ children }: StateProviderProperties) => {
     if (result.data) {
       setCategories(result.data);
     }
-  };
+  }
 
   const getCurrentLocation = () => {
     if (!currentLocation) {
       navigator.geolocation.getCurrentPosition(
-          (e) => {
-            const currentLocation = {
-              lat: e.coords.latitude,
-              lng: e.coords.longitude,
-            };
-            setCurrentLocation(currentLocation);
-          },
-          () => {
-            console.log('error getting geolocation: ');
-            const defaultLocation = { lat: 46.947707374681514, lng: 7.445807175401288 }; // Bern city
-            setCurrentLocation(defaultLocation);
-          }
+        (e) => {
+          const currentLocation = {
+            lat: e.coords.latitude,
+            lng: e.coords.longitude,
+          };
+          setCurrentLocation(currentLocation);
+        },
+        () => {
+          console.log('error getting geolocation: ');
+          setCurrentLocation(defaultLocation);
+        }
       );
     }
   };
@@ -136,7 +137,7 @@ export const StateProvider = ({ children }: StateProviderProperties) => {
         loadMapOffers,
         loadListOffers,
         currentLocation,
-        defaultLocation
+        defaultLocation,
       }}
     >
       {children}

@@ -20,7 +20,7 @@ export function OfferTitle({ title, updateTitle }: OfferTitleProps) {
   const [value, setValue] = useState('');
   return (
     <Box mx={1}>
-      <Stack direction="row" m={1}>
+      <Stack direction="column" m={1}>
         <Typography variant="h6" mx={1}>
           Titel
         </Typography>

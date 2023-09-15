@@ -8,12 +8,13 @@ type OfferCategoryProps = {
 export function OfferCategory({categories, updateCategory}: OfferCategoryProps) {
   return (
     <Box mx={1}>
-      <Stack direction="row" m={1}>
+      <Stack direction="column" m={1}>
         <Typography variant="h6" mx={1}>
           Kategorie
         </Typography>
         <TextField
           id="offer-category"
+          placeholder='Kategorie wählen...'
           select
           variant="standard"
           onChange={(event) => {updateCategory(event.target.value)}}

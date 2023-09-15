@@ -20,7 +20,7 @@ export function AddOfferForm() {
     useContext(StateContext);
   const [images, setImages] = useState<Image[]>([]);
   const [offer, setOffer] = useState<Partial<Tables<'Offer'>>>({
-    category: '',
+    category: null,
     city: null,
     created_by: activeUser ? activeUser.id : 1,
     description: null,
@@ -39,8 +39,7 @@ export function AddOfferForm() {
     const imageIds = images.map((image) => image.imageId);
     const newOffer = {
       ...offer,
-      images: imageIds,
-      location: currentLocation
+      images: imageIds
     };
     setOffer((offer) => {
       return { ...offer, ...newOffer };
@@ -65,7 +64,6 @@ export function AddOfferForm() {
     images.forEach((imageUrl) => {
       fetch(imageUrl)
         .then((r) => {
-          console.log('fetched from imageUrl: ', r);
           return r.blob();
         })
         .then((image) => storeImagesToSupabase(image));
@@ -73,7 +71,6 @@ export function AddOfferForm() {
   }
 
   const storeImagesToSupabase = async function (image: Blob) {
-    console.log('image file', image);
     const imageId = uuidv4();
     const { error } = await supabase.storage
       .from('images')
@@ -145,10 +142,10 @@ export function AddOfferForm() {
 
   return (
     <>
+      <div className="header">
+        <h3>Angebot erstellen</h3>
+      </div>
       <Box m={2}>
-        <div className="header">
-          <h3>Angebot erstellen</h3>
-        </div>
         <ImageLoader
           images={images}
           addImage={addImage}
@@ -164,9 +161,8 @@ export function AddOfferForm() {
           updateCategory={updateCategory}
         />
         <OfferGeolocation
-          location={offer.location}
+          location={offer.location ? offer.location : defaultLocation}
           handleClickOnMap={setOfferLocation}
-          defaultLocation={defaultLocation}
         />
       </Box>
       <Box m={2} justifyContent="center" display="flex">

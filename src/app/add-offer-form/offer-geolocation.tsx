@@ -10,7 +10,7 @@ import { LatLngLiteral, LeafletMouseEvent } from 'leaflet';
 import Geocode from 'react-geocode';
 import GooglePlacesAutocomplete from 'react-google-places-autocomplete';
 import { Option } from 'react-google-places-autocomplete/build/types';
-import { SingleValue } from 'react-select';
+import { PropsValue, SingleValue } from 'react-select';
 import { useState } from 'react';
 
 type AddOfferLocationProps = {
@@ -25,28 +25,29 @@ Geocode.enableDebug();
 
 export function OfferGeolocation({
   location,
-  handleClickOnMap,
+  handleClickOnMap: updateOffer,
 }: AddOfferLocationProps) {
-  const [addressInput, setAddressInput] = useState('');
+  const [addressInput, setAddressInput] = useState<PropsValue<Option>>();
+  const [addressDisplay, setAddressDisplay] = useState<string>();
+
   const MapEvents = () => {
     useMapEvents({
       click(e) {
-        handleClickOnMap(e);
-        findAddress(e);
+        updateOffer(e);
+        mapGeolocationToAddress(e);
       },
     });
     return false;
   };
 
-  function handleAdressInput(e: SingleValue<Option>) {
+  function mapAddressToGeolocation(e: SingleValue<Option>) {
     if (e) {
-      setAddressInput(e.label);
-      console.log('handleAdressInput input: ', e);
       Geocode.fromAddress(e.label).then(
         (response) => {
           const { lat, lng } = response.results[0].geometry.location;
           const latlng = { latlng: { lat: lat, lng: lng } };
-          handleClickOnMap(latlng);
+          updateOffer(latlng);
+          setAddressDisplay(e.label);
         },
         (error) => {
           console.error('error in handle adderss input', error);
@@ -55,16 +56,14 @@ export function OfferGeolocation({
     }
   }
 
-  function findAddress(
+  function mapGeolocationToAddress(
     e: LeafletMouseEvent | { latlng: { lat: number; lng: number } }
   ) {
-    console.log('event in find adress: ', e);
     Geocode.fromLatLng(e.latlng.lat.toString(), e.latlng.lng.toString()).then(
       (response) => {
-        console.log('response from laglng: ', response);
-        const address = response.results[0].formatted_address;
-        setAddressInput(address);
-        console.log('addressInput: ', addressInput);
+        const googleMapsAddress = response.results[0].formatted_address;
+        setAddressInput(googleMapsAddress);
+        setAddressDisplay(googleMapsAddress);
       },
       (error) => {
         console.error(error);
@@ -86,13 +85,14 @@ export function OfferGeolocation({
   }
 
   return (
-    <Box mx={1}>
-      <Stack direction="column" m={1}>
-        <Typography variant="h6" mx={1}>
-          Standort
-        </Typography>
+    <Stack direction="column" m={1}>
+      <Typography variant="h6" mx={1}>
+        Standort
+      </Typography>
+      <Typography mx={1}>{addressDisplay}</Typography>
+      <Box>
         <MapContainer
-          style={{ height: `300px`, width: `300px` }}
+          style={{ height: `300px` }}
           center={location}
           zoom={16}
           scrollWheelZoom={false}
@@ -117,26 +117,22 @@ export function OfferGeolocation({
             </section>
           </main>
         </MapContainer>
-        <Box>
-          <GooglePlacesAutocomplete
-            apiKey="AIzaSyDX7buq-sfinghkw3M6TSoA8Jc_RnUxdvc"
-            autocompletionRequest={{
-              componentRestrictions: {
-                country: ['ch'],
-              },
-            }}
-            selectProps={{
-              isClearable: true,
-              value: addressInput,
-              placeholder: addressInput
-                ? addressInput
-                : 'Standort in Karte setzen oder hier eingeben',
-              onChange: (event) => handleAdressInput(event),
-            }}
-          />
-        </Box>
-      </Stack>
-    </Box>
+        <GooglePlacesAutocomplete
+          apiKey="AIzaSyDX7buq-sfinghkw3M6TSoA8Jc_RnUxdvc"
+          autocompletionRequest={{
+            componentRestrictions: {
+              country: ['ch'],
+            },
+          }}
+          selectProps={{
+            placeholder: 'Standort in Karte setzen oder hier eingeben',
+            isClearable: true,
+            value: addressInput,
+            onChange: (event) => mapAddressToGeolocation(event),
+          }}
+        />
+      </Box>
+    </Stack>
   );
 }
 
