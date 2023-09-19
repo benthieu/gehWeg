@@ -9,6 +9,7 @@ import OfferCategory from './offer-category';
 import OfferDescription from './offer-description';
 import OfferGeolocation from './offer-geolocation';
 import OfferTitle from './offer-title';
+import { LatLng } from 'leaflet';
 
 export interface Image {
   imageUrl: string;
@@ -127,10 +128,13 @@ export function AddOfferForm() {
   }
 
   function buildOffer() {
+    const location = offer.location as LatLng
+    const point = `POINT(${location.lat} ${location.lng})`
     return {
       ...offer,
       created_by: activeUser?.id,
       status: 'new',
+      location: point,
     };
   }
 
@@ -161,7 +165,7 @@ export function AddOfferForm() {
           updateCategory={updateCategory}
         />
         <OfferGeolocation
-          location={offer.location ? offer.location : defaultLocation}
+          location={offer.location ? offer.location as LatLng: defaultLocation}
           handleClickOnMap={setOfferLocation}
         />
         <Button

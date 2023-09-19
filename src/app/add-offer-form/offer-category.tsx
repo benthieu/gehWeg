@@ -1,4 +1,4 @@
-import {Box, MenuItem, Stack, TextField, Typography} from '@mui/material';
+import {Box, MenuItem, Stack, TextField} from '@mui/material';
 
 type OfferCategoryProps = {
   categories: string[];
@@ -9,9 +9,6 @@ export function OfferCategory({categories, updateCategory}: OfferCategoryProps) 
   return (
     <Box mx={1}>
       <Stack direction="column" m={1}>
-        {/* <Typography variant="h6" mx={1}>
-          Kategorie
-        </Typography> */}
         <TextField
           id="offer-category"
           label='Kategorie wählen'
