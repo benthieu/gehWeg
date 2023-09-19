@@ -20,10 +20,10 @@ export function OfferTitle({ title, updateTitle }: OfferTitleProps) {
   const [value, setValue] = useState('');
   return (
     <Box mx={1}>
-      <Stack direction="row" m={1}>
-        <Typography variant="h6" mx={1}>
+      <Stack direction="column" m={1}>
+        {/* <Typography variant="h6" mx={1}>
           Titel
-        </Typography>
+        </Typography> */}
         <TextField
           type="text"
           required
@@ -35,7 +35,7 @@ export function OfferTitle({ title, updateTitle }: OfferTitleProps) {
             setValue(event.target.value);
             updateTitle(event.target.value);
           }}
-          helperText={!value ? 'Bitte Titel eingeben' : ''}
+          helperText={!value ? 'Titel eingeben' : ''}
         />
       </Stack>
     </Box>

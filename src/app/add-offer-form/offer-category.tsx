@@ -1,25 +1,25 @@
 import {Box, MenuItem, Stack, TextField, Typography} from '@mui/material';
-import {useState} from "react";
 
 type OfferCategoryProps = {
   categories: string[];
   updateCategory: (category: string) => void;
 };
 
-export function OfferCategory(props: OfferCategoryProps) {
+export function OfferCategory({categories, updateCategory}: OfferCategoryProps) {
   return (
     <Box mx={1}>
-      <Stack direction="row" m={1}>
-        <Typography variant="h6" mx={1}>
+      <Stack direction="column" m={1}>
+        {/* <Typography variant="h6" mx={1}>
           Kategorie
-        </Typography>
+        </Typography> */}
         <TextField
           id="offer-category"
+          label='Kategorie wählen'
           select
           variant="standard"
-          onChange={(event) => {props.updateCategory(event.target.value)}}
+          onChange={(event) => {updateCategory(event.target.value)}}
         >
-          {props.categories.map((category) => (
+          {categories.map((category) => (
             <MenuItem key={category} value={category}>
               {category}
             </MenuItem>

@@ -11,15 +11,16 @@ export function OfferDescription({
 }: OfferDescriptionProps) {
   return (
     <Box mx={1}>
-      <Stack direction="row" m={1}>
-        <Typography variant="h6" mx={1}>
+      <Stack direction="column" m={1} mt={3}>
+        {/* <Typography variant="h6" mx={1}>
           Beschreibung
-        </Typography>
+        </Typography> */}
         <TextField
+          label="Beschreibung eingeben"
           type="text"
           id="offer-title"
           multiline
-          variant="standard"
+          variant="outlined"
           onChange={(event) => {
             updateDescription(event.target.value);
           }}
