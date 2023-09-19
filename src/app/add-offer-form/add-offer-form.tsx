@@ -10,7 +10,6 @@ import OfferCategory from './offer-category';
 import OfferDescription from './offer-description';
 import OfferGeolocation from './offer-geolocation';
 import OfferTitle from './offer-title';
-import { LatLng } from 'leaflet';
 
 export interface Image {
   imageUrl: string;
@@ -129,7 +128,7 @@ export function AddOfferForm() {
   }
 
   function buildOffer() {
-    const location = offer.location as LatLng
+    const location = offer.location as LatLngLiteral
     const point = `POINT(${location.lat} ${location.lng})`
     return {
       ...offer,

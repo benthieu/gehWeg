@@ -48,7 +48,6 @@ export function OfferGeolocation({
           const latlng = { latlng: { lat: lat, lng: lng } };
           updateOffer(latlng);
           setAddressDisplay(e.label);
-          console.log(e);
         },
         (error) => {
           console.error('error in handle adderss input', error);
@@ -65,7 +64,6 @@ export function OfferGeolocation({
         const googleMapsAddress = response.results[0].formatted_address;
         setAddressInput(googleMapsAddress);
         setAddressDisplay(googleMapsAddress);
-        console.log(e);
       },
       (error) => {
         console.error(error);
