@@ -1,5 +1,6 @@
 import { Box, Button } from '@mui/material';
 import { useSupabaseClient } from '@supabase/auth-helpers-react';
+import { LatLngLiteral } from 'leaflet';
 import { useContext, useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { Tables } from '.././state/supabase/database.types';
@@ -165,7 +166,7 @@ export function AddOfferForm() {
           updateCategory={updateCategory}
         />
         <OfferGeolocation
-          location={offer.location ? offer.location as LatLng: defaultLocation}
+          location={offer.location ? offer.location as LatLngLiteral : defaultLocation}
           handleClickOnMap={setOfferLocation}
         />
         <Button
