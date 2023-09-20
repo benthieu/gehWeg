@@ -21,9 +21,6 @@ export function OfferTitle({ title, updateTitle }: OfferTitleProps) {
   return (
     <Box mx={1}>
       <Stack direction="column" m={1}>
-        {/* <Typography variant="h6" mx={1}>
-          Titel
-        </Typography> */}
         <TextField
           type="text"
           required

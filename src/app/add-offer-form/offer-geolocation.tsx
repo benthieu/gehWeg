@@ -86,9 +86,6 @@ export function OfferGeolocation({
 
   return (
     <Stack direction="column" m={1} mt={3}>
-      {/* <Typography variant="h6" mx={1}>
-        Standort
-      </Typography> */}
       <Typography mx={1}>{addressDisplay}</Typography>
       <Box>
         <MapContainer
@@ -125,7 +122,7 @@ export function OfferGeolocation({
             },
           }}
           selectProps={{
-            placeholder: 'Standort in Karte setzen oder hier eingeben',
+            placeholder: 'Standort in Karte setzen oder Adresse hier eingeben',
             isClearable: true,
             value: addressInput,
             onChange: (event) => mapAddressToGeolocation(event),

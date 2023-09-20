@@ -1,4 +1,4 @@
-import { TextField, Box, Stack, Typography } from '@mui/material';
+import { TextField, Box, Stack} from '@mui/material';
 
 type OfferDescriptionProps = {
   description: string;
@@ -12,11 +12,8 @@ export function OfferDescription({
   return (
     <Box mx={1}>
       <Stack direction="column" m={1} mt={3}>
-        {/* <Typography variant="h6" mx={1}>
-          Beschreibung
-        </Typography> */}
         <TextField
-          label="Beschreibung eingeben"
+          label="Beschreibung"
           type="text"
           id="offer-title"
           multiline

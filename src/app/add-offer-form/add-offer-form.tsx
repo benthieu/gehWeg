@@ -128,10 +128,13 @@ export function AddOfferForm() {
   }
 
   function buildOffer() {
+    const location = offer.location as LatLngLiteral
+    const point = `POINT(${location.lat} ${location.lng})`
     return {
       ...offer,
       created_by: activeUser?.id,
       status: 'new',
+      location: point,
     };
   }
 
