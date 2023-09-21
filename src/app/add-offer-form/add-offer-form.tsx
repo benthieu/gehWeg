@@ -12,7 +12,6 @@ import OfferGeolocation from './offer-geolocation';
 import OfferTitle from './offer-title';
 import ImageLoader from './image/image-loader';
 
-
 export interface Image {
   imageUrl: string;
   imageId: string;
@@ -148,17 +147,15 @@ export function AddOfferForm() {
     };
   }
 
-  function setOfferLocation(e: { latlng: { lat: number; lng: number } }) {
-    const newLocation = { lat: e.latlng.lat, lng: e.latlng.lng };
-    setOffer({ ...offer, location: newLocation });
-  }
-
   /**
-
+   *
    * @param address is in the format: street, PLZ city, country
    */
-  function setOfferAddress(address: string) {
-    console.log('offer updated Address, address: ', address)
+  function setOfferLocation(
+    e: { latlng: { lat: number; lng: number } },
+    address: string
+  ) {
+    const newLocation = { lat: e.latlng.lat, lng: e.latlng.lng };
     const addressParts: string[] = address.split(',');
 
     const offerCity = addressParts[1].split(' ')[2];
@@ -172,6 +169,7 @@ export function AddOfferForm() {
       city: offerCity,
       postal_code: offerPLZ,
       street: offerStreet,
+      location: newLocation,
     });
   }
 
@@ -197,9 +195,7 @@ export function AddOfferForm() {
             offer.location ? (offer.location as LatLngLiteral) : defaultLocation
           }
           handleClickOnMap={setOfferLocation}
-          setOfferAddress={setOfferAddress}
         />
-  
         <OfferCategory
           categories={categories.map((c) => c.name)}
           updateCategory={updateCategory}

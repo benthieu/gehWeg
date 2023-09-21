@@ -2,9 +2,10 @@ import {
   TextField,
   Stack,
   Box,
-  Tooltip,
 } from '@mui/material';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useDebounce } from 'use-lodash-debounce'; // Types seem not to exist
+
 
 type OfferTitleProps = {
   title: string;
@@ -14,6 +15,10 @@ type OfferTitleProps = {
 export function OfferTitle({ title, updateTitle }: OfferTitleProps) {
   // Variable zur Umsetzung der Input-Validierung: Wert muss vorhanden sein
   const [value, setValue] = useState('');
+  const debouncedValue = useDebounce(value, 800);
+
+  useEffect(() => updateTitle(value as string), [debouncedValue]);
+  
   return (
     <Box mx={1}>
       <Stack direction="column" m={1}>
@@ -27,7 +32,6 @@ export function OfferTitle({ title, updateTitle }: OfferTitleProps) {
           value={value}
           onChange={(event) => {
             setValue(event.target.value);
-            updateTitle(event.target.value);
           }}
           helperText={!value ? 'Pflichtfeld' : ''}
         />
