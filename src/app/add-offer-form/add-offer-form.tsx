@@ -155,7 +155,7 @@ export function AddOfferForm() {
 
   /**
 
-   * @param address beoing in the format: street, PLZ city, country
+   * @param address is in the format: street, PLZ city, country
    */
   function setOfferAddress(address: string) {
     console.log('offer updated Address, address: ', address)
