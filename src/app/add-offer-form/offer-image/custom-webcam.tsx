@@ -38,7 +38,6 @@ const CustomWebcam = ({
     <Box>
       <Stack direction="column">
         <Stack justifyContent="center">
-          {/* {webcamLoading ? <Typography>Connecting...</Typography> : null} */}
           {webcamLoading ? (
             <Box>
               <Typography>Connecting...</Typography>
@@ -54,7 +53,7 @@ const CustomWebcam = ({
           />
         </Stack>
         <Stack direction="row" justifyContent="center">
-          <Tooltip title="Bild von Galerie laden">
+          <Tooltip title="Bild aus Galerie laden">
             <IconButton
               color="primary"
               aria-label="upload picture"
