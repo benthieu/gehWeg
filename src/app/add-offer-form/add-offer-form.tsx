@@ -78,7 +78,10 @@ export function AddOfferForm() {
     });
   }
 
-  const storeImagesToSupabase = async function (imageBlob: Blob, imageId: string) {
+  const storeImagesToSupabase = async function (
+    imageBlob: Blob,
+    imageId: string
+  ) {
     const { error } = await supabase.storage
       .from('images')
       .upload('admin/' + imageId, imageBlob);
@@ -145,9 +148,30 @@ export function AddOfferForm() {
   }
 
   function setOfferLocation(e: { latlng: { lat: number; lng: number } }) {
-    console.log('setOfferLoaction called. input: ', e);
     const newLocation = { lat: e.latlng.lat, lng: e.latlng.lng };
     setOffer({ ...offer, location: newLocation });
+  }
+
+  /**
+
+   * @param address beoing in the format: street, PLZ city, country
+   */
+  function setOfferAddress(address: string) {
+    console.log('offer updated Address, address: ', address)
+    const addressParts: string[] = address.split(',');
+
+    const offerCity = addressParts[1].split(' ')[2];
+    const offerPLZ = parseInt(addressParts[1].split(' ')[1]);
+    const offerStreet = addressParts[0];
+
+    console.log(`PLZ: ${offerPLZ}, street: ${offerStreet}, city: ${offerCity}`);
+
+    setOffer({
+      ...offer,
+      city: offerCity,
+      postal_code: offerPLZ,
+      street: offerStreet,
+    });
   }
 
   return (
@@ -172,6 +196,7 @@ export function AddOfferForm() {
             offer.location ? (offer.location as LatLngLiteral) : defaultLocation
           }
           handleClickOnMap={setOfferLocation}
+          setOfferAddress={setOfferAddress}
         />
         <OfferCategory
           categories={categories.map((c) => c.name)}
