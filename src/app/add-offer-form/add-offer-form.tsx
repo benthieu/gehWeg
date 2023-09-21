@@ -5,11 +5,13 @@ import { useContext, useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { Tables } from '.././state/supabase/database.types';
 import StateContext from '../state/state.context';
-import ImageLoader from './image-loader';
+
 import OfferCategory from './offer-category';
 import OfferDescription from './offer-description';
 import OfferGeolocation from './offer-geolocation';
 import OfferTitle from './offer-title';
+import ImageLoader from './image/image-loader';
+
 
 export interface Image {
   imageUrl: string;
@@ -40,15 +42,21 @@ export function AddOfferForm() {
     const imageIds = images.map((image) => image.imageId);
     const newOffer = {
       ...offer,
-      images: imageIds
+      images: imageIds,
     };
     setOffer((offer) => {
       return { ...offer, ...newOffer };
     });
   }
 
-  function addImage(event: { target: { files: (Blob | MediaSource)[] } }) {
+  function addImageFromFile(event: {
+    target: { files: (Blob | MediaSource)[] };
+  }) {
     const newImageUrl = URL.createObjectURL(event.target.files[0]);
+    addImageFromUrl(newImageUrl);
+  }
+
+  function addImageFromUrl(newImageUrl: string) {
     const image: Image = { imageUrl: newImageUrl, imageId: uuidv4() };
     setImages((images) => [...images, image]);
   }
@@ -61,21 +69,23 @@ export function AddOfferForm() {
     );
   }
 
-  function saveImages(images: string[]) {
-    images.forEach((imageUrl) => {
-      fetch(imageUrl)
+  function saveImages(images: Image[]) {
+    images.forEach((image) => {
+      fetch(image.imageUrl)
         .then((r) => {
           return r.blob();
         })
-        .then((image) => storeImagesToSupabase(image));
+        .then((imageBlob) => storeImagesToSupabase(imageBlob, image.imageId));
     });
   }
 
-  const storeImagesToSupabase = async function (image: Blob) {
-    const imageId = uuidv4();
+  const storeImagesToSupabase = async function (
+    imageBlob: Blob,
+    imageId: string
+  ) {
     const { error } = await supabase.storage
       .from('images')
-      .upload('admin/' + imageId, image);
+      .upload('admin/' + imageId, imageBlob);
     if (error) {
       console.log('error: ' + typeof error, error);
       alert('error: ' + error + ', ' + error.message);
@@ -114,7 +124,7 @@ export function AddOfferForm() {
   }
 
   async function saveOffer() {
-    saveImages(images.map((image) => image.imageUrl));
+    saveImages(images);
     const offerToBeSaved = buildOffer();
     const { error } = await supabase
       .from('Offer')
@@ -128,8 +138,8 @@ export function AddOfferForm() {
   }
 
   function buildOffer() {
-    const location = offer.location as LatLngLiteral
-    const point = `POINT(${location.lat} ${location.lng})`
+    const location = offer.location as LatLngLiteral;
+    const point = `POINT(${location.lat} ${location.lng})`;
     return {
       ...offer,
       created_by: activeUser?.id,
@@ -139,9 +149,30 @@ export function AddOfferForm() {
   }
 
   function setOfferLocation(e: { latlng: { lat: number; lng: number } }) {
-    console.log('setOfferLoaction called. input: ', e);
     const newLocation = { lat: e.latlng.lat, lng: e.latlng.lng };
     setOffer({ ...offer, location: newLocation });
+  }
+
+  /**
+
+   * @param address is in the format: street, PLZ city, country
+   */
+  function setOfferAddress(address: string) {
+    console.log('offer updated Address, address: ', address)
+    const addressParts: string[] = address.split(',');
+
+    const offerCity = addressParts[1].split(' ')[2];
+    const offerPLZ = parseInt(addressParts[1].split(' ')[1]);
+    const offerStreet = addressParts[0];
+
+    console.log(`PLZ: ${offerPLZ}, street: ${offerStreet}, city: ${offerCity}`);
+
+    setOffer({
+      ...offer,
+      city: offerCity,
+      postal_code: offerPLZ,
+      street: offerStreet,
+    });
   }
 
   return (
@@ -149,24 +180,29 @@ export function AddOfferForm() {
       <div className="header">
         <h3>Angebot erstellen</h3>
       </div>
-      <Box m={2}>
+      <Box m={1}>
+        <OfferTitle title={''} updateTitle={updateTitle} />
         <ImageLoader
           images={images}
-          addImage={addImage}
+          addImage={addImageFromFile}
           removeImage={removeImage}
+          addPhoto={addImageFromUrl}
         />
-        <OfferTitle title={''} updateTitle={updateTitle} />
         <OfferDescription
           description={''}
           updateDescription={updateDescription}
         />
+        <OfferGeolocation
+          location={
+            offer.location ? (offer.location as LatLngLiteral) : defaultLocation
+          }
+          handleClickOnMap={setOfferLocation}
+          setOfferAddress={setOfferAddress}
+        />
+  
         <OfferCategory
           categories={categories.map((c) => c.name)}
           updateCategory={updateCategory}
-        />
-        <OfferGeolocation
-          location={offer.location ? offer.location as LatLngLiteral : defaultLocation}
-          handleClickOnMap={setOfferLocation}
         />
         <Button
           onClick={saveOffer}
