@@ -1,4 +1,4 @@
-import { Box, Button } from '@mui/material';
+import { Box, Button} from '@mui/material';
 import { useSupabaseClient } from '@supabase/auth-helpers-react';
 import { LatLngLiteral } from 'leaflet';
 import { useContext, useEffect, useState } from 'react';
@@ -11,6 +11,7 @@ import OfferDescription from './offer-description';
 import OfferGeolocation from './offer-geolocation';
 import OfferTitle from './offer-title';
 import ImageLoader from './offer-image/image-loader';
+
 
 export interface Image {
   imageUrl: string;
@@ -41,14 +42,16 @@ export function AddOfferForm() {
     const imageIds = images.map((image) => image.imageId);
     const newOffer = {
       ...offer,
-      images: imageIds
+      images: imageIds,
     };
     setOffer((offer) => {
       return { ...offer, ...newOffer };
     });
   }
 
-  function addImageFromFile(event: { target: { files: (Blob | MediaSource)[] } }) {
+  function addImageFromFile(event: {
+    target: { files: (Blob | MediaSource)[] };
+  }) {
     console.log(event);
     const newImageUrl = URL.createObjectURL(event.target.files[0]);
     const image: Image = { imageUrl: newImageUrl, imageId: uuidv4() };
@@ -59,7 +62,6 @@ export function AddOfferForm() {
     const image: Image = { imageUrl: newImageUrl, imageId: uuidv4() };
     setImages((images) => [...images, image]);
   }
-
 
   function removeImage(imageId: string) {
     setImages((images) =>
@@ -136,8 +138,8 @@ export function AddOfferForm() {
   }
 
   function buildOffer() {
-    const location = offer.location as LatLngLiteral
-    const point = `POINT(${location.lat} ${location.lng})`
+    const location = offer.location as LatLngLiteral;
+    const point = `POINT(${location.lat} ${location.lng})`;
     return {
       ...offer,
       created_by: activeUser?.id,
@@ -158,11 +160,14 @@ export function AddOfferForm() {
         <h3>Angebot erstellen</h3>
       </div>
       <Box m={1}>
-        <ImageLoader
-          images={images}
-          addImage={addImageFromFile}
-          removeImage={removeImage}
-          addPhoto={addImageFromUrl}/>
+    
+          <ImageLoader
+            images={images}
+            addImage={addImageFromFile}
+            removeImage={removeImage}
+            addPhoto={addImageFromUrl}
+          />
+
         <OfferTitle title={''} updateTitle={updateTitle} />
         <OfferDescription
           description={''}
@@ -173,7 +178,9 @@ export function AddOfferForm() {
           updateCategory={updateCategory}
         />
         <OfferGeolocation
-          location={offer.location ? offer.location as LatLngLiteral : defaultLocation}
+          location={
+            offer.location ? (offer.location as LatLngLiteral) : defaultLocation
+          }
           handleClickOnMap={setOfferLocation}
         />
         <Button

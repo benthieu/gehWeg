@@ -1,7 +1,7 @@
 import CustomWebcam from './custom-webcam';
 import { useState } from 'react';
 import PhotoCamera from '@mui/icons-material/PhotoCamera';
-import { Box, IconButton } from '@mui/material';
+import { Box, IconButton, Tooltip } from '@mui/material';
 
 type CameraProps = {
   addPhoto: (imageUrl: string) => void;
@@ -29,7 +29,7 @@ const Camera = ({ addPhoto, addImageFromFile }: CameraProps) => {
           addImageFromFile={addImageFromFile}
         />
       ) : (
-        <section>
+        <Tooltip title="Bild hinzufügen">
           <IconButton
             color="primary"
             aria-label="upload picture"
@@ -38,7 +38,7 @@ const Camera = ({ addPhoto, addImageFromFile }: CameraProps) => {
           >
             <PhotoCamera />
           </IconButton>
-        </section>
+        </Tooltip>
       )}
     </Box>
   );
