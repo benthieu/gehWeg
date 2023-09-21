@@ -1,5 +1,6 @@
 import { Box, Button } from '@mui/material';
 import { useSupabaseClient } from '@supabase/auth-helpers-react';
+import { LatLngLiteral } from 'leaflet';
 import { useContext, useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { Tables } from '.././state/supabase/database.types';
@@ -16,14 +17,15 @@ export interface Image {
 }
 
 export function AddOfferForm() {
-  const { activeUser, categories } = useContext(StateContext);
+  const { activeUser, categories, currentLocation, defaultLocation } =
+    useContext(StateContext);
   const [images, setImages] = useState<Image[]>([]);
   const [offer, setOffer] = useState<Partial<Tables<'Offer'>>>({
     category: null,
     city: null,
     created_by: activeUser ? activeUser.id : 1,
     description: null,
-    location: null,
+    location: currentLocation,
     postal_code: null,
     status: '',
     street: null,
@@ -38,21 +40,21 @@ export function AddOfferForm() {
     const imageIds = images.map((image) => image.imageId);
     const newOffer = {
       ...offer,
-      images: imageIds,
+      images: imageIds
     };
     setOffer((offer) => {
       return { ...offer, ...newOffer };
     });
   }
 
-  function addImage(event: any) {
+  function addImage(event: { target: { files: (Blob | MediaSource)[] } }) {
     const newImageUrl = URL.createObjectURL(event.target.files[0]);
     const image: Image = { imageUrl: newImageUrl, imageId: uuidv4() };
     setImages((images) => [...images, image]);
   }
 
-  async function removeImage(imageId: string) {
-    await setImages((images) =>
+  function removeImage(imageId: string) {
+    setImages((images) =>
       images.filter((element) => {
         return element.imageId !== imageId;
       })
@@ -63,7 +65,6 @@ export function AddOfferForm() {
     images.forEach((imageUrl) => {
       fetch(imageUrl)
         .then((r) => {
-          console.log('fetched from imageUrl: ', r);
           return r.blob();
         })
         .then((image) => storeImagesToSupabase(image));
@@ -71,7 +72,6 @@ export function AddOfferForm() {
   }
 
   const storeImagesToSupabase = async function (image: Blob) {
-    console.log('image file', image);
     const imageId = uuidv4();
     const { error } = await supabase.storage
       .from('images')
@@ -114,7 +114,7 @@ export function AddOfferForm() {
   }
 
   async function saveOffer() {
-    await saveImages(images.map((image) => image.imageUrl));
+    saveImages(images.map((image) => image.imageUrl));
     const offerToBeSaved = buildOffer();
     const { error } = await supabase
       .from('Offer')
@@ -128,19 +128,28 @@ export function AddOfferForm() {
   }
 
   function buildOffer() {
+    const location = offer.location as LatLngLiteral
+    const point = `POINT(${location.lat} ${location.lng})`
     return {
       ...offer,
       created_by: activeUser?.id,
-      status: 'new'
+      status: 'new',
+      location: point,
     };
+  }
+
+  function setOfferLocation(e: { latlng: { lat: number; lng: number } }) {
+    console.log('setOfferLoaction called. input: ', e);
+    const newLocation = { lat: e.latlng.lat, lng: e.latlng.lng };
+    setOffer({ ...offer, location: newLocation });
   }
 
   return (
     <>
+      <div className="header">
+        <h3>Angebot erstellen</h3>
+      </div>
       <Box m={2}>
-        <div className="header">
-          <h3>Etwas auf den Gehweg stellen</h3>
-        </div>
         <ImageLoader
           images={images}
           addImage={addImage}
@@ -151,15 +160,19 @@ export function AddOfferForm() {
           description={''}
           updateDescription={updateDescription}
         />
-        <OfferCategory categories={categories.map(c => c.name)} updateCategory={updateCategory} />
-        <OfferGeolocation title={''} />
-      </Box>
-      <Box m={2} justifyContent="center" display="flex">
+        <OfferCategory
+          categories={categories.map((c) => c.name)}
+          updateCategory={updateCategory}
+        />
+        <OfferGeolocation
+          location={offer.location ? offer.location as LatLngLiteral : defaultLocation}
+          handleClickOnMap={setOfferLocation}
+        />
         <Button
           onClick={saveOffer}
           color="primary"
           variant="contained"
-          disabled={!offer?.subject}
+          disabled={!offer.subject}
         >
           Speichern
         </Button>

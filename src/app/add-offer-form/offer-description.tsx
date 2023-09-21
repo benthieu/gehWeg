@@ -1,4 +1,4 @@
-import { TextField, Box, Stack, Typography } from '@mui/material';
+import { TextField, Box, Stack} from '@mui/material';
 
 type OfferDescriptionProps = {
   description: string;
@@ -11,15 +11,13 @@ export function OfferDescription({
 }: OfferDescriptionProps) {
   return (
     <Box mx={1}>
-      <Stack direction="row" m={1}>
-        <Typography variant="h6" mx={1}>
-          Beschreibung
-        </Typography>
+      <Stack direction="column" m={1} mt={3}>
         <TextField
+          label="Beschreibung"
           type="text"
           id="offer-title"
           multiline
-          variant="standard"
+          variant="outlined"
           onChange={(event) => {
             updateDescription(event.target.value);
           }}

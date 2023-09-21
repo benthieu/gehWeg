@@ -1,5 +1,6 @@
 import { useSupabaseClient } from '@supabase/auth-helpers-react';
 import { createContext, useEffect, useState } from 'react';
+import { LatLngLiteral } from 'leaflet';
 import {
   Functions,
   Offer,
@@ -14,6 +15,8 @@ interface State {
   categories: Tables<'Category'>[];
   activeUser: Tables<'User'> | null;
   setUserActive: (id: number) => void;
+  currentLocation: LatLngLiteral | undefined;
+  defaultLocation: LatLngLiteral;
   loadListOffers: () => void;
   loadMapOffers: (bounds: OffersInViewArgs) => void;
 }
@@ -24,6 +27,8 @@ const StateContext = createContext<State>({
   categories: [],
   activeUser: null,
   setUserActive: () => {},
+  currentLocation: undefined,
+  defaultLocation: { lat: 0, lng: 0 },
   loadListOffers: () => {},
   loadMapOffers: () => {},
 });
@@ -43,12 +48,20 @@ function mapOffer(offer_json: Views<'offer_json'>): Offer {
 interface StateProviderProperties {
   children: React.ReactNode;
 }
+
 export const StateProvider = ({ children }: StateProviderProperties) => {
   const [users, setUsers] = useState<Tables<'User'>[]>([]);
   const [offers, setOffers] = useState<Offer[]>([]);
-  const [categories, setCategories] = useState<Tables<'Category'>[]>([{name: 'none'}])
+  const [categories, setCategories] = useState<Tables<'Category'>[]>([
+    { name: 'none' },
+  ]);
   const [activeUser, setActiveUser] = useState<Tables<'User'> | null>(null);
   const supabaseClient = useSupabaseClient();
+  const [currentLocation, setCurrentLocation] = useState<LatLngLiteral>();
+  const [defaultLocation] = useState<LatLngLiteral>({
+    lat: 46.947707374681514,
+    lng: 7.445807175401288,
+  });
 
   async function getUsers() {
     const query = supabaseClient.from('User').select('*');
@@ -90,11 +103,30 @@ export const StateProvider = ({ children }: StateProviderProperties) => {
     if (result.data) {
       setCategories(result.data);
     }
+  }
+
+  const getCurrentLocation = () => {
+    if (!currentLocation) {
+      navigator.geolocation.getCurrentPosition(
+        (e) => {
+          const currentLocation = {
+            lat: e.coords.latitude,
+            lng: e.coords.longitude,
+          };
+          setCurrentLocation(currentLocation);
+        },
+        () => {
+          console.log('error getting geolocation: ');
+          setCurrentLocation(defaultLocation);
+        }
+      );
+    }
   };
 
   useEffect(() => {
     getUsers();
     getCategories();
+    getCurrentLocation();
   }, []);
 
   function setUserActive(id: number): void {
@@ -120,6 +152,8 @@ export const StateProvider = ({ children }: StateProviderProperties) => {
         setUserActive,
         loadMapOffers,
         loadListOffers,
+        currentLocation,
+        defaultLocation,
       }}
     >
       {children}
