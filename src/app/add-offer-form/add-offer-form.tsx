@@ -1,4 +1,4 @@
-import { Box, Button} from '@mui/material';
+import { Box, Button } from '@mui/material';
 import { useSupabaseClient } from '@supabase/auth-helpers-react';
 import { LatLngLiteral } from 'leaflet';
 import { useContext, useEffect, useState } from 'react';
@@ -10,8 +10,7 @@ import OfferCategory from './offer-category';
 import OfferDescription from './offer-description';
 import OfferGeolocation from './offer-geolocation';
 import OfferTitle from './offer-title';
-import ImageLoader from './offer-image/image-loader';
-
+import ImageLoader from './image/image-loader';
 
 export interface Image {
   imageUrl: string;
@@ -160,28 +159,26 @@ export function AddOfferForm() {
         <h3>Angebot erstellen</h3>
       </div>
       <Box m={1}>
-    
-          <ImageLoader
-            images={images}
-            addImage={addImageFromFile}
-            removeImage={removeImage}
-            addPhoto={addImageFromUrl}
-          />
-
         <OfferTitle title={''} updateTitle={updateTitle} />
+        <ImageLoader
+          images={images}
+          addImage={addImageFromFile}
+          removeImage={removeImage}
+          addPhoto={addImageFromUrl}
+        />
         <OfferDescription
           description={''}
           updateDescription={updateDescription}
-        />
-        <OfferCategory
-          categories={categories.map((c) => c.name)}
-          updateCategory={updateCategory}
         />
         <OfferGeolocation
           location={
             offer.location ? (offer.location as LatLngLiteral) : defaultLocation
           }
           handleClickOnMap={setOfferLocation}
+        />
+        <OfferCategory
+          categories={categories.map((c) => c.name)}
+          updateCategory={updateCategory}
         />
         <Button
           onClick={saveOffer}
