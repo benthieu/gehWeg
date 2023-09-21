@@ -1,6 +1,6 @@
 import { useSupabaseClient } from '@supabase/auth-helpers-react';
-import { createContext, useEffect, useState } from 'react';
 import { LatLngLiteral } from 'leaflet';
+import { createContext, useEffect, useState } from 'react';
 import {
   Functions,
   Offer,
@@ -26,11 +26,11 @@ const StateContext = createContext<State>({
   offers: [],
   categories: [],
   activeUser: null,
-  setUserActive: () => {},
+  setUserActive: () => undefined,
   currentLocation: undefined,
   defaultLocation: { lat: 0, lng: 0 },
-  loadListOffers: () => {},
-  loadMapOffers: () => {},
+  loadListOffers: () => undefined,
+  loadMapOffers: () => undefined,
 });
 
 function mapOffer(offer_json: Views<'offer_json'>): Offer {
