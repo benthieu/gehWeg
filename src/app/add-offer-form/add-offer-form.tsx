@@ -68,21 +68,20 @@ export function AddOfferForm() {
     );
   }
 
-  function saveImages(images: string[]) {
-    images.forEach((imageUrl) => {
-      fetch(imageUrl)
+  function saveImages(images: Image[]) {
+    images.forEach((image) => {
+      fetch(image.imageUrl)
         .then((r) => {
           return r.blob();
         })
-        .then((image) => storeImagesToSupabase(image));
+        .then((imageBlob) => storeImagesToSupabase(imageBlob, image.imageId));
     });
   }
 
-  const storeImagesToSupabase = async function (image: Blob) {
-    const imageId = uuidv4();
+  const storeImagesToSupabase = async function (imageBlob: Blob, imageId: string) {
     const { error } = await supabase.storage
       .from('images')
-      .upload('admin/' + imageId, image);
+      .upload('admin/' + imageId, imageBlob);
     if (error) {
       console.log('error: ' + typeof error, error);
       alert('error: ' + error + ', ' + error.message);
@@ -121,7 +120,7 @@ export function AddOfferForm() {
   }
 
   async function saveOffer() {
-    saveImages(images.map((image) => image.imageUrl));
+    saveImages(images);
     const offerToBeSaved = buildOffer();
     const { error } = await supabase
       .from('Offer')
