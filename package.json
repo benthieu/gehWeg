@@ -4,7 +4,7 @@
   "license": "MIT",
   "scripts": {
     "start": "nx serve",
-    "build": "nx build",
+    "build": "nx build && echo '/* /index.html  200' | cat >dist/_redirects",
     "test": "nx test"
   },
   "private": true,
