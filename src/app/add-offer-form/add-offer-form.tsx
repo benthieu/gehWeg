@@ -5,11 +5,12 @@ import { useContext, useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { Tables } from '.././state/supabase/database.types';
 import StateContext from '../state/state.context';
-import ImageLoader from './image-loader';
+
 import OfferCategory from './offer-category';
 import OfferDescription from './offer-description';
 import OfferGeolocation from './offer-geolocation';
 import OfferTitle from './offer-title';
+import ImageLoader from './offer-image/image-loader';
 
 export interface Image {
   imageUrl: string;
@@ -47,11 +48,18 @@ export function AddOfferForm() {
     });
   }
 
-  function addImage(event: { target: { files: (Blob | MediaSource)[] } }) {
+  function addImageFromFile(event: { target: { files: (Blob | MediaSource)[] } }) {
+    console.log(event);
     const newImageUrl = URL.createObjectURL(event.target.files[0]);
     const image: Image = { imageUrl: newImageUrl, imageId: uuidv4() };
     setImages((images) => [...images, image]);
   }
+
+  function addImageFromUrl(newImageUrl: string) {
+    const image: Image = { imageUrl: newImageUrl, imageId: uuidv4() };
+    setImages((images) => [...images, image]);
+  }
+
 
   function removeImage(imageId: string) {
     setImages((images) =>
@@ -152,9 +160,9 @@ export function AddOfferForm() {
       <Box m={2}>
         <ImageLoader
           images={images}
-          addImage={addImage}
+          addImage={addImageFromFile}
           removeImage={removeImage}
-        />
+          addPhoto={addImageFromUrl}/>
         <OfferTitle title={''} updateTitle={updateTitle} />
         <OfferDescription
           description={''}
