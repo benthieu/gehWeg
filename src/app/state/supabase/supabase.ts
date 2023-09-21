@@ -196,6 +196,7 @@ export interface Database {
           created_by: number | null
           description: string | null
           id: number | null
+          images: string[] | null
           location: string | null
           postal_code: number | null
           status: string | null
@@ -209,6 +210,7 @@ export interface Database {
           created_by?: number | null
           description?: string | null
           id?: number | null
+          images?: string[] | null
           location?: never
           postal_code?: number | null
           status?: string | null
@@ -222,6 +224,7 @@ export interface Database {
           created_by?: number | null
           description?: string | null
           id?: number | null
+          images?: string[] | null
           location?: never
           postal_code?: number | null
           status?: string | null
