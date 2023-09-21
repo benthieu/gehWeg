@@ -1,6 +1,5 @@
 import { StrictMode } from 'react';
 import * as ReactDOM from 'react-dom/client';
-
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import { AddOfferForm } from './app/add-offer-form/add-offer-form';
 import App from './app/app';

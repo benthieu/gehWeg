@@ -1,4 +1,4 @@
-import { TextField, Box, Stack} from '@mui/material';
+import { TextField, Box, Stack, Tooltip} from '@mui/material';
 
 type OfferDescriptionProps = {
   description: string;
@@ -12,6 +12,7 @@ export function OfferDescription({
   return (
     <Box mx={1}>
       <Stack direction="column" m={1} mt={3}>
+        <Tooltip title="Beschreibung eingeben">
         <TextField
           label="Beschreibung"
           type="text"
@@ -22,6 +23,7 @@ export function OfferDescription({
             updateDescription(event.target.value);
           }}
         />
+        </Tooltip>
       </Stack>
     </Box>
   );
