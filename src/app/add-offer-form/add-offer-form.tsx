@@ -157,7 +157,7 @@ export function AddOfferForm() {
       <div className="header">
         <h3>Angebot erstellen</h3>
       </div>
-      <Box m={2}>
+      <Box m={1}>
         <ImageLoader
           images={images}
           addImage={addImageFromFile}

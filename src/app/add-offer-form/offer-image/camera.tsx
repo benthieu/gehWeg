@@ -1,8 +1,7 @@
-import { Button } from '@mui/base';
 import CustomWebcam from './custom-webcam';
 import { useState } from 'react';
 import PhotoCamera from '@mui/icons-material/PhotoCamera';
-import { IconButton } from '@mui/material';
+import { Box, IconButton } from '@mui/material';
 
 type CameraProps = {
   addPhoto: (imageUrl: string) => void;
@@ -22,7 +21,7 @@ const Camera = ({ addPhoto, addImageFromFile }: CameraProps) => {
   };
 
   return (
-    <div className="container">
+    <Box>
       {cameraOpened ? (
         <CustomWebcam
           turnOff={closeCamera}
@@ -31,9 +30,6 @@ const Camera = ({ addPhoto, addImageFromFile }: CameraProps) => {
         />
       ) : (
         <section>
-          {/* <Button className="mt-1" onClick={openCamera}>
-            Take photo
-          </Button> */}
           <IconButton
             color="primary"
             aria-label="upload picture"
@@ -44,7 +40,7 @@ const Camera = ({ addPhoto, addImageFromFile }: CameraProps) => {
           </IconButton>
         </section>
       )}
-    </div>
+    </Box>
   );
 };
 

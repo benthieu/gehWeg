@@ -1,17 +1,14 @@
-import { useSupabaseClient } from '@supabase/auth-helpers-react';
 import { useCallback, useRef, useState } from 'react';
 import Webcam from 'react-webcam';
-import { v4 as uuidv4 } from 'uuid';
-import { decode } from 'base64-arraybuffer';
-import { Button } from '@mui/base';
-import { IconButton, Tooltip } from '@mui/material';
-import FileUploadIcon from '@mui/icons-material/FileUpload';
-
+import { Box, IconButton, Stack, Tooltip } from '@mui/material';
+import CollectionsIcon from '@mui/icons-material/Collections';
+import RadioButtonCheckedIcon from '@mui/icons-material/RadioButtonChecked';
+import ClearIcon from '@mui/icons-material/Clear';
 
 type CustomWebcamProp = {
   turnOff: () => void;
   addPhoto: (imageUrl: string) => void;
-  addImageFromFile: (event) => void;
+  addImageFromFile: (event: any) => void;
 };
 
 const CustomWebcam = ({
@@ -19,111 +16,34 @@ const CustomWebcam = ({
   addPhoto,
   addImageFromFile,
 }: CustomWebcamProp) => {
-  const [images, setImages] = useState([]);
-  const supabase = useSupabaseClient();
-  const webcamRef = useRef(null);
+  const webcamRef = useRef<any>(null);
   const [imgSrc, setImgSrc] = useState(null);
 
   const capture = useCallback(() => {
     if (webcamRef.current) {
       const imageSrc = webcamRef.current.getScreenshot();
       setImgSrc(imageSrc);
+      addPhoto(imageSrc);
+      setImgSrc(null);
     }
   }, [webcamRef]);
 
-  const retake = () => {
-    setImgSrc(null);
-  };
-
-  const savePhoto = async () => {
-    console.log('imgSrc: ', imgSrc);
-
-    const { error } = await supabase.storage
-      .from('images')
-      .upload('admin/' + uuidv4(), imgSrc, {
-        contentType: 'image/png',
-      });
-
-    if (error) {
-      console.log('error: ' + typeof error, error);
-      alert('error: ' + error.error + ', ' + error.message);
-    } else {
-      alert('Image saved');
-    }
-  };
-
-  async function getImages() {
-    console.log('getImges called...');
-    const { data, error } = await supabase.storage
-      .from('images')
-      .list('admin/', {
-        limit: 20,
-        offset: 0,
-        sortBy: { column: 'name', order: 'asc' },
-      });
-
-    if (data !== null) {
-      console.log('data', data);
-      setImages(data);
-    } else {
-      alert('Error loading imgaes');
-      console.log(error);
-    }
-  }
-
   return (
-    <>
-      {imgSrc ? (
-        <img src={imgSrc} alt="webcam" />
-      ) : (
+    <Box>
+      <Stack direction="column">
         <Webcam
           height={300}
           width={300}
           ref={webcamRef}
           screenshotFormat="image/png"
         />
-      )}
-      <section>
-        {imgSrc ? (
-          <section>
-            <Button className="mt-1" onClick={retake}>
-              Neues Foto
-            </Button>
-            <Button className="mt-1" onClick={turnOff}>
-              Kamera schliessen
-            </Button>
-            <Button className="mt-1" onClick={() => addPhoto(imgSrc)}>
-              Zum Angebot hinzufügen
-            </Button>
-            <IconButton>
-              <input
-                hidden
-                accept="image/*"
-                type="file"
-                onChange={(event) => addImageFromFile(event)}
-              />
-              <FileUploadIcon />
-            </IconButton>
-          </section>
-        ) : (
-          <section>
-            <Button className="mt-1" onClick={capture}>
-              Click
-            </Button>
-            <Button
-              className="mt-1"
-              onClick={() => {
-                console.log(webcamRef.current);
-                turnOff();
-              }}
-            >
-              Kamera schliessen
-            </Button>
-            <Tooltip title="Bild von Device laden">
+        <Stack direction="row" justifyContent="center">
+          <Tooltip title="Bild von Galerie laden">
             <IconButton
-               color="primary"
-               aria-label="upload picture"
-               component="label">
+              color="primary"
+              aria-label="upload picture"
+              component="label"
+            >
               <input
                 hidden
                 color="primary"
@@ -131,13 +51,32 @@ const CustomWebcam = ({
                 type="file"
                 onChange={(event) => addImageFromFile(event)}
               />
-              <FileUploadIcon />
+              <CollectionsIcon />
             </IconButton>
-            </Tooltip>
-          </section>
-        )}
-      </section>
-    </>
+          </Tooltip>
+          <Tooltip title="Foto schiessen">
+            <IconButton
+              color="primary"
+              aria-label="upload picture"
+              component="label"
+              onClick={capture}
+            >
+              <RadioButtonCheckedIcon fontSize="large" />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Kamera schliessen">
+            <IconButton
+              color="primary"
+              aria-label="upload picture"
+              component="label"
+              onClick={() => turnOff()}
+            >
+              <ClearIcon fontSize="large" color="disabled" />
+            </IconButton>
+          </Tooltip>
+        </Stack>
+      </Stack>
+    </Box>
   );
 };
 

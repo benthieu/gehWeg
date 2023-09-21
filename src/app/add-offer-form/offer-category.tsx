@@ -1,13 +1,15 @@
-import {Box, MenuItem, Stack, TextField} from '@mui/material';
-import {useState} from 'react';
+import { Box, MenuItem, Stack, TextField } from '@mui/material';
+import { useState } from 'react';
 
 type OfferCategoryProps = {
   categories: string[];
   updateCategory: (category: string) => void;
 };
 
-export function OfferCategory({categories, updateCategory}: OfferCategoryProps) {
-
+export function OfferCategory({
+  categories,
+  updateCategory,
+}: OfferCategoryProps) {
   const [category, setCategory] = useState('');
 
   return (
@@ -15,7 +17,7 @@ export function OfferCategory({categories, updateCategory}: OfferCategoryProps) 
       <Stack direction="column" m={1}>
         <TextField
           id="offer-category"
-          label='Kategorie wählen'
+          label="Kategorie wählen"
           select
           variant="standard"
           value={category}
