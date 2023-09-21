@@ -1,7 +1,13 @@
-import {useSupabaseClient} from '@supabase/auth-helpers-react';
-import {createContext, useEffect, useState} from 'react';
-import {LatLngLiteral} from 'leaflet';
-import {Functions, Offer, OffersInViewArgs, Tables, Views,} from './supabase/database.types';
+import { useSupabaseClient } from '@supabase/auth-helpers-react';
+import { LatLngLiteral } from 'leaflet';
+import { createContext, useEffect, useState } from 'react';
+import {
+  Functions,
+  Offer,
+  OffersInViewArgs,
+  Tables,
+  Views,
+} from './supabase/database.types';
 import {FilterProps} from "../offer-list-filter/list-filter";
 
 interface State {
@@ -22,7 +28,7 @@ const StateContext = createContext<State>({
   offers: [],
   categories: [],
   activeUser: null,
-  setUserActive: () => {},
+  setUserActive: () => undefined,
   currentLocation: undefined,
   defaultLocation: { lat: 0, lng: 0 },
   loadListOffers: () => {},
@@ -68,7 +74,6 @@ export const StateProvider = ({ children }: StateProviderProperties) => {
       setActiveUser(result.data[0]);
     }
   }
-
   async function loadListOffers() {
     const query = supabaseClient
       .from('offer_json')

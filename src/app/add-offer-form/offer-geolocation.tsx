@@ -1,4 +1,4 @@
-import { Typography, Box, Stack } from '@mui/material';
+import { Typography, Box, Stack, Tooltip } from '@mui/material';
 import {
   MapContainer,
   Marker,
@@ -13,9 +13,11 @@ import { Option } from 'react-google-places-autocomplete/build/types';
 import { PropsValue, SingleValue } from 'react-select';
 import { useState } from 'react';
 
+
 type AddOfferLocationProps = {
-  location: LatLngLiteral | undefined;
-  handleClickOnMap: (event: { latlng: { lat: number; lng: number } }) => void;
+  location: LatLngLiteral | undefined,
+  handleClickOnMap: (event: { latlng: { lat: number; lng: number } }) => void,
+  setOfferAddress: (address: string) => void
 };
 
 Geocode.setApiKey('AIzaSyDX7buq-sfinghkw3M6TSoA8Jc_RnUxdvc');
@@ -25,7 +27,8 @@ Geocode.enableDebug();
 
 export function OfferGeolocation({
   location,
-  handleClickOnMap: updateOffer,
+  handleClickOnMap: updateOfferLocation,
+  setOfferAddress
 }: AddOfferLocationProps) {
   const [addressInput, setAddressInput] = useState<PropsValue<Option>>();
   const [addressDisplay, setAddressDisplay] = useState<string>();
@@ -33,7 +36,7 @@ export function OfferGeolocation({
   const MapEvents = () => {
     useMapEvents({
       click(e) {
-        updateOffer(e);
+        updateOfferLocation(e);
         mapGeolocationToAddress(e);
       },
     });
@@ -46,8 +49,8 @@ export function OfferGeolocation({
         (response) => {
           const { lat, lng } = response.results[0].geometry.location;
           const latlng = { latlng: { lat: lat, lng: lng } };
-          updateOffer(latlng);
-          setAddressDisplay(e.label);
+          updateOfferLocation(latlng);
+          mapGeolocationToAddress(latlng);
         },
         (error) => {
           console.error('error in handle adderss input', error);
@@ -64,6 +67,7 @@ export function OfferGeolocation({
         const googleMapsAddress = response.results[0].formatted_address;
         setAddressInput(googleMapsAddress);
         setAddressDisplay(googleMapsAddress);
+        setOfferAddress(googleMapsAddress);
       },
       (error) => {
         console.error(error);
@@ -86,8 +90,9 @@ export function OfferGeolocation({
 
   return (
     <Stack direction="column" m={1} mt={3}>
-      <Typography mx={1}>{addressDisplay}</Typography>
-      <Box>
+      <Typography mx={1} fontSize={15}>{addressDisplay}</Typography>
+      <Tooltip title='Standort in Karte setzen oder Adresse unterhalb eingeben'>
+        <Box>
         <MapContainer
           style={{ height: `300px` }}
           center={location}
@@ -122,13 +127,15 @@ export function OfferGeolocation({
             },
           }}
           selectProps={{
-            placeholder: 'Standort in Karte setzen oder Adresse hier eingeben',
+            placeholder: "Adresse eingeben",
             isClearable: true,
             value: addressInput,
             onChange: (event) => mapAddressToGeolocation(event),
           }}
         />
       </Box>
+      </Tooltip>
+
     </Stack>
   );
 }

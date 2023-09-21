@@ -4,7 +4,7 @@
   "license": "MIT",
   "scripts": {
     "start": "nx serve",
-    "build": "nx build",
+    "build": "nx build && echo '/* /index.html  200' | cat >dist/gehweg/_redirects",
     "test": "nx test"
   },
   "private": true,
@@ -22,6 +22,7 @@
     "@types/react-geocode": "^0.2.1",
     "@types/react-google-places-suggest": "^3.4.6",
     "@types/react-select": "^5.0.1",
+    "@types/react-webcam": "^3.0.0",
     "leaflet": "^1.9.4",
     "react": "18.2.0",
     "react-dom": "18.2.0",
@@ -30,6 +31,7 @@
     "react-google-places-autocomplete": "^4.0.1",
     "react-leaflet": "^4.2.1",
     "react-router-dom": "^6.15.0",
+    "react-webcam": "^7.1.1",
     "uuid": "^9.0.0"
   },
   "devDependencies": {

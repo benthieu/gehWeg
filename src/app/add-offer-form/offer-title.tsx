@@ -1,12 +1,8 @@
 import {
-  ListItem,
-  ListItemButton,
-  ListItemText,
-  Typography,
-  Divider,
   TextField,
   Stack,
   Box,
+  Tooltip,
 } from '@mui/material';
 import { useState } from 'react';
 
@@ -23,6 +19,7 @@ export function OfferTitle({ title, updateTitle }: OfferTitleProps) {
       <Stack direction="column" m={1}>
         <TextField
           type="text"
+          placeholder='Titel'
           required
           id="offer-title"
           variant="standard"
@@ -32,7 +29,7 @@ export function OfferTitle({ title, updateTitle }: OfferTitleProps) {
             setValue(event.target.value);
             updateTitle(event.target.value);
           }}
-          helperText={!value ? 'Titel eingeben' : ''}
+          helperText={!value ? 'Pflichtfeld' : ''}
         />
       </Stack>
     </Box>
