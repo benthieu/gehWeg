@@ -10,7 +10,7 @@ import OfferCategory from './offer-category';
 import OfferDescription from './offer-description';
 import OfferGeolocation from './offer-geolocation';
 import OfferTitle from './offer-title';
-import ImageLoader from './image/image-loader';
+import ImageLoader from './offer-image/image-loader';
 
 export interface Image {
   imageUrl: string;
