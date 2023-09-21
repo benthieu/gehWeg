@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { MapContainer, Marker, TileLayer } from 'react-leaflet';
 import { Offer } from '../state/supabase/database.types';
 import { formatCHDate } from '../utils/date-utils';
+import { OfferImage } from './offer-image';
 
 const style = {
   position: 'absolute' as 'absolute',
@@ -26,6 +27,7 @@ export default function OfferDetailModal({
   offerClosed,
 }: OfferDetailModalProperties) {
   const [open, setOpen] = useState(true);
+  const [imageActive, setImageActive] = useState(false);
   const handleClose = () => {
     setOpen(false);
     offerClosed();
@@ -56,6 +58,20 @@ export default function OfferDetailModal({
                 </section>
               </main>
             </MapContainer>
+            {offer.images?.[0] && (
+              <div onClick={() => setImageActive((toggle) => !toggle)}>
+                <OfferImage
+                  className={
+                    imageActive
+                      ? 'modal-header-img-wrapper'
+                      : 'modal-header-small-img-wrapper'
+                  }
+                  width={90}
+                  height={90}
+                  image={offer.images?.[0]}
+                ></OfferImage>
+              </div>
+            )}
           </div>
           <div className="modal-content">
             <Typography id="modal-modal-title" variant="h6" component="h2">

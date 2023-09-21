@@ -12,13 +12,14 @@ import StateContext from '../state/state.context';
 import { Offer } from '../state/supabase/database.types';
 import { formatCHDate } from '../utils/date-utils';
 import OfferDetailModal from './offer-detail-modal';
+import { OfferImage } from './offer-image';
 
 export function OfferList() {
   const { offers, loadListOffers } = useContext(StateContext);
   const [activeOffer, setOfferActive] = useState<Offer | null>(null);
   useEffect(() => {
-    loadListOffers()
-  }, [])
+    loadListOffers();
+  }, []);
   return (
     <>
       <div className="header">
@@ -36,10 +37,14 @@ export function OfferList() {
           <div key={index}>
             <ListItem alignItems="flex-start" disablePadding>
               <ListItemButton onClick={() => setOfferActive(offer)}>
-                <img
-                  className="list-item-image"
-                  src={`https://picsum.photos/200?test=${index}`}
-                />
+                {offer.images?.[0] && (
+                  <OfferImage
+                    className="list-item-image-wrapper"
+                    width={60}
+                    height={60}
+                    image={offer.images?.[0]}
+                  ></OfferImage>
+                )}
                 <ListItemText
                   primary={offer.subject}
                   secondary={offer.description}
