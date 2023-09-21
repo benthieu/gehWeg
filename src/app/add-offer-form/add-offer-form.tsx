@@ -51,10 +51,8 @@ export function AddOfferForm() {
   function addImageFromFile(event: {
     target: { files: (Blob | MediaSource)[] };
   }) {
-    console.log(event);
     const newImageUrl = URL.createObjectURL(event.target.files[0]);
-    const image: Image = { imageUrl: newImageUrl, imageId: uuidv4() };
-    setImages((images) => [...images, image]);
+    addImageFromUrl(newImageUrl);
   }
 
   function addImageFromUrl(newImageUrl: string) {

@@ -24,8 +24,6 @@ const CustomWebcam = ({
   const [imgSrc, setImgSrc] = useState(null);
   const FACING_MODE_USER = 'user';
   const FACING_MODE_ENVIRONMENT = 'environment';
-  const [image, setImage] = useState('');
-
   const [facingMode, setFacingMode] = useState(FACING_MODE_USER);
 
   let videoConstraints: MediaTrackConstraints = {
@@ -51,7 +49,7 @@ const CustomWebcam = ({
     }
   }, [webcamRef]);
 
-  const closeSpinningWheel = () => {
+  const closeConnectionProgressBar = () => {
     setWebcamLoading(() => false);
   };
 
@@ -70,7 +68,7 @@ const CustomWebcam = ({
             width={300}
             ref={webcamRef}
             screenshotFormat="image/png"
-            onUserMedia={closeSpinningWheel}
+            onUserMedia={closeConnectionProgressBar}
             className="webcam"
             audio={false}
             videoConstraints={videoConstraints}
