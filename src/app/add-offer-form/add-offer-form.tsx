@@ -1,4 +1,4 @@
-import { Box, Button } from '@mui/material';
+import { Box, Button, ListItemButton, ListItemText } from '@mui/material';
 import { useSupabaseClient } from '@supabase/auth-helpers-react';
 import { LatLngLiteral } from 'leaflet';
 import { useContext, useEffect, useState } from 'react';
@@ -11,6 +11,7 @@ import OfferDescription from './offer-description';
 import OfferGeolocation from './offer-geolocation';
 import OfferTitle from './offer-title';
 import ImageLoader from './image/image-loader';
+import OfferGeolocationModal from './offer-geolocation-modal';
 
 export interface Image {
   imageUrl: string;
@@ -21,15 +22,16 @@ export function AddOfferForm() {
   const { activeUser, categories, currentLocation, defaultLocation } =
     useContext(StateContext);
   const [images, setImages] = useState<Image[]>([]);
+  const [clickedOnAddGeolocation, setClickedOnAddGeolocation] = useState(false);
   const [offer, setOffer] = useState<Partial<Tables<'Offer'>>>({
     category: null,
-    city: null,
+    city: '',
     created_by: activeUser ? activeUser.id : 1,
     description: null,
     location: currentLocation,
     postal_code: null,
     status: '',
-    street: null,
+    street: '',
     subject: '',
     images: null,
   });
@@ -190,12 +192,46 @@ export function AddOfferForm() {
           description={''}
           updateDescription={updateDescription}
         />
-        <OfferGeolocation
+        {clickedOnAddGeolocation ? (
+          <OfferGeolocationModal
+            location={
+              offer.location
+                ? (offer.location as LatLngLiteral)
+                : defaultLocation
+            }
+            handleClickOnMap={setOfferLocation}
+            addGeolocationClosed={() => setClickedOnAddGeolocation(false)}
+          />
+        ) : null}
+
+        <ListItemButton onClick={() => setClickedOnAddGeolocation(true)}>
+          {/* {offer.images?.[0] && (
+            <OfferImage
+              className="list-item-image-wrapper"
+              width={60}
+              height={60}
+              image={offer.images?.[0]}
+            ></OfferImage>
+          )} */}
+          <ListItemText
+            primary={'Ort hinzufügen'}
+            secondary={
+              offer.street ? 
+              `${offer.street}, ${offer.postal_code? offer.postal_code : ''} ${offer.city}` : ''}
+          ></ListItemText>
+          {/* <Typography variant="overline">
+            <Box sx={{ color: 'text.disabled' }}>
+              {formatCHDate(offer.created_at)}
+            </Box>
+          </Typography> */}
+        </ListItemButton>
+
+        {/* <OfferGeolocation
           location={
             offer.location ? (offer.location as LatLngLiteral) : defaultLocation
           }
           handleClickOnMap={setOfferLocation}
-        />
+        /> */}
         <OfferCategory
           categories={categories.map((c) => c.name)}
           updateCategory={updateCategory}
