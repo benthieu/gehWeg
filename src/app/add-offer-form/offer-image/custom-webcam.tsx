@@ -4,6 +4,7 @@ import { Box, IconButton, Stack, Tooltip, Typography } from '@mui/material';
 import CollectionsIcon from '@mui/icons-material/Collections';
 import RadioButtonCheckedIcon from '@mui/icons-material/RadioButtonChecked';
 import ClearIcon from '@mui/icons-material/Clear';
+import LinearProgress from '@mui/material/LinearProgress';
 
 type CustomWebcamProp = {
   turnOff: () => void;
@@ -30,7 +31,6 @@ const CustomWebcam = ({
   }, [webcamRef]);
 
   const closeSpinningWheel = () => {
-    console.log('close spinning wheel called..');
     setWebcamLoading(() => false);
   };
 
@@ -38,7 +38,13 @@ const CustomWebcam = ({
     <Box>
       <Stack direction="column">
         <Stack justifyContent="center">
-          {webcamLoading ? <Typography>Connecting...</Typography> : null}
+          {/* {webcamLoading ? <Typography>Connecting...</Typography> : null} */}
+          {webcamLoading ? (
+            <Box>
+              <Typography>Connecting...</Typography>
+              <LinearProgress />
+            </Box>
+          ) : null}
           <Webcam
             height={300}
             width={300}
