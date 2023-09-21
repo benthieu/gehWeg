@@ -1,6 +1,6 @@
 import { useCallback, useRef, useState } from 'react';
 import Webcam from 'react-webcam';
-import { Box, IconButton, Stack, Tooltip } from '@mui/material';
+import { Box, IconButton, Stack, Tooltip, Typography } from '@mui/material';
 import CollectionsIcon from '@mui/icons-material/Collections';
 import RadioButtonCheckedIcon from '@mui/icons-material/RadioButtonChecked';
 import ClearIcon from '@mui/icons-material/Clear';
@@ -16,6 +16,7 @@ const CustomWebcam = ({
   addPhoto,
   addImageFromFile,
 }: CustomWebcamProp) => {
+  const [webcamLoading, setWebcamLoading] = useState<boolean>(true);
   const webcamRef = useRef<any>(null);
   const [imgSrc, setImgSrc] = useState(null);
 
@@ -28,15 +29,24 @@ const CustomWebcam = ({
     }
   }, [webcamRef]);
 
+  const closeSpinningWheel = () => {
+    console.log('close spinning wheel called..');
+    setWebcamLoading(() => false);
+  };
+
   return (
     <Box>
       <Stack direction="column">
-        <Webcam
-          height={300}
-          width={300}
-          ref={webcamRef}
-          screenshotFormat="image/png"
-        />
+        <Stack justifyContent="center">
+          {webcamLoading ? <Typography>Connecting...</Typography> : null}
+          <Webcam
+            height={300}
+            width={300}
+            ref={webcamRef}
+            screenshotFormat="image/png"
+            onUserMedia={closeSpinningWheel}
+          />
+        </Stack>
         <Stack direction="row" justifyContent="center">
           <Tooltip title="Bild von Galerie laden">
             <IconButton
