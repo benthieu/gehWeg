@@ -1,4 +1,3 @@
-/* eslint-disable prefer-const */
 import { useCallback, useRef, useState } from 'react';
 import Webcam from 'react-webcam';
 import { Box, IconButton, Stack, Tooltip, Typography } from '@mui/material';
@@ -26,7 +25,7 @@ const CustomWebcam = ({
   const FACING_MODE_ENVIRONMENT = 'environment';
   const [facingMode, setFacingMode] = useState(FACING_MODE_USER);
 
-  let videoConstraints: MediaTrackConstraints = {
+  const videoConstraints: MediaTrackConstraints = {
     facingMode: facingMode,
     width: 300,
     height: 300,
