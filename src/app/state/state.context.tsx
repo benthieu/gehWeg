@@ -1,13 +1,8 @@
-import { useSupabaseClient } from '@supabase/auth-helpers-react';
-import { createContext, useEffect, useState } from 'react';
-import { LatLngLiteral } from 'leaflet';
-import {
-  Functions,
-  Offer,
-  OffersInViewArgs,
-  Tables,
-  Views,
-} from './supabase/database.types';
+import {useSupabaseClient} from '@supabase/auth-helpers-react';
+import {createContext, useEffect, useState} from 'react';
+import {LatLngLiteral} from 'leaflet';
+import {Functions, Offer, OffersInViewArgs, Tables, Views,} from './supabase/database.types';
+import {FilterProps} from "../offer-list-filter/list-filter";
 
 interface State {
   users: Tables<'User'>[];
@@ -19,6 +14,7 @@ interface State {
   defaultLocation: LatLngLiteral;
   loadListOffers: () => void;
   loadMapOffers: (bounds: OffersInViewArgs) => void;
+  loadFilterListOffers: (filter: FilterProps) => void;
 }
 
 const StateContext = createContext<State>({
@@ -31,6 +27,7 @@ const StateContext = createContext<State>({
   defaultLocation: { lat: 0, lng: 0 },
   loadListOffers: () => {},
   loadMapOffers: () => {},
+  loadFilterListOffers: () => {},
 });
 
 function mapOffer(offer_json: Views<'offer_json'>): Offer {
@@ -83,12 +80,12 @@ export const StateProvider = ({ children }: StateProviderProperties) => {
     }
   }
 
-  async function loadFilterListOffers(category: string | null, subject: string | null) {
+  async function loadFilterListOffers(filter: FilterProps) {
     const query = supabaseClient
       .from( 'offer_json' )
       .select( '*' )
-      .eq( 'category', category ? category : '%' )
-      .ilike( 'subject', subject ? '%' + subject + '%' : '%' )
+      .like( 'category', filter.category ? filter.category : '%' )
+      .ilike( 'subject', filter.title ? '%' + filter.title + '%' : '%' )
       .eq( 'status', 'new' )
       .order( 'created_at', { ascending: false });
     const result = await query;
@@ -154,6 +151,7 @@ export const StateProvider = ({ children }: StateProviderProperties) => {
         loadListOffers,
         currentLocation,
         defaultLocation,
+        loadFilterListOffers,
       }}
     >
       {children}
