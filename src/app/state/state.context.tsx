@@ -87,12 +87,15 @@ export const StateProvider = ({ children }: StateProviderProperties) => {
 
   async function loadFilterListOffers(filter: FilterProps) {
     const query = supabaseClient
-      .from( 'offer_json' )
-      .select( '*' )
-      .like( 'category', filter.category ? filter.category : '%' )
-      .ilike( 'subject', filter.title ? '%' + filter.title + '%' : '%' )
-      .eq( 'status', 'new' )
-      .order( 'created_at', { ascending: false });
+      .from('offer_json')
+      .select('*')
+      .order('created_at', {ascending: false});
+    if (filter.category && filter.category != 'Alle') {
+      query.like('category', filter.category);
+    }
+    if (filter.title) {
+      query.ilike('subject', '%' + filter.title + '%');
+    }
     const result = await query;
     if (result.data) {
       setOffers(result.data.map((offer) => mapOffer(offer)));

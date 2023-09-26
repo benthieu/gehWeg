@@ -30,21 +30,15 @@ export function ListFilter({updateSelection}: FilterOps) {
     updateSelection(newFilter);
   }
 
-  const selectCategories: string[] = categories.map((c) => c.name);
+  const selectCategories: string[] = [...categories.map((c) => c.name), 'Alle'];
 
   return (
     <>
-      <MenuList>
-        <MenuItem >
-          <FilterTitle title={''} updateTitle={updateTitle}/>
-        </MenuItem>
-        <MenuItem >
-          <FilterCategory
-            categories={selectCategories}
-            updateCategory={updateCategory}
-          />
-        </MenuItem>
-      </MenuList>
+      <FilterTitle title={''} updateTitle={updateTitle}/>
+      <FilterCategory
+        categories={selectCategories}
+        updateCategory={updateCategory}
+      />
     </>
   );
 }
