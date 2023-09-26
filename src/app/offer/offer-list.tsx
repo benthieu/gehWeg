@@ -17,6 +17,12 @@ import { OfferImage } from './offer-image';
 export function OfferList() {
   const { offers, loadListOffers } = useContext(StateContext);
   const [activeOffer, setOfferActive] = useState<Offer | null>(null);
+  function handleOfferClosed(reload: boolean) {
+    if (reload) {
+      loadListOffers();
+    }
+    setOfferActive(null);
+  }
   useEffect(() => {
     loadListOffers();
   }, []);
@@ -29,7 +35,7 @@ export function OfferList() {
       {activeOffer ? (
         <OfferDetailModal
           offer={activeOffer}
-          offerClosed={() => setOfferActive(null)}
+          offerClosed={(reload) => handleOfferClosed(reload)}
         />
       ) : null}
       {offers.map((offer, index) => {
