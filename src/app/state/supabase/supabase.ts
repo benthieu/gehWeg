@@ -39,12 +39,15 @@ export interface Database {
       }
       Category: {
         Row: {
+          id: number
           name: string
         }
         Insert: {
+          id?: number
           name: string
         }
         Update: {
+          id?: number
           name?: string
         }
         Relationships: []
@@ -94,7 +97,7 @@ export interface Database {
       }
       Offer: {
         Row: {
-          category: string | null
+          category: number | null
           city: string | null
           created_at: string
           created_by: number
@@ -108,7 +111,7 @@ export interface Database {
           subject: string
         }
         Insert: {
-          category?: string | null
+          category?: number | null
           city?: string | null
           created_at?: string
           created_by: number
@@ -122,7 +125,7 @@ export interface Database {
           subject: string
         }
         Update: {
-          category?: string | null
+          category?: number | null
           city?: string | null
           created_at?: string
           created_by?: number
@@ -140,7 +143,7 @@ export interface Database {
             foreignKeyName: "Offer_category_fkey"
             columns: ["category"]
             referencedRelation: "Category"
-            referencedColumns: ["name"]
+            referencedColumns: ["id"]
           },
           {
             foreignKeyName: "Offer_created_by_fkey"
@@ -190,7 +193,7 @@ export interface Database {
     Views: {
       offer_json: {
         Row: {
-          category: string | null
+          category: number | null
           city: string | null
           created_at: string | null
           created_by: number | null
@@ -204,7 +207,7 @@ export interface Database {
           subject: string | null
         }
         Insert: {
-          category?: string | null
+          category?: number | null
           city?: string | null
           created_at?: string | null
           created_by?: number | null
@@ -218,7 +221,7 @@ export interface Database {
           subject?: string | null
         }
         Update: {
-          category?: string | null
+          category?: number | null
           city?: string | null
           created_at?: string | null
           created_by?: number | null
@@ -236,7 +239,7 @@ export interface Database {
             foreignKeyName: "Offer_category_fkey"
             columns: ["category"]
             referencedRelation: "Category"
-            referencedColumns: ["name"]
+            referencedColumns: ["id"]
           },
           {
             foreignKeyName: "Offer_created_by_fkey"
@@ -268,7 +271,7 @@ export interface Database {
           subject: string
           status: string
           description: string
-          category: string
+          category: number
           city: string
           postal_code: number
           street: string

@@ -67,26 +67,16 @@ body {
       }
     }
   }
-  .add-offer-button {
-    background-color: #3b893b;
-    color: black;
-  }
 
   .map {
     flex: 9;
   }
 
-  aside {
-    padding: 10px;
-    display: inline-flex;
-    flex: 1;
-  }
-
   @media screen and (min-width: 300px) {
     .leaflet-container {
       display: flex;
-      flex-direction: row;
       width: 100%;
+      flex-direction: row;
       height: 100%;
     }
   }
@@ -97,6 +87,7 @@ body {
     display: flex;
     flex-direction: row;
     justify-content: center;
+    align-items: center;
     background: white;
     > h3 {
       line-height: 50px;
@@ -105,11 +96,51 @@ body {
       margin: 0;
       color: #3b893b;
       font-weight: 400;
+      width: 100%;
+      text-align: center;
+    }
+    .MuiButton-root {
+      height: 35px;
+      border: 1px solid;
+      padding: 0;
+      min-width: auto;
+      width: 40px;
+    }
+    .MuiButton-root:active,
+    .MuiButton-root:focus {
+      color: white;
+      background-color: #2e7d32;
+    }
+    .header-start,
+    .header-end {
+      min-width: 50px;
+      display: block;
+      height: 100%;
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
     }
   }
+  .MuiListItemText-root {
+    padding-right: 10px;
+  }
   .list-item-image-wrapper {
+    min-width: 60px;
     width: 60px;
     height: 60px;
+    margin-right: 10px;
+  }
+  .list-item-no-image {
+    min-width: 60px;
+    min-height: 60px;
+    color: #777;
+    background-color: #EEE;
+    font-size: 60px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
     margin-right: 10px;
   }
 }
@@ -134,7 +165,7 @@ body {
     cursor: pointer;
     z-index: 10000;
     position: absolute;
-    top: 0 ;
+    top: 0;
   }
   .modal-header-small-img-wrapper {
     width: 90px;
@@ -148,4 +179,7 @@ body {
   .modal-content {
     padding: 20px;
   }
+}
+.MuiSnackbar-root {
+  box-shadow: 0px 5px 10px 3px rgba(0, 0, 0, 0.7);
 }

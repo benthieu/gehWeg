@@ -1,6 +1,6 @@
 import { Skeleton } from '@mui/material';
 import { useSupabaseClient } from '@supabase/auth-helpers-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 interface OfferImageProperties {
   image: string;
@@ -9,43 +9,43 @@ interface OfferImageProperties {
   height: number;
 }
 
-export function OfferImage({ image, className, width, height }: OfferImageProperties) {
-  const [imageSrc, setImageSrc] = useState<string | false>(false);
+export function OfferImage({
+  image,
+  className,
+  width,
+  height,
+}: OfferImageProperties) {
   const supabase = useSupabaseClient();
+  const [loaded, setLoaded] = useState(false);
+  const ref = useRef<HTMLImageElement>(null);
+  const { data } = supabase.storage.from('images/admin').getPublicUrl(image);
+  const dataURL = data.publicUrl;
+  const onLoad = () => {
+    setLoaded(true);
+  };
   useEffect(() => {
-    async function prepareAndLoadImage(): Promise<string> {
-      const { data } = await supabase.storage
-        .from('images/admin')
-        .getPublicUrl(image);
-      await loadImage(data.publicUrl);
-      return data.publicUrl;
+    if (ref.current && ref.current.complete) {
+      onLoad();
     }
-    function loadImage(url: string): Promise<void> {
-      return new Promise((resolve, reject) => {
-        const image = new Image();
-        image.src = url;
-        image.onload = () => {
-          resolve();
-        };
-        image.onerror = () => {
-          reject();
-        };
-      });
-    }
-    prepareAndLoadImage().then((url) => {
-      setImageSrc(url);
-    });
-  }, [image]);
-  return imageSrc ? (
-    <div className={className}>
-      <img src={imageSrc} className="image-cover" alt=""></img>
-    </div>
-  ) : (
-    <Skeleton
-      className={className}
-      variant="rectangular"
-      width={width}
-      height={height}
-    />
+  });
+  return (
+    <>
+      <div className={className} style={{ display: loaded ? 'block' : 'none' }}>
+        <img
+          ref={ref}
+          onLoad={onLoad}
+          src={dataURL}
+          alt=""
+          className="image-cover"
+        />
+      </div>
+      <Skeleton
+        style={{ display: !loaded ? 'block' : 'none' }}
+        className={className}
+        variant="rectangular"
+        width={width}
+        height={height}
+      />
+    </>
   );
 }

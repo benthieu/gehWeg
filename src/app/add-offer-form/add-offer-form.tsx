@@ -12,6 +12,8 @@ import { useContext, useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { Tables } from '.././state/supabase/database.types';
 import StateContext from '../state/state.context';
+
+import ImageLoader from './image/image-loader';
 import OfferCategory from './offer-category';
 import OfferTitle from './offer-title';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
@@ -29,12 +31,10 @@ export interface Image {
 }
 
 export function AddOfferForm() {
+  const { activeUser, categories, currentLocation, defaultLocation, setAlert } = useContext(StateContext);
   const navigate = useNavigate();
-  const { activeUser, categories, currentLocation, defaultLocation } =
-    useContext(StateContext);
   const [images, setImages] = useState<Image[]>([]);
   const [clickedOnAddGeolocation, setClickedOnAddGeolocation] = useState(false);
-  const [clickedOnAddDescription, setClickedOnAddDescription] = useState(false);
 
   const [offer, setOffer] = useState<Partial<Tables<'Offer'>>>({
     category: null,
@@ -101,10 +101,15 @@ export function AddOfferForm() {
       .from('images')
       .upload('admin/' + imageId, imageBlob);
     if (error) {
-      console.log('error: ' + typeof error, error);
-      alert('error: ' + error + ', ' + error.message);
+      setAlert({
+        type: 'error',
+        message: 'Fehler beim hochladen, versuchen Sie es später erneut',
+      });
     } else {
-      console.log('image saved: ', imageId);
+      setAlert({
+        type: 'success',
+        message: 'Bild wurde gespeichert',
+      });
     }
   };
 
@@ -130,7 +135,7 @@ export function AddOfferForm() {
     console.log('Updated description. Offer: ', offer);
   }
 
-  function updateCategory(category: string) {
+  function updateCategory(category: number) {
     const newOffer = { ...offer, category: category };
     setOffer((previousOffer) => {
       return { ...previousOffer, ...newOffer };
@@ -143,12 +148,17 @@ export function AddOfferForm() {
     const { error } = await supabase
       .from('Offer')
       .insert({ ...offerToBeSaved });
-
     if (error) {
-      alert('error occured: ' + error);
+      setAlert({
+        type: 'error',
+        message: 'Das Angebot konnte leider nicht gespeichert werden',
+      });
+      return;
     }
-    console.log('Offer saved: ', offer);
-    alert('Angebot gespeichert');
+    setAlert({
+      type: 'success',
+      message: 'Das Angebot wurde gespeichert',
+    });
     navigate('/');
   }
 

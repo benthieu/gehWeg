@@ -1,44 +1,36 @@
-import {MenuItem, MenuList} from "@mui/material";
-import {useContext, useState} from "react";
-import StateContext from "../state/state.context";
-import FilterCategory from "./filter-category";
-import FilterTitle from "./filter-title";
+import { useState } from 'react';
+import FilterCategory from './filter-category';
+import FilterTitle from './filter-title';
 
 export type FilterProps = {
-  category: string | null;
+  category: number | null;
   title: string | null;
-}
+};
 
 interface FilterOps {
   updateSelection: (props: FilterProps) => void;
 }
 
-export function ListFilter({updateSelection}: FilterOps) {
-  const {categories} = useContext(StateContext);
-  const [category, setCategory] = useState('');
+export function ListFilter({ updateSelection }: FilterOps) {
+  const [category, setCategory] = useState(0);
   const [title, setTitle] = useState('');
 
-  function updateCategory(category:string) {
+  function updateCategory(category: number) {
     setCategory(category);
-    const newFilter: FilterProps = {category, title};
+    const newFilter: FilterProps = { category, title };
     updateSelection(newFilter);
   }
 
-  function updateTitle(title:string) {
+  function updateTitle(title: string) {
     setTitle(title);
-    const newFilter: FilterProps = {category, title};
+    const newFilter: FilterProps = { category, title };
     updateSelection(newFilter);
   }
-
-  const selectCategories: string[] = [...categories.map((c) => c.name), 'Alle'];
 
   return (
     <>
-      <FilterTitle title={''} updateTitle={updateTitle}/>
-      <FilterCategory
-        categories={selectCategories}
-        updateCategory={updateCategory}
-      />
+      <FilterTitle updateTitle={updateTitle} />
+      <FilterCategory updateCategory={updateCategory} />
     </>
   );
 }
