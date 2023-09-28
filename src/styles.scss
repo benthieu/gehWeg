@@ -68,12 +68,8 @@ body {
     }
   }
   .add-offer-button {
-    background-color: rgb(157, 255, 0);
-    color: #0c460c;
-    &.active,
-    &:hover {
-      color: #3b893b;
-    }
+    background-color: #3b893b;
+    color: black;
   }
 
   .map {

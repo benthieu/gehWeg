@@ -10,14 +10,25 @@ type CameraProps = {
 
 const Camera = ({ addPhoto, addImageFromFile }: CameraProps) => {
   const [cameraOpened, setCameraOpened] = useState(false);
+  const [cameraPermissionDenied, setCameraPermissionDenied] =
+    useState<boolean>(false);
 
   const openCamera = () => {
-    setCameraOpened(() => true);
+    if (!cameraPermissionDenied) {
+      setCameraOpened(() => true);
+    } else {
+      alert('Bitte Berechtigung für die Kamera im Browser erteilen.');
+      setCameraPermissionDenied(() => false);
+    }
   };
 
   const closeCamera = () => {
     console.log('closeCamera called');
     setCameraOpened(() => false);
+  };
+
+  const handleCameraPermissionDenied = () => {
+    setCameraPermissionDenied(() => true);
   };
 
   return (
@@ -27,6 +38,7 @@ const Camera = ({ addPhoto, addImageFromFile }: CameraProps) => {
           turnOff={closeCamera}
           addPhoto={addPhoto}
           addImageFromFile={addImageFromFile}
+          handleCameraPermissionDenied={handleCameraPermissionDenied}
         />
       ) : (
         <Tooltip title="Bild hinzufügen">

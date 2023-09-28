@@ -1,15 +1,10 @@
-import {
-  TextField,
-  Stack,
-  Box,
-} from '@mui/material';
+import { TextField, Stack, Box } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useDebounce } from 'use-lodash-debounce'; // Types seem not to exist
 
-
 type OfferTitleProps = {
   title: string;
-  updateTitle: (title: any) => void;
+  updateTitle: (title: string) => void;
 };
 
 export function OfferTitle({ title, updateTitle }: OfferTitleProps) {
@@ -18,13 +13,14 @@ export function OfferTitle({ title, updateTitle }: OfferTitleProps) {
   const debouncedValue = useDebounce(value, 800);
 
   useEffect(() => updateTitle(value as string), [debouncedValue]);
-  
+
   return (
     <Box mx={1}>
       <Stack direction="column" m={1}>
         <TextField
+          color="primary"
           type="text"
-          placeholder='Titel'
+          placeholder="Titel"
           required
           id="offer-title"
           variant="standard"

@@ -34,7 +34,7 @@ function ImageLoader({
             <Camera addPhoto={addPhoto} addImageFromFile={addImage} />
           </Stack>
           <Stack direction="column" alignItems="center" spacing={2}>
-            <ImageList sx={{ maxWidth: 300, maxHeight: 300 }} cols={1}>
+            <ImageList sx={{ maxWidth: 300, maxHeight: 300 }} cols={3}>
               {images?.map((image) => (
                 <ImageListItem key={image.imageId}>
                   <img

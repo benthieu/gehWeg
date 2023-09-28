@@ -7,17 +7,19 @@ import ClearIcon from '@mui/icons-material/Clear';
 import LinearProgress from '@mui/material/LinearProgress';
 import CameraswitchIcon from '@mui/icons-material/Cameraswitch';
 
-type CustomWebcamProp = {
+type CustomWebcamProps = {
   turnOff: () => void;
   addPhoto: (imageUrl: string) => void;
   addImageFromFile: (event: any) => void;
+  handleCameraPermissionDenied: () => void;
 };
 
 const CustomWebcam = ({
   turnOff,
   addPhoto,
   addImageFromFile,
-}: CustomWebcamProp) => {
+  handleCameraPermissionDenied,
+}: CustomWebcamProps) => {
   const [webcamLoading, setWebcamLoading] = useState<boolean>(true);
   const webcamRef = useRef<any>(null);
   const [imgSrc, setImgSrc] = useState(null);
@@ -52,6 +54,12 @@ const CustomWebcam = ({
     setWebcamLoading(() => false);
   };
 
+  const handlePermissionDenied = () => {
+    closeConnectionProgressBar();
+    turnOff();
+    handleCameraPermissionDenied();
+  };
+
   return (
     <Box>
       <Stack direction="column">
@@ -71,6 +79,7 @@ const CustomWebcam = ({
             className="webcam"
             audio={false}
             videoConstraints={videoConstraints}
+            onUserMediaError={handlePermissionDenied}
           />
         </Stack>
         <Stack direction="row" justifyContent="center">
@@ -87,7 +96,7 @@ const CustomWebcam = ({
                 type="file"
                 onChange={(event) => addImageFromFile(event)}
               />
-              <CollectionsIcon  color="success" />
+              <CollectionsIcon color="success" />
             </IconButton>
           </Tooltip>
           <Tooltip title="Foto schiessen">

@@ -1,17 +1,28 @@
-import { Box, Button, ListItemButton, ListItemText } from '@mui/material';
+import {
+  Box,
+  Button,
+  ListItemButton,
+  ListItemText,
+  Divider,
+  Stack,
+} from '@mui/material';
 import { useSupabaseClient } from '@supabase/auth-helpers-react';
 import { LatLngLiteral } from 'leaflet';
 import { useContext, useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { Tables } from '.././state/supabase/database.types';
 import StateContext from '../state/state.context';
-
 import OfferCategory from './offer-category';
-import OfferDescription from './offer-description';
-import OfferGeolocation from './offer-geolocation';
+import OfferDescription from './description/offer-description';
 import OfferTitle from './offer-title';
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+import PlaceIcon from '@mui/icons-material/Place';
 import ImageLoader from './image/image-loader';
-import OfferGeolocationModal from './offer-geolocation-modal';
+import OfferGeolocationModal from './geolocation/offer-geolocation-modal';
+import { useNavigate } from 'react-router';
+import DescriptionIcon from '@mui/icons-material/Description';
+import EditIcon from '@mui/icons-material/Edit';
+import OfferDescriptionModal from './description/offer-description-modal';
 
 export interface Image {
   imageUrl: string;
@@ -19,10 +30,12 @@ export interface Image {
 }
 
 export function AddOfferForm() {
+  const navigate = useNavigate();
   const { activeUser, categories, currentLocation, defaultLocation } =
     useContext(StateContext);
   const [images, setImages] = useState<Image[]>([]);
   const [clickedOnAddGeolocation, setClickedOnAddGeolocation] = useState(false);
+  const [clickedOnAddDescription, setClickedOnAddDescription] = useState(false);
   const [offer, setOffer] = useState<Partial<Tables<'Offer'>>>({
     category: null,
     city: '',
@@ -136,6 +149,7 @@ export function AddOfferForm() {
     }
     console.log('Offer saved: ', offer);
     alert('Angebot gespeichert');
+    navigate('/');
   }
 
   function buildOffer() {
@@ -180,18 +194,57 @@ export function AddOfferForm() {
       <div className="header">
         <h3>Angebot erstellen</h3>
       </div>
+      <OfferTitle title={''} updateTitle={updateTitle} />
+      <Divider />
       <Box m={1}>
-        <OfferTitle title={''} updateTitle={updateTitle} />
         <ImageLoader
           images={images}
           addImage={addImageFromFile}
           removeImage={removeImage}
           addPhoto={addImageFromUrl}
         />
-        <OfferDescription
+        <Divider />
+        {/* <OfferDescription
           description={''}
           updateDescription={updateDescription}
+        /> */}
+        <OfferCategory
+          categories={categories.map((c) => c.name)}
+          updateCategory={updateCategory}
         />
+        <Divider />
+        {clickedOnAddDescription ? (
+          <OfferDescriptionModal
+            updateDescription={updateDescription}
+            description={offer.description ? offer.description : ''}
+            addDescriptionClosed={() => setClickedOnAddDescription(false)}
+          />
+        ) : null}
+        <ListItemButton
+          onClick={() => {
+            setClickedOnAddDescription(true);
+          }}
+        >
+          <Box marginRight={2}>
+            <EditIcon color="primary"></EditIcon>
+          </Box>
+          
+          <ListItemText
+            primary={
+              offer.description
+                ? `Beschreibung`
+                : 'Beschreibung hinzufügen'
+            }
+            secondary={
+              offer.description ? `${offer.description}`  : ''
+            }
+            sx={{width: `20px`}}
+          ></ListItemText>
+          <Box margin={2}>
+            <ArrowForwardIosIcon color="primary"></ArrowForwardIosIcon>
+          </Box>
+        </ListItemButton>
+        <Divider />
         {clickedOnAddGeolocation ? (
           <OfferGeolocationModal
             location={
@@ -203,47 +256,44 @@ export function AddOfferForm() {
             addGeolocationClosed={() => setClickedOnAddGeolocation(false)}
           />
         ) : null}
-
         <ListItemButton onClick={() => setClickedOnAddGeolocation(true)}>
-          {/* {offer.images?.[0] && (
-            <OfferImage
-              className="list-item-image-wrapper"
-              width={60}
-              height={60}
-              image={offer.images?.[0]}
-            ></OfferImage>
-          )} */}
+          <Box marginRight={2}>
+            <PlaceIcon color="primary"></PlaceIcon>
+          </Box>
           <ListItemText
-            primary={'Ort hinzufügen'}
-            secondary={
-              offer.street ? 
-              `${offer.street}, ${offer.postal_code? offer.postal_code : ''} ${offer.city}` : ''}
+            primary={
+              offer.street
+                ? `${offer.street}, ${
+                    offer.postal_code ? offer.postal_code : ''
+                  } ${offer.city}`
+                : 'Ort hinzufügen'
+            }
+            secondary={offer.street ? 'Klicken um Ort zu ändern' : ''}
           ></ListItemText>
-          {/* <Typography variant="overline">
-            <Box sx={{ color: 'text.disabled' }}>
-              {formatCHDate(offer.created_at)}
-            </Box>
-          </Typography> */}
+          <Box margin={2}>
+            <ArrowForwardIosIcon color="primary"></ArrowForwardIosIcon>
+          </Box>
         </ListItemButton>
-
-        {/* <OfferGeolocation
-          location={
-            offer.location ? (offer.location as LatLngLiteral) : defaultLocation
-          }
-          handleClickOnMap={setOfferLocation}
-        /> */}
-        <OfferCategory
-          categories={categories.map((c) => c.name)}
-          updateCategory={updateCategory}
-        />
-        <Button
-          onClick={saveOffer}
-          color="primary"
-          variant="contained"
-          disabled={!offer.subject}
-        >
-          Speichern
-        </Button>
+        <Divider />
+        <Box m={2}>
+          <Stack direction={'row'} spacing={3}>
+            <Button
+              onClick={saveOffer}
+              color="primary"
+              variant="contained"
+              disabled={!offer.subject}
+            >
+              Speichern
+            </Button>
+            <Button
+              onClick={() => navigate('/')}
+              color="warning"
+              variant="contained"
+            >
+              Abbrechen
+            </Button>
+          </Stack>
+        </Box>
       </Box>
     </>
   );
