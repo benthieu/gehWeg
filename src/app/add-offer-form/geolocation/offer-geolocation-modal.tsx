@@ -6,7 +6,7 @@ import {
   useMap,
   useMapEvents,
 } from 'react-leaflet';
-import { LatLngLiteral, LeafletMouseEvent, latLng } from 'leaflet';
+import { LatLngLiteral, LeafletMouseEvent} from 'leaflet';
 import Geocode from 'react-geocode';
 import GooglePlacesAutocomplete from 'react-google-places-autocomplete';
 import { Option } from 'react-google-places-autocomplete/build/types';
@@ -23,7 +23,7 @@ type AddOfferLocationProps = {
 };
 
 const style = {
-  position: 'absolute' as 'absolute',
+  position: 'absolute',
   top: '35%',
   left: '50%',
   transform: 'translate(-50%, -50%)',

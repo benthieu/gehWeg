@@ -13,16 +13,16 @@ import { v4 as uuidv4 } from 'uuid';
 import { Tables } from '.././state/supabase/database.types';
 import StateContext from '../state/state.context';
 import OfferCategory from './offer-category';
-import OfferDescription from './description/offer-description';
 import OfferTitle from './offer-title';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import PlaceIcon from '@mui/icons-material/Place';
 import ImageLoader from './image/image-loader';
 import OfferGeolocationModal from './geolocation/offer-geolocation-modal';
 import { useNavigate } from 'react-router';
-import DescriptionIcon from '@mui/icons-material/Description';
 import EditIcon from '@mui/icons-material/Edit';
 import OfferDescriptionModal from './description/offer-description-modal';
+import DoneIcon from '@mui/icons-material/Done';
+import PhotoList from './image/photo-list';
 
 export interface Image {
   imageUrl: string;
@@ -36,6 +36,7 @@ export function AddOfferForm() {
   const [images, setImages] = useState<Image[]>([]);
   const [clickedOnAddGeolocation, setClickedOnAddGeolocation] = useState(false);
   const [clickedOnAddDescription, setClickedOnAddDescription] = useState(false);
+
   const [offer, setOffer] = useState<Partial<Tables<'Offer'>>>({
     category: null,
     city: '',
@@ -196,21 +197,18 @@ export function AddOfferForm() {
       </div>
       <OfferTitle title={''} updateTitle={updateTitle} />
       <Divider />
+      <OfferCategory
+        categories={categories.map((c) => c.name)}
+        updateCategory={updateCategory}
+      />
+      <Divider />
+
       <Box m={1}>
         <ImageLoader
           images={images}
           addImage={addImageFromFile}
           removeImage={removeImage}
           addPhoto={addImageFromUrl}
-        />
-        <Divider />
-        {/* <OfferDescription
-          description={''}
-          updateDescription={updateDescription}
-        /> */}
-        <OfferCategory
-          categories={categories.map((c) => c.name)}
-          updateCategory={updateCategory}
         />
         <Divider />
         {clickedOnAddDescription ? (
@@ -226,22 +224,25 @@ export function AddOfferForm() {
           }}
         >
           <Box marginRight={2}>
-            <EditIcon color="primary"></EditIcon>
+            <EditIcon color="primary" fontSize="small"></EditIcon>
           </Box>
-          
+
           <ListItemText
             primary={
-              offer.description
-                ? `Beschreibung`
-                : 'Beschreibung hinzufügen'
+              offer.description ? `Beschreibung` : 'Beschreibung hinzufügen'
             }
-            secondary={
-              offer.description ? `${offer.description}`  : ''
-            }
-            sx={{width: `20px`}}
+            secondary={offer.description ? `${offer.description}` : ''}
+            sx={{ width: `20px` }}
           ></ListItemText>
-          <Box margin={2}>
-            <ArrowForwardIosIcon color="primary"></ArrowForwardIosIcon>
+          <Box>
+            {offer.description ? (
+              <DoneIcon color="success" fontSize="medium" />
+            ) : (
+              <ArrowForwardIosIcon
+                color="primary"
+                fontSize="small"
+              ></ArrowForwardIosIcon>
+            )}
           </Box>
         </ListItemButton>
         <Divider />
@@ -258,7 +259,7 @@ export function AddOfferForm() {
         ) : null}
         <ListItemButton onClick={() => setClickedOnAddGeolocation(true)}>
           <Box marginRight={2}>
-            <PlaceIcon color="primary"></PlaceIcon>
+            <PlaceIcon color="primary" fontSize="small"></PlaceIcon>
           </Box>
           <ListItemText
             primary={
@@ -270,8 +271,15 @@ export function AddOfferForm() {
             }
             secondary={offer.street ? 'Klicken um Ort zu ändern' : ''}
           ></ListItemText>
-          <Box margin={2}>
-            <ArrowForwardIosIcon color="primary"></ArrowForwardIosIcon>
+          <Box>
+            {offer.street ? (
+              <DoneIcon color="success" fontSize="medium" />
+            ) : (
+              <ArrowForwardIosIcon
+                color="primary"
+                fontSize="small"
+              ></ArrowForwardIosIcon>
+            )}
           </Box>
         </ListItemButton>
         <Divider />
@@ -287,7 +295,7 @@ export function AddOfferForm() {
             </Button>
             <Button
               onClick={() => navigate('/')}
-              color="warning"
+              color="primary"
               variant="contained"
             >
               Abbrechen

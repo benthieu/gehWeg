@@ -1,14 +1,11 @@
-import {
-  Box,
-  Button,
-  ImageList,
-  ImageListItem,
-  Stack,
-} from '@mui/material';
+import { Box, ListItemButton, ListItemText, Stack } from '@mui/material';
 import { ErrorBoundary } from 'react-error-boundary';
 import { Image } from '../add-offer-form';
 import Camera from './camera';
-
+import PhotoList from './photo-list';
+import { useState } from 'react';
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+import PhotoCamera from '@mui/icons-material/PhotoCamera';
 
 type ImageLoaderProps = {
   images: Image[];
@@ -22,35 +19,46 @@ function ImageLoader({
   removeImage,
   addPhoto,
 }: ImageLoaderProps) {
- 
+  const [cameraOpened, setCameraOpened] = useState(false);
+
   return (
     <Box>
-      <Stack direction="column" m={1}>
-        <ErrorBoundary
-          onError={(error) => alert(error)}
-          FallbackComponent={FallbackComponent}
+      {images.length <= 0 ? (
+        <ListItemButton
+          onClick={() => {
+            setCameraOpened(() => true);
+          }}
         >
-          <Stack direction="column" alignItems="center" spacing={2}>
-            <Camera addPhoto={addPhoto} addImageFromFile={addImage} />
-          </Stack>
-          <Stack direction="column" alignItems="center" spacing={2}>
-            <ImageList sx={{ maxWidth: 300, maxHeight: 300 }} cols={3}>
-              {images?.map((image) => (
-                <ImageListItem key={image.imageId}>
-                  <img
-                    src={image.imageUrl}
-                    alt={image.imageUrl}
-                    loading="lazy"
-                  />
-                  <Button onClick={() => removeImage(image.imageId)}>
-                    Bild entfernen
-                  </Button>
-                </ImageListItem>
-              ))}
-            </ImageList>
-          </Stack>
-        </ErrorBoundary>
-      </Stack>
+          <Box marginRight={2}>
+            <PhotoCamera color="primary" fontSize="small"></PhotoCamera>
+          </Box>
+          <ListItemText primary={'Foto hinzufügen'}></ListItemText>
+          <Box>
+            <ArrowForwardIosIcon
+              color="primary"
+              fontSize="small"
+            ></ArrowForwardIosIcon>
+          </Box>
+        </ListItemButton>
+      ) : (
+        <Stack direction="column" m={1}>
+          <ErrorBoundary
+            onError={(error) => alert(error)}
+            FallbackComponent={FallbackComponent}
+          >
+            <Stack direction="column" alignItems="center" spacing={2}>
+              <Camera
+                addPhoto={addPhoto}
+                addImageFromFile={addImage}
+                images={images}
+                removeImage={removeImage}
+                cameraOpened={cameraOpened}
+              />
+            </Stack>
+            <PhotoList images={images} removeImage={removeImage}></PhotoList>
+          </ErrorBoundary>
+        </Stack>
+      )}
     </Box>
   );
 }
