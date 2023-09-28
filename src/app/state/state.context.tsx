@@ -61,9 +61,7 @@ export const StateProvider = ({ children }: StateProviderProperties) => {
   const [users, setUsers] = useState<Tables<'User'>[]>([]);
   const [offers, setOffers] = useState<Offer[]>([]);
   const [alert, setAlert] = useState<Alert | null>(null);
-  const [categories, setCategories] = useState<Tables<'Category'>[]>([
-    { name: 'none' },
-  ]);
+  const [categories, setCategories] = useState<Tables<'Category'>[]>([]);
   const [activeUser, setActiveUser] = useState<Tables<'User'> | null>(null);
   const supabaseClient = useSupabaseClient();
   const [currentLocation, setCurrentLocation] = useState<LatLngLiteral>();
@@ -96,8 +94,8 @@ export const StateProvider = ({ children }: StateProviderProperties) => {
       .from('offer_json')
       .select('*')
       .order('created_at', { ascending: false });
-    if (filter.category && filter.category !== 'Alle') {
-      query.like('category', filter.category);
+    if (filter.category && filter.category !== 0) {
+      query.eq('category', filter.category);
     }
     if (filter.title) {
       query.ilike('subject', '%' + filter.title + '%');

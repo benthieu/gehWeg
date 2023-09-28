@@ -1,19 +1,18 @@
-import {Box, Stack, TextField,} from '@mui/material';
-import {useState} from 'react';
+import { Box, Stack, TextField } from '@mui/material';
+import { useState } from 'react';
 
 type OfferTitleProps = {
-  title: string;
-  updateTitle: (title: any) => void;
+  updateTitle: (title: string) => void;
 };
 
-export function FilterTitle({ title, updateTitle }: OfferTitleProps) {
+export function FilterTitle({ updateTitle }: OfferTitleProps) {
   const [value, setValue] = useState('');
 
   return (
     <Box mx={1}>
       <Stack direction="column" m={1}>
         <TextField
-          label="Title"
+          label="Textsuche"
           type="text"
           required
           id="filter-title"

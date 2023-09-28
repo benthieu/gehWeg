@@ -1,5 +1,5 @@
 import AddIcon from '@mui/icons-material/Add';
-import { Fab } from '@mui/material';
+import { Button } from '@mui/material';
 import { memo, useCallback, useContext, useRef, useState } from 'react';
 import { MapContainer, Marker, TileLayer } from 'react-leaflet';
 import { useNavigate } from 'react-router-dom';
@@ -28,7 +28,13 @@ export function OverviewMap() {
   return (
     <>
       <div className="header">
+        <div className="header-start"></div>
         <h3>gehWeg</h3>
+        <div className="header-end">
+          <Button color="success" onClick={() => navigate('/offer-form')}>
+            <AddIcon />
+          </Button>
+        </div>
       </div>
       <MapContainer
         center={{
@@ -60,17 +66,6 @@ export function OverviewMap() {
             })}
           </section>
         </main>
-        <aside>
-          <section>
-            <Fab
-              onClick={() => navigate('/offer-form')}
-              className="add-offer-button"
-              aria-label="add"
-            >
-              <AddIcon />
-            </Fab>
-          </section>
-        </aside>
       </MapContainer>
       {activeOffer ? (
         <OfferDetailModal

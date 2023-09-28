@@ -120,7 +120,7 @@ export function AddOfferForm() {
     console.log('Updated description. Offer: ', offer);
   }
 
-  function updateCategory(category: string) {
+  function updateCategory(category: number) {
     const newOffer = { ...offer, category: category };
     setOffer((previousOffer) => {
       return { ...previousOffer, ...newOffer };
@@ -211,7 +211,7 @@ export function AddOfferForm() {
         />
 
         <OfferCategory
-          categories={categories.map((c) => c.name)}
+          categories={categories}
           updateCategory={updateCategory}
         />
         <Button
