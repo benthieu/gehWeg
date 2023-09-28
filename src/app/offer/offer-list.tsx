@@ -8,23 +8,32 @@ import {
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import { useContext, useEffect, useState } from 'react';
+import { FilterProps, ListFilter } from '../offer-list-filter/list-filter';
 import StateContext from '../state/state.context';
 import { Offer } from '../state/supabase/database.types';
 import { formatCHDate } from '../utils/date-utils';
 import OfferDetailModal from './offer-detail-modal';
 import { OfferImage } from './offer-image';
-import {FilterProps, ListFilter} from "../offer-list-filter/list-filter";
 
 export function OfferList() {
   const { offers, loadFilterListOffers } = useContext(StateContext);
   const [activeOffer, setOfferActive] = useState<Offer | null>(null);
-  const [filter, setFilter] = useState<FilterProps>({category: '', title: ''});
+  const [filter, setFilter] = useState<FilterProps>({
+    category: '',
+    title: '',
+  });
   useEffect(() => {
     loadFilterListOffers(filter);
   }, [filter]);
   function updateSelection(filter: FilterProps) {
     setFilter(filter);
     loadFilterListOffers(filter);
+  }
+  function handleOfferClosed(reload: boolean) {
+    if (reload) {
+      loadFilterListOffers(filter);
+    }
+    setOfferActive(null);
   }
   return (
     <>
@@ -38,7 +47,7 @@ export function OfferList() {
       {activeOffer ? (
         <OfferDetailModal
           offer={activeOffer}
-          offerClosed={() => setOfferActive(null)}
+          offerClosed={(reload) => handleOfferClosed(reload)}
         />
       ) : null}
       {offers.map((offer, index) => {
