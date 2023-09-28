@@ -6,12 +6,11 @@ import { v4 as uuidv4 } from 'uuid';
 import { Tables } from '.././state/supabase/database.types';
 import StateContext from '../state/state.context';
 
+import ImageLoader from './image/image-loader';
 import OfferCategory from './offer-category';
 import OfferDescription from './offer-description';
 import OfferGeolocation from './offer-geolocation';
 import OfferTitle from './offer-title';
-import ImageLoader from './image/image-loader';
-
 
 export interface Image {
   imageUrl: string;
@@ -19,7 +18,7 @@ export interface Image {
 }
 
 export function AddOfferForm() {
-  const { activeUser, categories, currentLocation, defaultLocation } =
+  const { activeUser, categories, currentLocation, defaultLocation, setAlert } =
     useContext(StateContext);
   const [images, setImages] = useState<Image[]>([]);
   const [offer, setOffer] = useState<Partial<Tables<'Offer'>>>({
@@ -87,10 +86,15 @@ export function AddOfferForm() {
       .from('images')
       .upload('admin/' + imageId, imageBlob);
     if (error) {
-      console.log('error: ' + typeof error, error);
-      alert('error: ' + error + ', ' + error.message);
+      setAlert({
+        type: 'error',
+        message: 'Fehler beim hochladen, versuchen Sie es später erneut',
+      });
     } else {
-      console.log('image saved: ', imageId);
+      setAlert({
+        type: 'success',
+        message: 'Bild wurde gespeichert',
+      });
     }
   };
 
@@ -131,10 +135,16 @@ export function AddOfferForm() {
       .insert({ ...offerToBeSaved });
 
     if (error) {
-      alert('error occured: ' + error);
+      setAlert({
+        type: 'error',
+        message: 'Das Angebot konnte leider nicht gespeichert werden',
+      });
+      return;
     }
-    console.log('Offer saved: ', offer);
-    alert('Angebot gespeichert');
+    setAlert({
+      type: 'success',
+      message: 'Das Angebot wurde gespeichert',
+    });
   }
 
   function buildOffer() {
@@ -158,7 +168,7 @@ export function AddOfferForm() {
    * @param address is in the format: street, PLZ city, country
    */
   function setOfferAddress(address: string) {
-    console.log('offer updated Address, address: ', address)
+    console.log('offer updated Address, address: ', address);
     const addressParts: string[] = address.split(',');
 
     const offerCity = addressParts[1].split(' ')[2];
@@ -199,7 +209,7 @@ export function AddOfferForm() {
           handleClickOnMap={setOfferLocation}
           setOfferAddress={setOfferAddress}
         />
-  
+
         <OfferCategory
           categories={categories.map((c) => c.name)}
           updateCategory={updateCategory}

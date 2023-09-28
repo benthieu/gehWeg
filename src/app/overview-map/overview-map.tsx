@@ -1,6 +1,6 @@
 import AddIcon from '@mui/icons-material/Add';
 import { Fab } from '@mui/material';
-import { memo, useCallback, useContext, useState } from 'react';
+import { memo, useCallback, useContext, useRef, useState } from 'react';
 import { MapContainer, Marker, TileLayer } from 'react-leaflet';
 import { useNavigate } from 'react-router-dom';
 import OfferDetailModal from '../offer/offer-detail-modal';
@@ -14,18 +14,17 @@ export function OverviewMap() {
   const navigate = useNavigate();
   const { offers, loadMapOffers } = useContext(StateContext);
   const [activeOffer, setOfferActive] = useState<Offer | null>(null);
-  const [bounds, setBounds] = useState<OffersInViewArgs | null>(null);
+  const bounds = useRef<OffersInViewArgs | null>(null);
   function handleOfferClosed(reload: boolean) {
-    if (reload && bounds) {
-      loadMapOffers(bounds);
+    if (reload && bounds.current) {
+      loadMapOffers(bounds.current);
     }
     setOfferActive(null);
   }
   const handleBoundsChange = useCallback((newBounds: OffersInViewArgs) => {
-    setBounds(newBounds);
+    bounds.current = newBounds;
     loadMapOffers(newBounds);
   }, []);
-
   return (
     <>
       <div className="header">
