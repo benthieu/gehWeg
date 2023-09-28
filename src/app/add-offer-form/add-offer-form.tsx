@@ -1,9 +1,4 @@
-import {
-  Box,
-  Button,
-  Divider,
-  Stack,
-} from '@mui/material';
+import { Box, Button, Divider, Stack } from '@mui/material';
 import { useSupabaseClient } from '@supabase/auth-helpers-react';
 import { LatLngLiteral } from 'leaflet';
 import { useContext, useEffect, useState } from 'react';
@@ -135,6 +130,9 @@ export function AddOfferForm() {
   async function saveOffer() {
     saveImages(images);
     const offerToBeSaved = buildOffer();
+    if (!offerToBeSaved) {
+      return;
+    }
     const { error } = await supabase
       .from('Offer')
       .insert({ ...offerToBeSaved });
@@ -153,14 +151,21 @@ export function AddOfferForm() {
   }
 
   function buildOffer() {
-    const location = offer.location as LatLngLiteral;
-    const point = `POINT(${location.lat} ${location.lng})`;
-    return {
-      ...offer,
-      created_by: activeUser?.id,
-      status: 'new',
-      location: point,
-    };
+    try {
+      const location = offer.location as LatLngLiteral;
+      const point = `POINT(${location.lat} ${location.lng})`;
+      return {
+        ...offer,
+        created_by: activeUser?.id,
+        status: 'new',
+        location: point,
+      };
+    } catch (error) {
+      setAlert({
+        type: 'error',
+        message: 'Bitte Ort des Angebots angeben',
+      });
+    }
   }
 
   /**
@@ -194,7 +199,10 @@ export function AddOfferForm() {
       </div>
       <AddOfferTitle title={''} updateTitle={updateTitle} />
       <Divider />
-      <AddOfferCategory categories={categories} updateCategory={updateCategory} />
+      <AddOfferCategory
+        categories={categories}
+        updateCategory={updateCategory}
+      />
       <Divider />
       <Box m={1}>
         <AddPhotoButton
