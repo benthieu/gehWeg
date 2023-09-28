@@ -13,6 +13,7 @@ import { Option } from 'react-google-places-autocomplete/build/types';
 import { PropsValue, SingleValue } from 'react-select';
 import { useState } from 'react';
 
+const PLACES_API_KEY = 'AIzaSyDX7buq-sfinghkw3M6TSoA8Jc_RnUxdvc';
 
 type AddOfferLocationProps = {
   location: LatLngLiteral | undefined;
@@ -29,13 +30,12 @@ const style = {
   left: '50%',
   transform: 'translate(-50%, -50%)',
   width: '90vw',
-  // overflow: 'scroll',
   bgcolor: 'background.paper',
   boxShadow: 24,
   p: 0,
 };
 
-Geocode.setApiKey('AIzaSyDX7buq-sfinghkw3M6TSoA8Jc_RnUxdvc');
+Geocode.setApiKey(PLACES_API_KEY);
 Geocode.setLanguage('en');
 Geocode.setRegion('ch');
 Geocode.enableDebug();
@@ -152,7 +152,7 @@ export function OfferGeolocationModal({
               </main>
             </MapContainer>
             <GooglePlacesAutocomplete
-              apiKey="AIzaSyDX7buq-sfinghkw3M6TSoA8Jc_RnUxdvc"
+              apiKey={PLACES_API_KEY}
               autocompletionRequest={{
                 componentRestrictions: {
                   country: ['ch'],

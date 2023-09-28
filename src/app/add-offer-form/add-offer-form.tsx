@@ -27,7 +27,6 @@ export function AddOfferForm() {
     useContext(StateContext);
   const navigate = useNavigate();
   const [images, setImages] = useState<Image[]>([]);
-  // const [clickedOnAddDescription, setClickedOnAddDescription] = useState(false);
 
   const [offer, setOffer] = useState<Partial<Tables<'Offer'>>>({
     category: null,

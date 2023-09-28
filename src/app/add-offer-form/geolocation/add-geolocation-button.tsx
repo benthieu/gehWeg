@@ -13,20 +13,20 @@ type AddGeolocationButtonProps = {
   defaultLocation: LatLngLiteral
 };
 function AddGeolocationButton({ offer, setOfferLocation, defaultLocation}: AddGeolocationButtonProps) {
-  const [clickedOnAddGeolocation, setClickedOnAddGeolocation] = useState(false);
+  const [geolocationModalOpened, setGeolocationModalOpened] = useState(false);
 
   return (
     <>
-      {clickedOnAddGeolocation ? (
+      {geolocationModalOpened ? (
         <OfferGeolocationModal
           location={
             offer.location ? (offer.location as LatLngLiteral) : defaultLocation
           }
           handleClickOnMap={setOfferLocation}
-          addGeolocationClosed={() => setClickedOnAddGeolocation(false)}
+          addGeolocationClosed={() => setGeolocationModalOpened(false)}
         />
       ) : null}
-      <ListItemButton onClick={() => setClickedOnAddGeolocation(true)}>
+      <ListItemButton onClick={() => setGeolocationModalOpened(true)}>
         <Box marginRight={2}>
           <PlaceIcon color="primary" fontSize="small"></PlaceIcon>
         </Box>
