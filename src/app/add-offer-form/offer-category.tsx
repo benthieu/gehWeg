@@ -1,16 +1,17 @@
 import { Box, MenuItem, Stack, TextField, Tooltip } from '@mui/material';
 import { useState } from 'react';
+import { Tables } from '../state/supabase/database.types';
 
 type OfferCategoryProps = {
-  categories: string[];
-  updateCategory: (category: string) => void;
+  categories: Tables<'Category'>[];
+  updateCategory: (category: number) => void;
 };
 
 export function OfferCategory({
   categories,
   updateCategory,
 }: OfferCategoryProps) {
-  const [category, setCategory] = useState('');
+  const [category, setCategory] = useState(0);
 
   return (
     <Box mx={1}>
@@ -23,13 +24,14 @@ export function OfferCategory({
           variant="standard"
           value={category}
           onChange={(event) => {
-            setCategory(event.target.value);
-            updateCategory(event.target.value);
+            const value = parseInt(event.target.value);
+            setCategory(value);
+            updateCategory(value);
           }}
         >    
           {categories.map((category) => (
-            <MenuItem key={category} value={category}>
-              {category}
+            <MenuItem key={category.id} value={category.id}>
+              {category.name}
             </MenuItem>
           ))}
         </TextField>

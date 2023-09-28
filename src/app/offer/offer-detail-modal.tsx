@@ -28,10 +28,12 @@ export default function OfferDetailModal({
   offer,
   offerClosed,
 }: OfferDetailModalProperties) {
-  const { setAlert } = useContext(StateContext);
+  const { setAlert, users } = useContext(StateContext);
   const [open, setOpen] = useState(true);
   const [imageActive, setImageActive] = useState(false);
   const supabase = useSupabaseClient();
+  const user = users.find((user) => user.id === offer.created_by);
+  
   const setOfferClosed = async () => {
     const { error } = await supabase
       .from('Offer')
@@ -104,17 +106,20 @@ export default function OfferDetailModal({
             <Typography id="modal-modal-title" variant="h6" component="h2">
               {offer.subject}
             </Typography>
-            <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+            {offer.description && <Typography id="modal-modal-description" sx={{ mt: 2 }}>
               {offer.description}
-            </Typography>
-            <Typography sx={{ mt: 2 }}>
+            </Typography>}
+            {offer.street && offer.city && <Typography sx={{ mt: 2 }}>
               {offer.street}
               <br />
               {offer.city} {offer.postal_code}
-            </Typography>
+            </Typography>}
             <Typography sx={{ mt: 2 }}>
-              Geteilt am: {formatCHDate(offer.created_at)}
+              Geteilt seit: {formatCHDate(offer.created_at)}
             </Typography>
+            {user && <Typography sx={{ mt: 2 }}>
+              Geteilt von: {user.name}
+            </Typography>}
             <Typography sx={{ mt: 2 }}>
               Status: {offer.status === 'new' ? 'Neu' : 'Abgeholt'}
             </Typography>
