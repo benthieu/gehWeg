@@ -13,17 +13,26 @@ import { Offer } from '../state/supabase/database.types';
 import { formatCHDate } from '../utils/date-utils';
 import OfferDetailModal from './offer-detail-modal';
 import { OfferImage } from './offer-image';
+import {FilterProps, ListFilter} from "../offer-list-filter/list-filter";
 
 export function OfferList() {
-  const { offers, loadListOffers } = useContext(StateContext);
+  const { offers, loadFilterListOffers } = useContext(StateContext);
   const [activeOffer, setOfferActive] = useState<Offer | null>(null);
+  const [filter, setFilter] = useState<FilterProps>({category: '', title: ''});
   useEffect(() => {
-    loadListOffers();
-  }, []);
+    loadFilterListOffers(filter);
+  }, [filter]);
+  function updateSelection(filter: FilterProps) {
+    setFilter(filter);
+    loadFilterListOffers(filter);
+  }
   return (
     <>
       <div className="header">
         <h3>Angebote</h3>
+      </div>
+      <div>
+        <ListFilter updateSelection={updateSelection}></ListFilter>
       </div>
       <List sx={{ width: '100%' }}></List>
       {activeOffer ? (
