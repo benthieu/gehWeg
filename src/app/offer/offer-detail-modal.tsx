@@ -1,7 +1,8 @@
 import { Box, Button, Modal, Typography } from '@mui/material';
 import { useSupabaseClient } from '@supabase/auth-helpers-react';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { MapContainer, Marker, TileLayer } from 'react-leaflet';
+import StateContext from '../state/state.context';
 import { Offer } from '../state/supabase/database.types';
 import { formatCHDate } from '../utils/date-utils';
 import { OfferImage } from './offer-image';
@@ -27,6 +28,7 @@ export default function OfferDetailModal({
   offer,
   offerClosed,
 }: OfferDetailModalProperties) {
+  const { setAlert } = useContext(StateContext);
   const [open, setOpen] = useState(true);
   const [imageActive, setImageActive] = useState(false);
   const supabase = useSupabaseClient();
@@ -38,8 +40,16 @@ export default function OfferDetailModal({
       })
       .eq('id', offer.id);
     if (error) {
-      alert(`Error: ${error}`);
+      setAlert({
+        type: 'error',
+        message: 'Der Status konnte leider nicht geändert werden',
+      });
+      return;
     }
+    setAlert({
+      type: 'success',
+      message: 'Das Angebot wurde aktualisiert',
+    });
     handleClose(true);
   };
   const handleClose = (hasChanged = false) => {

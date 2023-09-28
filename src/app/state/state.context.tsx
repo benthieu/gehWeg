@@ -1,6 +1,8 @@
 import { useSupabaseClient } from '@supabase/auth-helpers-react';
 import { LatLngLiteral } from 'leaflet';
 import { createContext, useEffect, useState } from 'react';
+import { Alert } from '../alert/alert.model';
+import { FilterProps } from '../offer-list-filter/list-filter';
 import {
   Functions,
   Offer,
@@ -8,19 +10,20 @@ import {
   Tables,
   Views,
 } from './supabase/database.types';
-import {FilterProps} from "../offer-list-filter/list-filter";
 
 interface State {
   users: Tables<'User'>[];
   offers: Offer[];
   categories: Tables<'Category'>[];
   activeUser: Tables<'User'> | null;
-  setUserActive: (id: number) => void;
-  currentLocation: LatLngLiteral | undefined;
   defaultLocation: LatLngLiteral;
+  currentLocation: LatLngLiteral | undefined;
+  alert: Alert | null;
+  setUserActive: (id: number) => void;
   loadListOffers: () => void;
   loadMapOffers: (bounds: OffersInViewArgs) => void;
   loadFilterListOffers: (filter: FilterProps) => void;
+  setAlert: (alert: Alert | null) => void;
 }
 
 const StateContext = createContext<State>({
@@ -28,12 +31,14 @@ const StateContext = createContext<State>({
   offers: [],
   categories: [],
   activeUser: null,
-  setUserActive: () => undefined,
-  currentLocation: undefined,
   defaultLocation: { lat: 0, lng: 0 },
-  loadListOffers: () => {},
-  loadMapOffers: () => {},
-  loadFilterListOffers: () => {},
+  currentLocation: undefined,
+  alert: null,
+  setUserActive: () => undefined,
+  loadListOffers: () => undefined,
+  loadMapOffers: () => undefined,
+  loadFilterListOffers: () => undefined,
+  setAlert: () => undefined,
 });
 
 function mapOffer(offer_json: Views<'offer_json'>): Offer {
@@ -55,6 +60,7 @@ interface StateProviderProperties {
 export const StateProvider = ({ children }: StateProviderProperties) => {
   const [users, setUsers] = useState<Tables<'User'>[]>([]);
   const [offers, setOffers] = useState<Offer[]>([]);
+  const [alert, setAlert] = useState<Alert | null>(null);
   const [categories, setCategories] = useState<Tables<'Category'>[]>([
     { name: 'none' },
   ]);
@@ -89,8 +95,8 @@ export const StateProvider = ({ children }: StateProviderProperties) => {
     const query = supabaseClient
       .from('offer_json')
       .select('*')
-      .order('created_at', {ascending: false});
-    if (filter.category && filter.category != 'Alle') {
+      .order('created_at', { ascending: false });
+    if (filter.category && filter.category !== 'Alle') {
       query.like('category', filter.category);
     }
     if (filter.title) {
@@ -160,6 +166,8 @@ export const StateProvider = ({ children }: StateProviderProperties) => {
         currentLocation,
         defaultLocation,
         loadFilterListOffers,
+        alert,
+        setAlert,
       }}
     >
       {children}

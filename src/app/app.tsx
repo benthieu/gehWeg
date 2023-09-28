@@ -2,6 +2,7 @@
 import { SessionContextProvider } from '@supabase/auth-helpers-react';
 import { createClient } from '@supabase/supabase-js';
 import { Outlet } from 'react-router-dom';
+import AlertSnackbar from './alert/alert-snackbar';
 import NavBar from './nav-bar/nav-bar';
 import { StateProvider } from './state/state.context';
 import { Database } from './state/supabase/supabase';
@@ -21,6 +22,7 @@ export function App() {
         <div className="nav-bar">
           <NavBar></NavBar>
         </div>
+        <AlertSnackbar></AlertSnackbar>
       </StateProvider>
     </SessionContextProvider>
   );
