@@ -8,6 +8,7 @@ import {
   Tables,
   Views,
 } from './supabase/database.types';
+import {FilterProps} from "../offer-list-filter/list-filter";
 
 interface State {
   users: Tables<'User'>[];
@@ -19,6 +20,7 @@ interface State {
   defaultLocation: LatLngLiteral;
   loadListOffers: () => void;
   loadMapOffers: (bounds: OffersInViewArgs) => void;
+  loadFilterListOffers: (filter: FilterProps) => void;
 }
 
 const StateContext = createContext<State>({
@@ -29,8 +31,9 @@ const StateContext = createContext<State>({
   setUserActive: () => undefined,
   currentLocation: undefined,
   defaultLocation: { lat: 0, lng: 0 },
-  loadListOffers: () => undefined,
-  loadMapOffers: () => undefined,
+  loadListOffers: () => {},
+  loadMapOffers: () => {},
+  loadFilterListOffers: () => {},
 });
 
 function mapOffer(offer_json: Views<'offer_json'>): Offer {
@@ -81,6 +84,24 @@ export const StateProvider = ({ children }: StateProviderProperties) => {
       setOffers(result.data.map((offer) => mapOffer(offer)));
     }
   }
+
+  async function loadFilterListOffers(filter: FilterProps) {
+    const query = supabaseClient
+      .from('offer_json')
+      .select('*')
+      .order('created_at', {ascending: false});
+    if (filter.category && filter.category != 'Alle') {
+      query.like('category', filter.category);
+    }
+    if (filter.title) {
+      query.ilike('subject', '%' + filter.title + '%');
+    }
+    const result = await query;
+    if (result.data) {
+      setOffers(result.data.map((offer) => mapOffer(offer)));
+    }
+  }
+
   async function getCategories() {
     const query = supabaseClient.from('Category').select('*');
     const result = await query;
@@ -138,6 +159,7 @@ export const StateProvider = ({ children }: StateProviderProperties) => {
         loadListOffers,
         currentLocation,
         defaultLocation,
+        loadFilterListOffers,
       }}
     >
       {children}
