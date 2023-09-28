@@ -13,6 +13,7 @@ import { Option } from 'react-google-places-autocomplete/build/types';
 import { PropsValue, SingleValue } from 'react-select';
 import { useState } from 'react';
 
+
 type AddOfferLocationProps = {
   location: LatLngLiteral | undefined;
   handleClickOnMap: (

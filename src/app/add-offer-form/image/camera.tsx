@@ -5,7 +5,6 @@ import { Box, IconButton, Tooltip } from '@mui/material';
 import { Image } from '../add-offer-form';
 import StateContext from '../../state/state.context';
 
-
 type CameraProps = {
   addPhoto: (imageUrl: string) => void;
   addImageFromFile: (event: any) => void;
@@ -42,7 +41,6 @@ const Camera = ({
       setCameraPermissionDenied(false);
     }
   };
-
 
   return (
     <Box>

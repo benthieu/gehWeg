@@ -2,18 +2,17 @@ import { TextField, Stack, Box } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useDebounce } from 'usehooks-ts';
 
-
-type OfferTitleProps = {
+type AddOfferTitleProps = {
   title: string;
   updateTitle: (title: string) => void;
 };
 
-export function OfferTitle({ title, updateTitle }: OfferTitleProps) {
-  // Variable zur Umsetzung der Input-Validierung: Wert für Titel muss vorhanden sein
+export function AddOfferTitle({ title, updateTitle }: AddOfferTitleProps) {
+
   const [value, setValue] = useState('');
   const debouncedValue = useDebounce(value, 800);
 
-  useEffect(() => updateTitle(value as string), [debouncedValue]);
+  useEffect(() => updateTitle(value), [debouncedValue]);
 
   return (
     <Box mx={1}>
@@ -37,4 +36,4 @@ export function OfferTitle({ title, updateTitle }: OfferTitleProps) {
   );
 }
 
-export default OfferTitle;
+export default AddOfferTitle;

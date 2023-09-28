@@ -1,5 +1,5 @@
 import { useContext, useState } from 'react';
-import { Box, ListItemButton, ListItemText, Stack } from '@mui/material';
+import { Box, Divider, ListItemButton, ListItemText, Stack } from '@mui/material';
 import StateContext from '../../state/state.context';
 import { Image } from '../add-offer-form';
 import Camera from './camera';
@@ -8,18 +8,18 @@ import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import PhotoCamera from '@mui/icons-material/PhotoCamera';
 import { ErrorBoundary } from 'react-error-boundary';
 
-type ImageLoaderProps = {
+type AddPhotoButtonProps = {
   images: Image[];
   addImage: (event: any) => void;
   removeImage: (imageId: string) => void;
   addPhoto: (imageUrl: string) => void;
 };
-function ImageLoader({
+function AddPhotoButton({
   images,
   addImage,
   removeImage,
   addPhoto,
-}: ImageLoaderProps) {
+}: AddPhotoButtonProps) {
   const [cameraOpened, setCameraOpened] = useState(false);
   const { setAlert } = useContext(StateContext);
   const [cameraPermissionDenied, setCameraPermissionDenied] =
@@ -86,11 +86,12 @@ function ImageLoader({
           </Stack>
         )}
       </Box>
+      <Divider/>
     </ErrorBoundary>
   );
 }
 
-export default ImageLoader;
+export default AddPhotoButton;
 
 function FallbackComponent() {
   return null;
