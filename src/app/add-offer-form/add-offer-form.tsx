@@ -12,8 +12,6 @@ import { useContext, useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { Tables } from '.././state/supabase/database.types';
 import StateContext from '../state/state.context';
-
-import ImageLoader from './image/image-loader';
 import OfferCategory from './offer-category';
 import OfferTitle from './offer-title';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
@@ -35,6 +33,7 @@ export function AddOfferForm() {
   const navigate = useNavigate();
   const [images, setImages] = useState<Image[]>([]);
   const [clickedOnAddGeolocation, setClickedOnAddGeolocation] = useState(false);
+  const [clickedOnAddDescription, setClickedOnAddDescription] = useState(false);
 
   const [offer, setOffer] = useState<Partial<Tables<'Offer'>>>({
     category: null,
@@ -103,13 +102,10 @@ export function AddOfferForm() {
     if (error) {
       setAlert({
         type: 'error',
-        message: 'Fehler beim hochladen, versuchen Sie es später erneut',
+        message: 'Fehler beim Hochladen der Bilder, versuchen Sie es später erneut',
       });
     } else {
-      setAlert({
-        type: 'success',
-        message: 'Bild wurde gespeichert',
-      });
+      console.log('Image(s) saved to backend.')
     }
   };
 
@@ -188,8 +184,6 @@ export function AddOfferForm() {
     const offerPLZ = parseInt(addressParts[1].split(' ')[1]);
     const offerStreet = addressParts[0];
 
-    console.log(`PLZ: ${offerPLZ}, street: ${offerStreet}, city: ${offerCity}`);
-
     setOffer({
       ...offer,
       city: offerCity,
@@ -207,7 +201,7 @@ export function AddOfferForm() {
       <OfferTitle title={''} updateTitle={updateTitle} />
       <Divider />
       <OfferCategory
-        categories={categories.map((c) => c.name)}
+        categories={categories}
         updateCategory={updateCategory}
       />
       <Divider />
@@ -234,7 +228,6 @@ export function AddOfferForm() {
           <Box marginRight={2}>
             <EditIcon color="primary" fontSize="small"></EditIcon>
           </Box>
-
           <ListItemText
             primary={
               offer.description ? `Beschreibung` : 'Beschreibung hinzufügen'

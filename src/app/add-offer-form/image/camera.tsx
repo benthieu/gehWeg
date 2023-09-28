@@ -1,8 +1,10 @@
 import CustomWebcam from './custom-webcam';
-import { useState } from 'react';
+import { useContext } from 'react';
 import PhotoCamera from '@mui/icons-material/PhotoCamera';
 import { Box, IconButton, Tooltip } from '@mui/material';
 import { Image } from '../add-offer-form';
+import StateContext from '../../state/state.context';
+
 
 type CameraProps = {
   addPhoto: (imageUrl: string) => void;
@@ -11,6 +13,8 @@ type CameraProps = {
   removeImage: (imageId: string) => void;
   setCameraOpened: (value: boolean) => void;
   cameraOpened: boolean;
+  cameraPermissionDenied: boolean,
+  setCameraPermissionDenied: (value: boolean) => void
 };
 
 const Camera = ({
@@ -19,35 +23,35 @@ const Camera = ({
   images,
   removeImage,
   cameraOpened,
-  setCameraOpened: setCameraOpen,
+  setCameraOpened,
+  cameraPermissionDenied,
+  setCameraPermissionDenied
 }: CameraProps) => {
-  console.log('rendering CameraComponent');
-
-  const [cameraPermissionDenied, setCameraPermissionDenied] =
-    useState<boolean>(false);
+    const {setAlert} = useContext(StateContext);
 
   const openCamera = () => {
     if (!cameraPermissionDenied) {
-      // setCameraOpened(() => true)
-      setCameraOpen(true);
+      console.log('camera permitted')
+      setCameraOpened(true);
     } else {
-      alert('Bitte Berechtigung für die Kamera im Browser erteilen.');
-      setCameraPermissionDenied(() => false);
+      console.log('camera permission denied')
+      setAlert({
+        type: 'error',
+        message: 'Bitte Berechtigung für die Kamera im Browser erteilen',
+      });
+      setCameraPermissionDenied(false);
     }
   };
 
-  const handleCameraPermissionDenied = () => {
-    setCameraPermissionDenied(() => true);
-  };
 
   return (
     <Box>
       {cameraOpened ? (
         <CustomWebcam
-          setCameraOpened={setCameraOpen}
+          setCameraOpened={setCameraOpened}
           addPhoto={addPhoto}
           addImageFromFile={addImageFromFile}
-          handleCameraPermissionDenied={handleCameraPermissionDenied}
+          handleCameraPermissionDenied={() => setCameraPermissionDenied(true)}
           images={images}
           removeImage={removeImage}
           open={cameraOpened}
