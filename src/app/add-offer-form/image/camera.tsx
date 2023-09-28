@@ -4,32 +4,36 @@ import PhotoCamera from '@mui/icons-material/PhotoCamera';
 import { Box, IconButton, Tooltip } from '@mui/material';
 import { Image } from '../add-offer-form';
 
-
 type CameraProps = {
   addPhoto: (imageUrl: string) => void;
   addImageFromFile: (event: any) => void;
   images: Image[];
   removeImage: (imageId: string) => void;
-  cameraOpened: boolean,
+  setCameraOpened: (value: boolean) => void;
+  cameraOpened: boolean;
 };
 
-const Camera = ({ addPhoto, addImageFromFile, images, removeImage, cameraOpened}: CameraProps) => {
-  const [cameraOpened, setCameraOpened] = useState(false);
+const Camera = ({
+  addPhoto,
+  addImageFromFile,
+  images,
+  removeImage,
+  cameraOpened,
+  setCameraOpened: setCameraOpen,
+}: CameraProps) => {
+  console.log('rendering CameraComponent');
+
   const [cameraPermissionDenied, setCameraPermissionDenied] =
     useState<boolean>(false);
 
   const openCamera = () => {
     if (!cameraPermissionDenied) {
-      setCameraOpened(() => true);
+      // setCameraOpened(() => true)
+      setCameraOpen(true);
     } else {
       alert('Bitte Berechtigung für die Kamera im Browser erteilen.');
       setCameraPermissionDenied(() => false);
     }
-  };
-
-  const closeCamera = () => {
-    console.log('closeCamera called');
-    setCameraOpened(() => false);
   };
 
   const handleCameraPermissionDenied = () => {
@@ -40,12 +44,13 @@ const Camera = ({ addPhoto, addImageFromFile, images, removeImage, cameraOpened}
     <Box>
       {cameraOpened ? (
         <CustomWebcam
-          turnOff={closeCamera}
+          setCameraOpened={setCameraOpen}
           addPhoto={addPhoto}
           addImageFromFile={addImageFromFile}
           handleCameraPermissionDenied={handleCameraPermissionDenied}
-          images={images} removeImage={removeImage} open={cameraOpened}
-          handleClose={closeCamera}
+          images={images}
+          removeImage={removeImage}
+          open={cameraOpened}
         />
       ) : (
         <Tooltip title="Bild hinzufügen">

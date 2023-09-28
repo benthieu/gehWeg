@@ -10,7 +10,6 @@ import { Modal } from '@mui/base';
 import PhotoList from './photo-list';
 import { Image } from '../add-offer-form';
 
-
 const style = {
   position: 'absolute',
   top: '35%',
@@ -24,25 +23,23 @@ const style = {
 };
 
 type CustomWebcamProps = {
-  turnOff: () => void;
   addPhoto: (imageUrl: string) => void;
   addImageFromFile: (event: any) => void;
   handleCameraPermissionDenied: () => void;
   images: Image[];
   removeImage: (imageId: string) => void;
-  open: boolean,
-  handleClose: () => void
+  open: boolean;
+  setCameraOpened: (value: boolean) => void;
 };
 
 const CustomWebcam = ({
-  turnOff,
   addPhoto,
   addImageFromFile,
   handleCameraPermissionDenied,
   images,
   removeImage,
   open,
-  handleClose
+  setCameraOpened,
 }: CustomWebcamProps) => {
   const [webcamLoading, setWebcamLoading] = useState<boolean>(true);
   const webcamRef = useRef<any>(null);
@@ -50,11 +47,6 @@ const CustomWebcam = ({
   const FACING_MODE_USER = 'user';
   const FACING_MODE_ENVIRONMENT = 'environment';
   const [facingMode, setFacingMode] = useState(FACING_MODE_USER);
-  // const [open, setOpen] = useState(open);
-
-  // const handleClose = () => {
-  //   setOpen(false);
-  // };
 
   const videoConstraints: MediaTrackConstraints = {
     facingMode: facingMode,
@@ -85,14 +77,14 @@ const CustomWebcam = ({
 
   const handlePermissionDenied = () => {
     closeConnectionProgressBar();
-    turnOff();
+    setCameraOpened(false);
     handleCameraPermissionDenied();
   };
 
   return (
     <Modal
       open={open}
-      onClose={handleClose}
+      onClose={() => setCameraOpened(false)}
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
     >
@@ -112,13 +104,13 @@ const CustomWebcam = ({
               screenshotFormat="image/png"
               onUserMedia={closeConnectionProgressBar}
               className="webcam"
-              scrolling='true'
+              scrolling="true"
               audio={false}
               videoConstraints={videoConstraints}
               onUserMediaError={handlePermissionDenied}
             />
           </Stack>
-             <PhotoList images={images} removeImage={removeImage}></PhotoList>
+          <PhotoList images={images} removeImage={removeImage}></PhotoList>
           <Stack direction="row" justifyContent="center">
             <Tooltip title="Bild aus Galerie laden">
               <IconButton
@@ -161,7 +153,7 @@ const CustomWebcam = ({
                 color="primary"
                 aria-label="upload picture"
                 component="label"
-                onClick={() => turnOff()}
+                onClick={() => setCameraOpened(false)}
               >
                 <ClearIcon fontSize="large" color="disabled" />
               </IconButton>

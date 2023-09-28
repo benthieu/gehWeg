@@ -22,7 +22,6 @@ import { useNavigate } from 'react-router';
 import EditIcon from '@mui/icons-material/Edit';
 import OfferDescriptionModal from './description/offer-description-modal';
 import DoneIcon from '@mui/icons-material/Done';
-import PhotoList from './image/photo-list';
 
 export interface Image {
   imageUrl: string;
@@ -202,7 +201,6 @@ export function AddOfferForm() {
         updateCategory={updateCategory}
       />
       <Divider />
-
       <Box m={1}>
         <ImageLoader
           images={images}

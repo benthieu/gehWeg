@@ -3,7 +3,7 @@ import { ErrorBoundary } from 'react-error-boundary';
 import { Image } from '../add-offer-form';
 import Camera from './camera';
 import PhotoList from './photo-list';
-import { useState } from 'react';
+import {useState } from 'react';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import PhotoCamera from '@mui/icons-material/PhotoCamera';
 
@@ -23,10 +23,11 @@ function ImageLoader({
 
   return (
     <Box>
-      {images.length <= 0 ? (
+      {images.length <= 0 && !cameraOpened ? (
         <ListItemButton
           onClick={() => {
             setCameraOpened(() => true);
+            console.log('camera opened called, cameraOpened: ', cameraOpened);
           }}
         >
           <Box marginRight={2}>
@@ -52,6 +53,7 @@ function ImageLoader({
                 addImageFromFile={addImage}
                 images={images}
                 removeImage={removeImage}
+                setCameraOpened={setCameraOpened}
                 cameraOpened={cameraOpened}
               />
             </Stack>
