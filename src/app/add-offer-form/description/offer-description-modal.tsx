@@ -1,7 +1,7 @@
 import { Modal, TextField } from '@mui/material';
 import { Box, Stack } from '@mui/system';
 import { useEffect, useState } from 'react';
-import { useDebounce } from 'use-lodash-debounce'; // Types seem not to exist
+import { useDebounce } from 'usehooks-ts';
 
 const style = {
   position: 'absolute',

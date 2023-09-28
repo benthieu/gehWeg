@@ -1,6 +1,7 @@
 import { TextField, Stack, Box } from '@mui/material';
 import { useEffect, useState } from 'react';
-import { useDebounce } from 'use-lodash-debounce'; // Types seem not to exist
+import { useDebounce } from 'usehooks-ts';
+
 
 type OfferTitleProps = {
   title: string;
@@ -8,7 +9,7 @@ type OfferTitleProps = {
 };
 
 export function OfferTitle({ title, updateTitle }: OfferTitleProps) {
-  // Variable zur Umsetzung der Input-Validierung: Wert muss vorhanden sein
+  // Variable zur Umsetzung der Input-Validierung: Wert für Titel muss vorhanden sein
   const [value, setValue] = useState('');
   const debouncedValue = useDebounce(value, 800);
 
