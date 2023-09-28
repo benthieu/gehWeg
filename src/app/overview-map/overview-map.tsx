@@ -29,13 +29,16 @@ export function OverviewMap() {
     <>
       <div className="header">
         <div className="header-start"></div>
-        <h3>gehWeg</h3>
+        {/* <h3>gehWeg</h3> */}
+        {/* <img src='src/assets/gehWegLogo2.png' height={140} width={280} alt="logo"></img> */}
         <div className="header-end">
           <Button color="success" onClick={() => navigate('/offer-form')}>
             <AddIcon />
           </Button>
         </div>
       </div>
+      <img src='src/assets/gehWegLogo2.png' height={140} width={280} alt="logo"></img>
+
       <MapContainer
         center={{
           lat: 46.947707374681514,
