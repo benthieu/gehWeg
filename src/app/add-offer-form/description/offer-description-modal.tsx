@@ -29,7 +29,7 @@ export function OfferDescriptionModal({
   const [value, setValue] = useState<string>(description);
   const debouncedValue = useDebounce(value, 800);
 
-  useEffect(() => updateDescription(value as string), [debouncedValue]);
+  useEffect(() => updateDescription(value), [debouncedValue]);
 
   const handleClose = () => {
     setOpen(false);

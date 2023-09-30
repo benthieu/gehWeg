@@ -22,7 +22,6 @@ export function AddOfferForm() {
     useContext(StateContext);
   const navigate = useNavigate();
   const [images, setImages] = useState<Image[]>([]);
-
   const [offer, setOffer] = useState<Partial<Tables<'Offer'>>>({
     category: null,
     city: '',
@@ -41,12 +40,9 @@ export function AddOfferForm() {
 
   function updateOffer() {
     const imageIds = images.map((image) => image.imageId);
-    const newOffer = {
+    setOffer({
       ...offer,
       images: imageIds,
-    };
-    setOffer((offer) => {
-      return { ...offer, ...newOffer };
     });
   }
 
@@ -99,32 +95,23 @@ export function AddOfferForm() {
   };
 
   function updateTitle(title: string) {
-    const newOffer = {
+    setOffer({
       ...offer,
       subject: title,
-    };
-    setOffer((prevOffer) => {
-      return { ...prevOffer, ...newOffer };
     });
     console.log('Updated title. Offer: ', offer);
   }
 
   function updateDescription(description: string) {
-    const newOffer = {
+    setOffer({
       ...offer,
       description: description,
-    };
-    setOffer((prevOffer) => {
-      return { ...prevOffer, ...newOffer };
     });
     console.log('Updated description. Offer: ', offer);
   }
 
   function updateCategory(category: number) {
-    const newOffer = { ...offer, category: category };
-    setOffer((previousOffer) => {
-      return { ...previousOffer, ...newOffer };
-    });
+    setOffer({ ...offer, category: category });
   }
 
   async function saveOffer() {

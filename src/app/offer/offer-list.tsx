@@ -12,7 +12,7 @@ import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FilterProps, ListFilter } from '../offer-list-filter/list-filter';
+import { FilterProps, ListFilter } from './offer-list-filter/list-filter';
 import StateContext from '../state/state.context';
 import { Offer } from '../state/supabase/database.types';
 import { formatCHDate } from '../utils/date-utils';
@@ -76,7 +76,7 @@ export function OfferList() {
                 )}
                 {!offer.images?.[0] && (
                   <div className="list-item-no-image">
-                    <HideImageIcon fontSize="large" ></HideImageIcon>
+                    <HideImageIcon fontSize="large"></HideImageIcon>
                   </div>
                 )}
                 <ListItemText
@@ -87,7 +87,7 @@ export function OfferList() {
                   <Box sx={{ color: 'text.disabled' }}>
                     {formatCHDate(offer.created_at)}
                   </Box>
-                  <Box style={{textTransform: 'none'}}>
+                  <Box style={{ textTransform: 'none' }}>
                     {offer.status === 'new' ? 'Neu' : 'Abgeholt'}
                   </Box>
                 </Typography>
