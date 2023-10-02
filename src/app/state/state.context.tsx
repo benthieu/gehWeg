@@ -2,7 +2,7 @@ import { useSupabaseClient } from '@supabase/auth-helpers-react';
 import { LatLngLiteral } from 'leaflet';
 import { createContext, useEffect, useState } from 'react';
 import { Alert } from '../alert/alert.model';
-import { FilterProps } from '../offer-list-filter/list-filter';
+import { FilterProps } from '../offer/offer-list-filter/list-filter';
 import {
   Functions,
   Offer,

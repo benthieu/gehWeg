@@ -1,32 +1,58 @@
 import CustomWebcam from './custom-webcam';
-import { useState } from 'react';
+import { useContext } from 'react';
 import PhotoCamera from '@mui/icons-material/PhotoCamera';
 import { Box, IconButton, Tooltip } from '@mui/material';
+import { Image } from '../add-offer-form';
+import StateContext from '../../state/state.context';
 
 type CameraProps = {
   addPhoto: (imageUrl: string) => void;
   addImageFromFile: (event: any) => void;
+  images: Image[];
+  removeImage: (imageId: string) => void;
+  setCameraOpened: (value: boolean) => void;
+  cameraOpened: boolean;
+  cameraPermissionDenied: boolean,
+  setCameraPermissionDenied: (value: boolean) => void
 };
 
-const Camera = ({ addPhoto, addImageFromFile }: CameraProps) => {
-  const [cameraOpened, setCameraOpened] = useState(false);
+const Camera = ({
+  addPhoto,
+  addImageFromFile,
+  images,
+  removeImage,
+  cameraOpened,
+  setCameraOpened,
+  cameraPermissionDenied,
+  setCameraPermissionDenied
+}: CameraProps) => {
+    const {setAlert} = useContext(StateContext);
 
   const openCamera = () => {
-    setCameraOpened(() => true);
-  };
-
-  const closeCamera = () => {
-    console.log('closeCamera called');
-    setCameraOpened(() => false);
+    if (!cameraPermissionDenied) {
+      console.log('camera permitted')
+      setCameraOpened(true);
+    } else {
+      console.log('camera permission denied')
+      setAlert({
+        type: 'error',
+        message: 'Bitte Berechtigung für die Kamera im Browser erteilen',
+      });
+      setCameraPermissionDenied(false);
+    }
   };
 
   return (
     <Box>
       {cameraOpened ? (
         <CustomWebcam
-          turnOff={closeCamera}
+          setCameraOpened={setCameraOpened}
           addPhoto={addPhoto}
           addImageFromFile={addImageFromFile}
+          handleCameraPermissionDenied={() => setCameraPermissionDenied(true)}
+          images={images}
+          removeImage={removeImage}
+          open={cameraOpened}
         />
       ) : (
         <Tooltip title="Bild hinzufügen">

@@ -4,15 +4,17 @@ import {
   Box,
   Button,
   Divider,
+  Fab,
   ListItemButton,
   ListItemText,
+  Tooltip,
   Typography,
 } from '@mui/material';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FilterProps, ListFilter } from '../offer-list-filter/list-filter';
+import { FilterProps, ListFilter } from './offer-list-filter/list-filter';
 import StateContext from '../state/state.context';
 import { Offer } from '../state/supabase/database.types';
 import { formatCHDate } from '../utils/date-utils';
@@ -46,9 +48,15 @@ export function OfferList() {
         <div className="header-start"></div>
         <h3>Angebote</h3>
         <div className="header-end">
-          <Button color="success" onClick={() => navigate('/offer-form')}>
-            <AddIcon />
-          </Button>
+        <Tooltip title="Neues Angebot erfassen">
+            <Fab
+              onClick={() => navigate('/offer-form')}
+              color="success"
+              size="small"
+            >
+              <AddIcon />
+            </Fab>
+          </Tooltip>
         </div>
       </div>
       <div>

@@ -1,6 +1,6 @@
 import { Box, MenuItem, Select, SelectChangeEvent, Stack } from '@mui/material';
 import { useContext, useState } from 'react';
-import StateContext from '../state/state.context';
+import StateContext from '../../state/state.context';
 
 type OfferCategoryProps = {
   updateCategory: (category: number) => void;

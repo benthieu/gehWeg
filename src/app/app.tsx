@@ -6,6 +6,8 @@ import AlertSnackbar from './alert/alert-snackbar';
 import NavBar from './nav-bar/nav-bar';
 import { StateProvider } from './state/state.context';
 import { Database } from './state/supabase/supabase';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 
 export function App() {
   const supabaseClient = createClient<Database>(
@@ -14,17 +16,19 @@ export function App() {
   );
 
   return (
-    <SessionContextProvider supabaseClient={supabaseClient}>
-      <StateProvider>
-        <div className="main-content">
-          <Outlet></Outlet>
-        </div>
-        <div className="nav-bar">
-          <NavBar></NavBar>
-        </div>
-        <AlertSnackbar></AlertSnackbar>
-      </StateProvider>
-    </SessionContextProvider>
+    <LocalizationProvider dateAdapter={AdapterDateFns}>
+      <SessionContextProvider supabaseClient={supabaseClient}>
+        <StateProvider>
+          <div className="main-content">
+            <Outlet></Outlet>
+          </div>
+          <div className="nav-bar">
+            <NavBar></NavBar>
+          </div>
+          <AlertSnackbar></AlertSnackbar>
+        </StateProvider>
+      </SessionContextProvider>
+    </LocalizationProvider>
   );
 }
 

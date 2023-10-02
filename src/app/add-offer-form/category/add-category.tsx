@@ -1,16 +1,16 @@
 import { Box, MenuItem, Stack, TextField, Tooltip } from '@mui/material';
 import { useState } from 'react';
-import { Tables } from '../state/supabase/database.types';
+import { Tables } from '../../state/supabase/database.types';
 
-type OfferCategoryProps = {
+type AddOfferCategoryProps = {
   categories: Tables<'Category'>[];
   updateCategory: (category: number) => void;
 };
 
-export function OfferCategory({
+export function AddOfferCategory({
   categories,
   updateCategory,
-}: OfferCategoryProps) {
+}: AddOfferCategoryProps) {
   const [category, setCategory] = useState(0);
 
   return (
@@ -41,4 +41,4 @@ export function OfferCategory({
   );
 }
 
-export default OfferCategory;
+export default AddOfferCategory;
