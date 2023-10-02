@@ -23,7 +23,7 @@ const style = {
 interface OfferDetailModalProperties {
   offer: Offer;
   offerClosed: (hasChanged: boolean) => void;
-  reloadList: (FilterProps: FilterProps) => void;
+  reloadList?: (FilterProps: FilterProps) => void;
 }
 
 export default function OfferDetailModal({
@@ -77,10 +77,12 @@ export default function OfferDetailModal({
         message: 'Angebot gelöscht',
       });
 
-      reloadList({
-        category: 0,
-        title: '',
-      });
+      if (reloadList) {
+        reloadList({
+          category: 0,
+          title: '',
+        });
+      }
     }
   };
 

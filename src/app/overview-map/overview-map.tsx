@@ -7,6 +7,7 @@ import OfferDetailModal from '../offer/offer-detail-modal';
 import StateContext from '../state/state.context';
 import { Offer, OffersInViewArgs } from '../state/supabase/database.types';
 import { MapsBoundsListener } from './maps-bounds-listener';
+import { FilterProps } from '../offer-list-filter/list-filter';
 
 const MemoMapsBoundsListener = memo(MapsBoundsListener);
 
