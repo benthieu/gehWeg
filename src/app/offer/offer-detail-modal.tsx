@@ -6,7 +6,6 @@ import StateContext from '../state/state.context';
 import { Offer } from '../state/supabase/database.types';
 import { formatCHDate } from '../utils/date-utils';
 import { OfferImage } from './offer-image';
-import { FilterProps } from '../offer-list-filter/list-filter';
 
 const style = {
   position: 'absolute',
@@ -23,13 +22,11 @@ const style = {
 interface OfferDetailModalProperties {
   offer: Offer;
   offerClosed: (hasChanged: boolean) => void;
-  reloadList?: (FilterProps: FilterProps) => void;
 }
 
 export default function OfferDetailModal({
   offer,
   offerClosed,
-  reloadList,
 }: OfferDetailModalProperties) {
   const { setAlert, users, activeUser } = useContext(StateContext);
   const [open, setOpen] = useState(true);
@@ -71,18 +68,11 @@ export default function OfferDetailModal({
         message: 'Löschen des Angebots fehlgeschlagen',
       });
     } else {
-      handleClose();
+      handleClose(true);
       setAlert({
         type: 'success',
         message: 'Angebot gelöscht',
       });
-
-      if (reloadList) {
-        reloadList({
-          category: 0,
-          title: '',
-        });
-      }
     }
   };
 
