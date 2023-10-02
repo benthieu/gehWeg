@@ -11,6 +11,7 @@ import AddPhotoButton from './image/add-photo-button';
 import { useNavigate } from 'react-router';
 import AddGeolocationButton from './geolocation/add-geolocation-button';
 import AddDescriptionButton from './description/add-description-button';
+import { DatePicker } from '@mui/x-date-pickers';
 
 export interface Image {
   imageUrl: string;
@@ -179,6 +180,17 @@ export function AddOfferForm() {
     });
   }
 
+  function setDate(event: Date | null) {
+    if (event) {
+    setOffer({...offer, created_at: event.toLocaleDateString()})
+    } else {
+      setAlert({
+        type: 'error',
+        message: 'Fehler beim Setzen des Datums',
+      });
+    }
+  }
+
   return (
     <>
       <div className="header">
@@ -190,6 +202,12 @@ export function AddOfferForm() {
         categories={categories}
         updateCategory={updateCategory}
       />
+      <Divider />
+      <Box m={2}>
+        <DatePicker label="Datum hinzufügen" 
+        value={new Date()}
+        onChange={(event) => setDate(event)}/>
+      </Box>
       <Divider />
       <Box m={1}>
         <AddPhotoButton
