@@ -1,5 +1,5 @@
 import AddIcon from '@mui/icons-material/Add';
-import { Button } from '@mui/material';
+import { Button, Fab, Tooltip } from '@mui/material';
 import { memo, useCallback, useContext, useRef, useState } from 'react';
 import { MapContainer, Marker, TileLayer } from 'react-leaflet';
 import { useNavigate } from 'react-router-dom';
@@ -31,9 +31,15 @@ export function OverviewMap() {
         <div className="header-start"></div>
         <h3>gehWeg</h3>
         <div className="header-end">
-          <Button color="success" onClick={() => navigate('/offer-form')}>
-            <AddIcon />
-          </Button>
+          <Tooltip title="Neues Angebot erfassen">
+            <Fab
+              onClick={() => navigate('/offer-form')}
+              color="success"
+              size="small"
+            >
+              <AddIcon />
+            </Fab>
+          </Tooltip>
         </div>
       </div>
       <MapContainer
