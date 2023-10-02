@@ -32,7 +32,7 @@ export default function OfferDetailModal({
   const [imageActive, setImageActive] = useState(false);
   const supabase = useSupabaseClient();
   const user = users.find((user) => user.id === offer.created_by);
-  // The following methods and constants serve to color and formulate text for age of offer
+  // The following methods and constats create derived properties to set color and formulate text for the age of offer
   const calculateAgeInDays = () => {
     return offer.created_at
       ? ((new Date().getTime() - new Date(offer.created_at).getTime()) /
