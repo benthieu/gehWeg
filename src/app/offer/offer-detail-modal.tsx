@@ -28,12 +28,12 @@ export default function OfferDetailModal({
   offer,
   offerClosed,
 }: OfferDetailModalProperties) {
-  const { setAlert, users } = useContext(StateContext);
+  const { setAlert, users, activeUser } = useContext(StateContext);
   const [open, setOpen] = useState(true);
   const [imageActive, setImageActive] = useState(false);
   const supabase = useSupabaseClient();
   const user = users.find((user) => user.id === offer.created_by);
-  
+
   const setOfferClosed = async () => {
     const { error } = await supabase
       .from('Offer')
@@ -58,6 +58,24 @@ export default function OfferDetailModal({
     setOpen(false);
     offerClosed(hasChanged);
   };
+
+  const handleDelete = async () => {
+    const { error } = await supabase.from('Offer').delete().eq('id', offer.id);
+
+    if (error) {
+      setAlert({
+        type: 'error',
+        message: 'Löschen des Angebots fehlgeschlagen',
+      });
+    } else {
+      handleClose(true);
+      setAlert({
+        type: 'success',
+        message: 'Angebot gelöscht',
+      });
+    }
+  };
+
   return (
     <div>
       <Modal
@@ -106,28 +124,45 @@ export default function OfferDetailModal({
             <Typography id="modal-modal-title" variant="h6" component="h2">
               {offer.subject}
             </Typography>
-            {offer.description && <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-              {offer.description}
-            </Typography>}
-            {offer.street && offer.city && <Typography sx={{ mt: 2 }}>
-              {offer.street}
-              <br />
-              {offer.city} {offer.postal_code}
-            </Typography>}
+            {offer.description && (
+              <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+                {offer.description}
+              </Typography>
+            )}
+            {offer.street && offer.city && (
+              <Typography sx={{ mt: 2 }}>
+                {offer.street}
+                <br />
+                {offer.city} {offer.postal_code}
+              </Typography>
+            )}
             <Typography sx={{ mt: 2 }}>
               Geteilt seit: {formatCHDate(offer.created_at)}
             </Typography>
-            {user && <Typography sx={{ mt: 2 }}>
-              Geteilt von: {user.name}
-            </Typography>}
+            {user && (
+              <Typography sx={{ mt: 2 }}>Geteilt von: {user.name}</Typography>
+            )}
             <Typography sx={{ mt: 2 }}>
               Status: {offer.status === 'new' ? 'Neu' : 'Abgeholt'}
             </Typography>
             <br />
             {offer.status === 'new' && (
-              <Button onClick={() => setOfferClosed()} variant="contained">
-                Ich habs abgeholt
-              </Button>
+              <Box>
+                <Button onClick={() => setOfferClosed()} variant="contained">
+                  Ich habs abgeholt
+                </Button>
+              </Box>
+            )}
+            {activeUser?.id === offer.created_by && (
+              <Box sx={{ mt: 1 }}>
+                <Button
+                  onClick={handleDelete}
+                  color="error"
+                  variant="contained"
+                >
+                  Angebot Löschen
+                </Button>
+              </Box>
             )}
           </div>
         </Box>
