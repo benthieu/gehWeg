@@ -59,6 +59,7 @@ export function OfferList() {
         <OfferDetailModal
           offer={activeOffer}
           offerClosed={(reload) => handleOfferClosed(reload)}
+          reloadList={loadFilterListOffers}
         />
       ) : null}
       {offers.map((offer, index) => {
