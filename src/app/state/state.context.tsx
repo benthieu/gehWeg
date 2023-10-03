@@ -70,6 +70,7 @@ export const StateProvider = ({ children }: StateProviderProperties) => {
     lng: 7.445807175401288,
   });
 
+
   async function getUsers() {
     const query = supabaseClient.from('User').select('*');
     const result = await query;
@@ -79,10 +80,12 @@ export const StateProvider = ({ children }: StateProviderProperties) => {
     }
   }
   async function loadListOffers() {
+    console.log('loadlist offers called')
     const query = supabaseClient
       .from('offer_json')
       .select('*')
-      .order('created_at', { ascending: false });
+      .order('created_at', { ascending: false })
+
     const result = await query;
     if (result.data) {
       setOffers(result.data.map((offer) => mapOffer(offer)));
@@ -90,6 +93,7 @@ export const StateProvider = ({ children }: StateProviderProperties) => {
   }
 
   async function loadFilterListOffers(filter: FilterProps) {
+    console.log('load filter list offers called', filter)
     const query = supabaseClient
       .from('offer_json')
       .select('*')
@@ -146,6 +150,7 @@ export const StateProvider = ({ children }: StateProviderProperties) => {
   }
 
   async function loadMapOffers(bounds: OffersInViewArgs) {
+    console.log('load map offers called')
     const { data } = await supabaseClient.rpc('offers_in_view', bounds);
     const result: Functions<'offers_in_view'>['Returns'] = data;
     setOffers(result.map((offer) => mapOffer(offer)));
