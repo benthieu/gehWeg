@@ -70,8 +70,9 @@ export const StateProvider = ({ children }: StateProviderProperties) => {
     lng: 7.445807175401288,
   });
 
-  const twoWeeksAgo = new Date(
-    new Date().getTime() - 24 * 60 * 60 * 1000 * 15
+  // Do not load offers older than this timespan, at the moment 21 days
+  const offerMaxAge = new Date(
+    new Date().getTime() - 24 * 60 * 60 * 1000 * 21
   ).toUTCString();
 
   async function getUsers() {
@@ -87,7 +88,7 @@ export const StateProvider = ({ children }: StateProviderProperties) => {
     const query = supabaseClient
       .from('offer_json')
       .select('*')
-      .gt('created_at', twoWeeksAgo)
+      .gt('created_at', offerMaxAge)
       .order('created_at', { ascending: false });
     const result = await query;
     if (result.data) {
@@ -99,7 +100,7 @@ export const StateProvider = ({ children }: StateProviderProperties) => {
     const query = supabaseClient
       .from('offer_json')
       .select('*')
-      .gt('created_at', twoWeeksAgo)
+      .gt('created_at', offerMaxAge)
       .order('created_at', { ascending: false });
     if (filter.category && filter.category !== 0) {
       query.eq('category', filter.category);
@@ -155,7 +156,7 @@ export const StateProvider = ({ children }: StateProviderProperties) => {
   async function loadMapOffers(bounds: OffersInViewArgs) {
     const { data } = await supabaseClient
       .rpc('offers_in_view', bounds)
-      .gt('created_at', twoWeeksAgo);
+      .gt('created_at', offerMaxAge);
     const result: Functions<'offers_in_view'>['Returns'] = data;
     setOffers(result.map((offer) => mapOffer(offer)));
   }
