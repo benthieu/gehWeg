@@ -153,7 +153,6 @@ export const StateProvider = ({ children }: StateProviderProperties) => {
     }
   }, [currentLocation, defaultLocation]);
 
-  // @Benj wie gesagt, sitzt nur hier weil ich hier die bounds hatte zum testen
   const subscribeToOfferChanges = useCallback((): RealtimeChannel => {
     return supabaseClient
       .channel('schema-db-changes')
