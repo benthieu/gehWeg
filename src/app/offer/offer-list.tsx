@@ -30,7 +30,7 @@ export function OfferList() {
   });
   useEffect(() => {
     loadFilterListOffers(filter);
-  }, [filter, latestOfferUpdate]);
+  }, [filter, latestOfferUpdate, loadFilterListOffers]);
   function updateSelection(filter: FilterProps) {
     setFilter(filter);
     loadFilterListOffers(filter);

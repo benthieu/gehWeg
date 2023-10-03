@@ -10,7 +10,7 @@ import PhotoList from './photo-list';
 
 type AddPhotoButtonProps = {
   images: Image[];
-  addImage: (event: any) => void;
+  addImage: (event: Blob | MediaSource) => void;
   removeImage: (imageId: string) => void;
   addPhoto: (imageUrl: string) => void;
 };

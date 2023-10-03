@@ -1,7 +1,7 @@
 import { useSupabaseClient } from '@supabase/auth-helpers-react';
 import { RealtimeChannel } from '@supabase/supabase-js';
 import { LatLngLiteral } from 'leaflet';
-import { createContext, useEffect, useState } from 'react';
+import { createContext, useCallback, useEffect, useState } from 'react';
 import { Alert } from '../alert/alert.model';
 import { FilterProps } from '../offer/offer-list-filter/list-filter';
 import {
@@ -63,7 +63,7 @@ interface StateProviderProperties {
 export const StateProvider = ({ children }: StateProviderProperties) => {
   const [users, setUsers] = useState<Tables<'User'>[]>([]);
   const [offers, setOffers] = useState<Offer[]>([]);
-  const [alert, setAlert] = useState<Alert | null>(null);
+  const [alert, _setAlert] = useState<Alert | null>(null);
   const [latestOfferUpdate, setLatestOfferUpdate] = useState<string | null>(
     null
   );
@@ -81,55 +81,62 @@ export const StateProvider = ({ children }: StateProviderProperties) => {
     new Date().getTime() - 24 * 60 * 60 * 1000 * 21
   ).toUTCString();
 
-  async function getUsers() {
+  const getUsers = useCallback(() => {
     const query = supabaseClient.from('User').select('*');
-    const result = await query;
-    if (result.data) {
-      setUsers(result.data);
-      setActiveUser(result.data[0]);
-    }
-  }
+    query.then((result) => {
+      if (result.data) {
+        setUsers(result.data);
+        setActiveUser(result.data[0]);
+      }
+    });
+  }, [supabaseClient]);
 
-  async function loadListOffers() {
+  const loadListOffers = useCallback(() => {
     const query = supabaseClient
       .from('offer_json')
       .select('*')
       .gt('created_at', offerMaxAge)
       .order('created_at', { ascending: false });
 
-    const result = await query;
-    if (result.data) {
-      setOffers(result.data.map((offer) => mapOffer(offer)));
-    }
-  }
+    query.then((result) => {
+      if (result.data) {
+        setOffers(result.data.map((offer) => mapOffer(offer)));
+      }
+    });
+  }, [offerMaxAge, supabaseClient]);
 
-  async function loadFilterListOffers(filter: FilterProps) {
-    const query = supabaseClient
-      .from('offer_json')
-      .select('*')
-      .gt('created_at', offerMaxAge)
-      .order('created_at', { ascending: false });
-    if (filter.category && filter.category !== 0) {
-      query.eq('category', filter.category);
-    }
-    if (filter.title) {
-      query.ilike('subject', '%' + filter.title + '%');
-    }
-    const result = await query;
-    if (result.data) {
-      setOffers(result.data.map((offer) => mapOffer(offer)));
-    }
-  }
+  const loadFilterListOffers = useCallback(
+    (filter: FilterProps) => {
+      const query = supabaseClient
+        .from('offer_json')
+        .select('*')
+        .gt('created_at', offerMaxAge)
+        .order('created_at', { ascending: false });
+      if (filter.category && filter.category !== 0) {
+        query.eq('category', filter.category);
+      }
+      if (filter.title) {
+        query.ilike('subject', '%' + filter.title + '%');
+      }
+      query.then((result) => {
+        if (result.data) {
+          setOffers(result.data.map((offer) => mapOffer(offer)));
+        }
+      });
+    },
+    [offerMaxAge, supabaseClient]
+  );
 
-  async function getCategories() {
+  const getCategories = useCallback(() => {
     const query = supabaseClient.from('Category').select('*');
-    const result = await query;
-    if (result.data) {
-      setCategories(result.data);
-    }
-  }
+    query.then((result) => {
+      if (result.data) {
+        setCategories(result.data);
+      }
+    });
+  }, [supabaseClient]);
 
-  const getCurrentLocation = () => {
+  const getCurrentLocation = useCallback(() => {
     if (!currentLocation) {
       navigator.geolocation.getCurrentPosition(
         (e) => {
@@ -144,10 +151,10 @@ export const StateProvider = ({ children }: StateProviderProperties) => {
         }
       );
     }
-  };
+  }, [currentLocation, defaultLocation]);
 
   // @Benj wie gesagt, sitzt nur hier weil ich hier die bounds hatte zum testen
-  function subscribeToOfferChanges(): RealtimeChannel {
+  const subscribeToOfferChanges = useCallback((): RealtimeChannel => {
     return supabaseClient
       .channel('schema-db-changes')
       .on(
@@ -161,7 +168,34 @@ export const StateProvider = ({ children }: StateProviderProperties) => {
         }
       )
       .subscribe();
-  }
+  }, [supabaseClient]);
+
+  const setUserActive = useCallback(
+    (id: number): void => {
+      const foundUser = users.find((user) => user.id === id);
+      if (foundUser) {
+        setActiveUser(foundUser);
+      }
+    },
+    [users]
+  );
+
+  const loadMapOffers = useCallback(
+    (bounds: OffersInViewArgs) => {
+      supabaseClient
+        .rpc('offers_in_view', bounds)
+        .gt('created_at', offerMaxAge)
+        .then((response) => {
+          const result: Functions<'offers_in_view'>['Returns'] = response.data;
+          setOffers(result.map((offer) => mapOffer(offer)));
+        });
+    },
+    [offerMaxAge, supabaseClient]
+  );
+
+  const setAlert = useCallback((alert: Alert | null) => {
+    _setAlert(alert);
+  }, []);
 
   useEffect(() => {
     getUsers();
@@ -171,22 +205,7 @@ export const StateProvider = ({ children }: StateProviderProperties) => {
     return () => {
       offerSubscription.unsubscribe();
     };
-  }, []);
-
-  function setUserActive(id: number): void {
-    const foundUser = users.find((user) => user.id === id);
-    if (foundUser) {
-      setActiveUser(foundUser);
-    }
-  }
-
-  async function loadMapOffers(bounds: OffersInViewArgs) {
-    const { data } = await supabaseClient
-      .rpc('offers_in_view', bounds)
-      .gt('created_at', offerMaxAge);
-    const result: Functions<'offers_in_view'>['Returns'] = data;
-    setOffers(result.map((offer) => mapOffer(offer)));
-  }
+  }, [getCategories, getCurrentLocation, getUsers, subscribeToOfferChanges]);
 
   return (
     <StateContext.Provider

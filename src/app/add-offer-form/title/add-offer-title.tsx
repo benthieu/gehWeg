@@ -1,18 +1,12 @@
-import { TextField, Stack, Box } from '@mui/material';
-import { useEffect, useState } from 'react';
-import { useDebounce } from 'usehooks-ts';
+import { Box, Stack, TextField } from '@mui/material';
+import { useState } from 'react';
 
 type AddOfferTitleProps = {
-  title: string;
   updateTitle: (title: string) => void;
 };
 
-export function AddOfferTitle({ title, updateTitle }: AddOfferTitleProps) {
-
+export function AddOfferTitle({ updateTitle }: AddOfferTitleProps) {
   const [value, setValue] = useState('');
-  const debouncedValue = useDebounce(value, 800);
-
-  useEffect(() => updateTitle(value), [debouncedValue]);
 
   return (
     <Box mx={1}>
@@ -26,6 +20,7 @@ export function AddOfferTitle({ title, updateTitle }: AddOfferTitleProps) {
           variant="standard"
           error={!value}
           value={value}
+          onBlur={(event) => updateTitle(event.target.value)}
           onChange={(event) => {
             setValue(event.target.value);
           }}

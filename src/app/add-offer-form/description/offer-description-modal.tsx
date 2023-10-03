@@ -1,7 +1,6 @@
 import { Modal, TextField } from '@mui/material';
 import { Box, Stack } from '@mui/system';
-import { useEffect, useState } from 'react';
-import { useDebounce } from 'usehooks-ts';
+import { useState } from 'react';
 
 const style = {
   position: 'absolute',
@@ -27,11 +26,9 @@ export function OfferDescriptionModal({
 }: OfferDescriptionProps) {
   const [open, setOpen] = useState(true);
   const [value, setValue] = useState<string>(description);
-  const debouncedValue = useDebounce(value, 800);
-
-  useEffect(() => updateDescription(value), [debouncedValue]);
 
   const handleClose = () => {
+    updateDescription(value);
     setOpen(false);
     addDescriptionClosed(true);
   };
