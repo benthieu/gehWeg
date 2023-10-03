@@ -31,13 +31,13 @@ export function OverviewMap() {
   const handleBoundsChange = useCallback((newBounds: OffersInViewArgs) => {
     bounds.current = newBounds;
     loadMapOffers(newBounds);
-  }, []);
+  }, [loadMapOffers]);
 
   useEffect(() => {
     if (latestOfferUpdate && bounds.current) {
       loadMapOffers(bounds.current);
     }
-  }, [latestOfferUpdate]);
+  }, [latestOfferUpdate, loadMapOffers]);
 
   return (
     <>

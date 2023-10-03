@@ -7,13 +7,13 @@ import CustomWebcam from './custom-webcam';
 
 type CameraProps = {
   addPhoto: (imageUrl: string) => void;
-  addImageFromFile: (event: any) => void;
+  addImageFromFile: (event: Blob | MediaSource) => void;
   images: Image[];
   removeImage: (imageId: string) => void;
   setCameraOpened: (value: boolean) => void;
   cameraOpened: boolean;
-  cameraPermissionDenied: boolean,
-  setCameraPermissionDenied: (value: boolean) => void
+  cameraPermissionDenied: boolean;
+  setCameraPermissionDenied: (value: boolean) => void;
 };
 
 const Camera = ({
@@ -24,9 +24,9 @@ const Camera = ({
   cameraOpened,
   setCameraOpened,
   cameraPermissionDenied,
-  setCameraPermissionDenied
+  setCameraPermissionDenied,
 }: CameraProps) => {
-    const {setAlert} = useContext(StateContext);
+  const { setAlert } = useContext(StateContext);
 
   const openCamera = () => {
     if (!cameraPermissionDenied) {

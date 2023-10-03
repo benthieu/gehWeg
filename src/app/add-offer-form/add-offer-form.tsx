@@ -37,20 +37,19 @@ export function AddOfferForm() {
   });
   const supabase = useSupabaseClient();
 
-  useEffect(() => updateOffer(), [images]);
+  useEffect(() => {
+    function updateOffer() {
+      const imageIds = images.map((image) => image.imageId);
+      setOffer({
+        ...offer,
+        images: imageIds,
+      });
+    }
+    updateOffer();
+  }, [images, offer]);
 
-  function updateOffer() {
-    const imageIds = images.map((image) => image.imageId);
-    setOffer({
-      ...offer,
-      images: imageIds,
-    });
-  }
-
-  function addImageFromFile(event: {
-    target: { files: (Blob | MediaSource)[] };
-  }) {
-    const newImageUrl = URL.createObjectURL(event.target.files[0]);
+  function addImageFromFile(image: Blob | MediaSource) {
+    const newImageUrl = URL.createObjectURL(image);
     addImageFromUrl(newImageUrl);
   }
 
@@ -178,7 +177,7 @@ export function AddOfferForm() {
 
   function setDate(event: Date | null) {
     if (event) {
-    setOffer({...offer, created_at: event.toLocaleDateString()})
+      setOffer({ ...offer, created_at: event.toLocaleDateString() });
     } else {
       setAlert({
         type: 'error',
@@ -192,7 +191,7 @@ export function AddOfferForm() {
       <div className="header">
         <h3>Angebot erstellen</h3>
       </div>
-      <AddOfferTitle title={''} updateTitle={updateTitle} />
+      <AddOfferTitle updateTitle={updateTitle} />
       <Divider />
       <AddOfferCategory
         categories={categories}
@@ -200,9 +199,11 @@ export function AddOfferForm() {
       />
       <Divider />
       <Box m={2}>
-        <DatePicker label="Datum hinzufügen" 
-        value={new Date()}
-        onChange={(event) => setDate(event)}/>
+        <DatePicker
+          label="Datum hinzufügen"
+          value={new Date()}
+          onChange={(event) => setDate(event)}
+        />
       </Box>
       <Divider />
       <Box m={1}>
