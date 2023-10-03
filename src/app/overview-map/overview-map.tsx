@@ -1,19 +1,25 @@
 import AddIcon from '@mui/icons-material/Add';
 import { Fab, Tooltip } from '@mui/material';
-import { memo, useCallback, useContext, useRef, useState } from 'react';
+import {
+  memo,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { MapContainer, Marker, TileLayer } from 'react-leaflet';
 import { useNavigate } from 'react-router-dom';
 import OfferDetailModal from '../offer/offer-detail-modal';
 import StateContext from '../state/state.context';
 import { Offer, OffersInViewArgs } from '../state/supabase/database.types';
 import { MapsBoundsListener } from './maps-bounds-listener';
-import { useSupabaseClient } from '@supabase/auth-helpers-react';
 
 const MemoMapsBoundsListener = memo(MapsBoundsListener);
 
 export function OverviewMap() {
   const navigate = useNavigate();
-  const { offers, loadMapOffers } = useContext(StateContext);
+  const { offers, loadMapOffers, latestOfferUpdate } = useContext(StateContext);
   const [activeOffer, setOfferActive] = useState<Offer | null>(null);
   const bounds = useRef<OffersInViewArgs | null>(null);
   function handleOfferClosed(reload: boolean) {
@@ -26,31 +32,12 @@ export function OverviewMap() {
     bounds.current = newBounds;
     loadMapOffers(newBounds);
   }, []);
-  const supabaseClient = useSupabaseClient();
 
-  // @Benj wie gesagt, sitzt nur hier weil ich hier die bounds hatte zum testen
-  function liveUpdateOffers() {
-    supabaseClient
-      .channel('schema-db-changes')
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-        },
-        (payload) => {
-          console.log(payload);
-          if (bounds.current) {
-            loadMapOffers(bounds.current);
-          }
-
-        }
-      )
-      .subscribe();
-  }
-
-  // subscribe to the channel offers
-  liveUpdateOffers();
+  useEffect(() => {
+    if (latestOfferUpdate && bounds.current) {
+      loadMapOffers(bounds.current);
+    }
+  }, [latestOfferUpdate]);
 
   return (
     <>

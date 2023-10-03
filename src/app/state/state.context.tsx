@@ -1,4 +1,5 @@
 import { useSupabaseClient } from '@supabase/auth-helpers-react';
+import { RealtimeChannel } from '@supabase/supabase-js';
 import { LatLngLiteral } from 'leaflet';
 import { createContext, useEffect, useState } from 'react';
 import { Alert } from '../alert/alert.model';
@@ -19,6 +20,7 @@ interface State {
   defaultLocation: LatLngLiteral;
   currentLocation: LatLngLiteral | undefined;
   alert: Alert | null;
+  latestOfferUpdate: string | null;
   setUserActive: (id: number) => void;
   loadListOffers: () => void;
   loadMapOffers: (bounds: OffersInViewArgs) => void;
@@ -34,6 +36,7 @@ const StateContext = createContext<State>({
   defaultLocation: { lat: 0, lng: 0 },
   currentLocation: undefined,
   alert: null,
+  latestOfferUpdate: null,
   setUserActive: () => undefined,
   loadListOffers: () => undefined,
   loadMapOffers: () => undefined,
@@ -61,6 +64,9 @@ export const StateProvider = ({ children }: StateProviderProperties) => {
   const [users, setUsers] = useState<Tables<'User'>[]>([]);
   const [offers, setOffers] = useState<Offer[]>([]);
   const [alert, setAlert] = useState<Alert | null>(null);
+  const [latestOfferUpdate, setLatestOfferUpdate] = useState<string | null>(
+    null
+  );
   const [categories, setCategories] = useState<Tables<'Category'>[]>([]);
   const [activeUser, setActiveUser] = useState<Tables<'User'> | null>(null);
   const supabaseClient = useSupabaseClient();
@@ -69,7 +75,6 @@ export const StateProvider = ({ children }: StateProviderProperties) => {
     lat: 46.947707374681514,
     lng: 7.445807175401288,
   });
-
 
   async function getUsers() {
     const query = supabaseClient.from('User').select('*');
@@ -80,11 +85,11 @@ export const StateProvider = ({ children }: StateProviderProperties) => {
     }
   }
   async function loadListOffers() {
-    console.log('loadlist offers called')
+    console.log('loadlist offers called');
     const query = supabaseClient
       .from('offer_json')
       .select('*')
-      .order('created_at', { ascending: false })
+      .order('created_at', { ascending: false });
 
     const result = await query;
     if (result.data) {
@@ -93,7 +98,7 @@ export const StateProvider = ({ children }: StateProviderProperties) => {
   }
 
   async function loadFilterListOffers(filter: FilterProps) {
-    console.log('load filter list offers called', filter)
+    console.log('load filter list offers called', filter);
     const query = supabaseClient
       .from('offer_json')
       .select('*')
@@ -136,10 +141,31 @@ export const StateProvider = ({ children }: StateProviderProperties) => {
     }
   };
 
+  // @Benj wie gesagt, sitzt nur hier weil ich hier die bounds hatte zum testen
+  function subscribeToOfferChanges(): RealtimeChannel {
+    return supabaseClient
+      .channel('schema-db-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+        },
+        (payload) => {
+          setLatestOfferUpdate(payload.commit_timestamp);
+        }
+      )
+      .subscribe();
+  }
+
   useEffect(() => {
     getUsers();
     getCategories();
     getCurrentLocation();
+    const offerSubscription = subscribeToOfferChanges();
+    return () => {
+      offerSubscription.unsubscribe();
+    };
   }, []);
 
   function setUserActive(id: number): void {
@@ -150,7 +176,7 @@ export const StateProvider = ({ children }: StateProviderProperties) => {
   }
 
   async function loadMapOffers(bounds: OffersInViewArgs) {
-    console.log('load map offers called')
+    console.log('load map offers called');
     const { data } = await supabaseClient.rpc('offers_in_view', bounds);
     const result: Functions<'offers_in_view'>['Returns'] = data;
     setOffers(result.map((offer) => mapOffer(offer)));
@@ -171,6 +197,7 @@ export const StateProvider = ({ children }: StateProviderProperties) => {
         loadFilterListOffers,
         alert,
         setAlert,
+        latestOfferUpdate,
       }}
     >
       {children}
