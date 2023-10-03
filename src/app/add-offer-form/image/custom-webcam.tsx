@@ -90,13 +90,14 @@ const CustomWebcam = ({
     >
       <Box sx={style}>
         <Stack direction="column">
-          <Stack justifyContent="center">
+          <Stack justifyContent="center" direction="row">
             {webcamLoading ? (
               <Box>
                 <Typography>Connecting...</Typography>
                 <LinearProgress />
               </Box>
             ) : null}
+            <Box justifyContent="center">
             <Webcam
               height={300}
               width={300}
@@ -109,6 +110,7 @@ const CustomWebcam = ({
               videoConstraints={videoConstraints}
               onUserMediaError={handlePermissionDenied}
             />
+            </Box>
           </Stack>
           <PhotoList images={images} removeImage={removeImage}></PhotoList>
           <Stack direction="row" justifyContent="center">

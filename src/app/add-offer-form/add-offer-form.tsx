@@ -1,17 +1,17 @@
 import { Box, Button, Divider, Stack } from '@mui/material';
+import { DatePicker } from '@mui/x-date-pickers';
 import { useSupabaseClient } from '@supabase/auth-helpers-react';
 import { LatLngLiteral } from 'leaflet';
 import { useContext, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router';
 import { v4 as uuidv4 } from 'uuid';
 import { Tables } from '.././state/supabase/database.types';
 import StateContext from '../state/state.context';
 import AddOfferCategory from './category/add-category';
-import AddOfferTitle from './title/add-offer-title';
-import AddPhotoButton from './image/add-photo-button';
-import { useNavigate } from 'react-router';
-import AddGeolocationButton from './geolocation/add-geolocation-button';
 import AddDescriptionButton from './description/add-description-button';
-import { DatePicker } from '@mui/x-date-pickers';
+import AddGeolocationButton from './geolocation/add-geolocation-button';
+import AddPhotoButton from './image/add-photo-button';
+import AddOfferTitle from './title/add-offer-title';
 
 export interface Image {
   imageUrl: string;
@@ -90,8 +90,6 @@ export function AddOfferForm() {
         message:
           'Fehler beim Hochladen der Bilder, versuchen Sie es später erneut',
       });
-    } else {
-      console.log('Image(s) saved to backend.');
     }
   };
 
@@ -100,7 +98,6 @@ export function AddOfferForm() {
       ...offer,
       subject: title,
     });
-    console.log('Updated title. Offer: ', offer);
   }
 
   function updateDescription(description: string) {
@@ -108,7 +105,6 @@ export function AddOfferForm() {
       ...offer,
       description: description,
     });
-    console.log('Updated description. Offer: ', offer);
   }
 
   function updateCategory(category: number) {

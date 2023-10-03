@@ -2,28 +2,27 @@ import AddIcon from '@mui/icons-material/Add';
 import HideImageIcon from '@mui/icons-material/HideImage';
 import {
   Box,
-  Button,
   Divider,
   Fab,
   ListItemButton,
   ListItemText,
   Tooltip,
-  Typography,
+  Typography
 } from '@mui/material';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FilterProps, ListFilter } from './offer-list-filter/list-filter';
 import StateContext from '../state/state.context';
 import { Offer } from '../state/supabase/database.types';
 import { formatCHDate } from '../utils/date-utils';
 import OfferDetailModal from './offer-detail-modal';
 import { OfferImage } from './offer-image';
+import { FilterProps, ListFilter } from './offer-list-filter/list-filter';
 
 export function OfferList() {
   const navigate = useNavigate();
-  const { offers, loadFilterListOffers } = useContext(StateContext);
+  const { offers, loadFilterListOffers, latestOfferUpdate } = useContext(StateContext);
   const [activeOffer, setOfferActive] = useState<Offer | null>(null);
   const [filter, setFilter] = useState<FilterProps>({
     category: 0,
@@ -31,7 +30,7 @@ export function OfferList() {
   });
   useEffect(() => {
     loadFilterListOffers(filter);
-  }, [filter]);
+  }, [filter, latestOfferUpdate]);
   function updateSelection(filter: FilterProps) {
     setFilter(filter);
     loadFilterListOffers(filter);
