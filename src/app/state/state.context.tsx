@@ -85,7 +85,6 @@ export const StateProvider = ({ children }: StateProviderProperties) => {
     }
   }
   async function loadListOffers() {
-    console.log('loadlist offers called');
     const query = supabaseClient
       .from('offer_json')
       .select('*')
@@ -98,7 +97,6 @@ export const StateProvider = ({ children }: StateProviderProperties) => {
   }
 
   async function loadFilterListOffers(filter: FilterProps) {
-    console.log('load filter list offers called', filter);
     const query = supabaseClient
       .from('offer_json')
       .select('*')
@@ -134,7 +132,6 @@ export const StateProvider = ({ children }: StateProviderProperties) => {
           setCurrentLocation(currentLocation);
         },
         () => {
-          console.log('error getting geolocation: ');
           setCurrentLocation(defaultLocation);
         }
       );
@@ -176,7 +173,6 @@ export const StateProvider = ({ children }: StateProviderProperties) => {
   }
 
   async function loadMapOffers(bounds: OffersInViewArgs) {
-    console.log('load map offers called');
     const { data } = await supabaseClient.rpc('offers_in_view', bounds);
     const result: Functions<'offers_in_view'>['Returns'] = data;
     setOffers(result.map((offer) => mapOffer(offer)));

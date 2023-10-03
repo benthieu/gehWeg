@@ -1,12 +1,12 @@
-import { useContext, useState } from 'react';
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+import PhotoCamera from '@mui/icons-material/PhotoCamera';
 import { Box, Divider, ListItemButton, ListItemText, Stack } from '@mui/material';
+import { useContext, useState } from 'react';
+import { ErrorBoundary } from 'react-error-boundary';
 import StateContext from '../../state/state.context';
 import { Image } from '../add-offer-form';
 import Camera from './camera';
 import PhotoList from './photo-list';
-import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
-import PhotoCamera from '@mui/icons-material/PhotoCamera';
-import { ErrorBoundary } from 'react-error-boundary';
 
 type AddPhotoButtonProps = {
   images: Image[];
@@ -34,10 +34,8 @@ function AddPhotoButton({
 
   const openCamera = () => {
     if (!cameraPermissionDenied) {
-      console.log('camera permitted')
       setCameraOpened(true);
     } else {
-      console.log('camera permission denied')
       setAlert({
         type: 'error',
         message: 'Bitte Berechtigung für die Kamera im Browser erteilen',

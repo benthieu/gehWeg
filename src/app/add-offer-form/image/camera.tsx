@@ -1,9 +1,9 @@
-import CustomWebcam from './custom-webcam';
-import { useContext } from 'react';
 import PhotoCamera from '@mui/icons-material/PhotoCamera';
 import { Box, IconButton, Tooltip } from '@mui/material';
-import { Image } from '../add-offer-form';
+import { useContext } from 'react';
 import StateContext from '../../state/state.context';
+import { Image } from '../add-offer-form';
+import CustomWebcam from './custom-webcam';
 
 type CameraProps = {
   addPhoto: (imageUrl: string) => void;
@@ -30,10 +30,8 @@ const Camera = ({
 
   const openCamera = () => {
     if (!cameraPermissionDenied) {
-      console.log('camera permitted')
       setCameraOpened(true);
     } else {
-      console.log('camera permission denied')
       setAlert({
         type: 'error',
         message: 'Bitte Berechtigung für die Kamera im Browser erteilen',
