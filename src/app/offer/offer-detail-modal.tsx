@@ -20,7 +20,7 @@ const style = {
 
 interface OfferDetailModalProperties {
   offer: Offer;
-  offerClosed: (hasChanged: boolean) => void;
+  offerClosed: () => void;
 }
 
 export default function OfferDetailModal({
@@ -84,11 +84,11 @@ export default function OfferDetailModal({
       type: 'success',
       message: 'Das Angebot wurde aktualisiert',
     });
-    handleClose(true);
+    handleClose();
   };
-  const handleClose = (hasChanged = false) => {
+  const handleClose = () => {
     setOpen(false);
-    offerClosed(hasChanged);
+    offerClosed();
   };
 
   const handleDelete = async () => {
@@ -99,7 +99,7 @@ export default function OfferDetailModal({
         message: 'Löschen des Angebots fehlgeschlagen',
       });
     } else {
-      handleClose(true);
+      handleClose();
       setAlert({
         type: 'success',
         message: 'Angebot gelöscht',

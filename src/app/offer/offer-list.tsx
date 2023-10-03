@@ -7,7 +7,7 @@ import {
   ListItemButton,
   ListItemText,
   Tooltip,
-  Typography
+  Typography,
 } from '@mui/material';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
@@ -22,7 +22,8 @@ import { FilterProps, ListFilter } from './offer-list-filter/list-filter';
 
 export function OfferList() {
   const navigate = useNavigate();
-  const { offers, loadFilterListOffers, latestOfferUpdate } = useContext(StateContext);
+  const { offers, loadFilterListOffers, latestOfferUpdate } =
+    useContext(StateContext);
   const [activeOffer, setOfferActive] = useState<Offer | null>(null);
   const [filter, setFilter] = useState<FilterProps>({
     category: 0,
@@ -35,10 +36,7 @@ export function OfferList() {
     setFilter(filter);
     loadFilterListOffers(filter);
   }
-  function handleOfferClosed(reload: boolean) {
-    if (reload) {
-      loadFilterListOffers(filter);
-    }
+  function handleOfferClosed() {
     setOfferActive(null);
   }
   return (
@@ -47,7 +45,7 @@ export function OfferList() {
         <div className="header-start"></div>
         <h3>Angebote</h3>
         <div className="header-end">
-        <Tooltip title="Neues Angebot erfassen">
+          <Tooltip title="Neues Angebot erfassen">
             <Fab
               onClick={() => navigate('/offer-form')}
               color="success"
@@ -65,7 +63,7 @@ export function OfferList() {
       {activeOffer ? (
         <OfferDetailModal
           offer={activeOffer}
-          offerClosed={(reload) => handleOfferClosed(reload)}
+          offerClosed={handleOfferClosed}
         />
       ) : null}
       {offers.map((offer, index) => {
