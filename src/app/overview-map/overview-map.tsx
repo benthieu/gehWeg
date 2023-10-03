@@ -22,16 +22,16 @@ export function OverviewMap() {
   const { offers, loadMapOffers, latestOfferUpdate } = useContext(StateContext);
   const [activeOffer, setOfferActive] = useState<Offer | null>(null);
   const bounds = useRef<OffersInViewArgs | null>(null);
-  function handleOfferClosed(reload: boolean) {
-    if (reload && bounds.current) {
-      loadMapOffers(bounds.current);
-    }
+  function handleOfferClosed() {
     setOfferActive(null);
   }
-  const handleBoundsChange = useCallback((newBounds: OffersInViewArgs) => {
-    bounds.current = newBounds;
-    loadMapOffers(newBounds);
-  }, [loadMapOffers]);
+  const handleBoundsChange = useCallback(
+    (newBounds: OffersInViewArgs) => {
+      bounds.current = newBounds;
+      loadMapOffers(newBounds);
+    },
+    [loadMapOffers]
+  );
 
   useEffect(() => {
     if (latestOfferUpdate && bounds.current) {
@@ -88,10 +88,7 @@ export function OverviewMap() {
         </main>
       </MapContainer>
       {activeOffer ? (
-        <OfferDetailModal
-          offer={activeOffer}
-          offerClosed={(reload) => handleOfferClosed(reload)}
-        />
+        <OfferDetailModal offer={activeOffer} offerClosed={handleOfferClosed} />
       ) : null}
     </>
   );
