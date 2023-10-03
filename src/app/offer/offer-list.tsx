@@ -22,19 +22,15 @@ import { FilterProps, ListFilter } from './offer-list-filter/list-filter';
 
 export function OfferList() {
   const navigate = useNavigate();
-  const { offers, loadFilterListOffers, latestOfferUpdate } =
+  const { offers, loadListOffers, latestOfferUpdate, setOfferFilter } =
     useContext(StateContext);
   const [activeOffer, setOfferActive] = useState<Offer | null>(null);
-  const [filter, setFilter] = useState<FilterProps>({
-    category: 0,
-    title: '',
-  });
+
   useEffect(() => {
-    loadFilterListOffers(filter);
-  }, [filter, latestOfferUpdate, loadFilterListOffers]);
+    loadListOffers();
+  }, [latestOfferUpdate, loadListOffers]);
   function updateSelection(filter: FilterProps) {
-    setFilter(filter);
-    loadFilterListOffers(filter);
+    setOfferFilter(filter);
   }
   function handleOfferClosed() {
     setOfferActive(null);
@@ -61,10 +57,7 @@ export function OfferList() {
       </div>
       <List sx={{ width: '100%' }}></List>
       {activeOffer ? (
-        <OfferDetailModal
-          offer={activeOffer}
-          offerClosed={handleOfferClosed}
-        />
+        <OfferDetailModal offer={activeOffer} offerClosed={handleOfferClosed} />
       ) : null}
       {offers.map((offer, index) => {
         return (
