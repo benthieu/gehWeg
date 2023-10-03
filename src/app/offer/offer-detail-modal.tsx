@@ -4,7 +4,6 @@ import { useContext, useState } from 'react';
 import { MapContainer, Marker, TileLayer } from 'react-leaflet';
 import StateContext from '../state/state.context';
 import { Offer } from '../state/supabase/database.types';
-import { formatCHDate } from '../utils/date-utils';
 import { OfferImage } from './offer-image';
 
 const style = {
@@ -33,6 +32,39 @@ export default function OfferDetailModal({
   const [imageActive, setImageActive] = useState(false);
   const supabase = useSupabaseClient();
   const user = users.find((user) => user.id === offer.created_by);
+  // The following methods and constats create derived properties to set color and formulate text for the age of offer
+  const calculateAgeInDays = () => {
+    return offer.created_at
+      ? ((new Date().getTime() - new Date(offer.created_at).getTime()) /
+          (1000 * 60 * 60 * 24)) |
+          0
+      : -1;
+  };
+  const ageInDays = calculateAgeInDays();
+  const determineAgeColor = () => {
+    if (ageInDays < 0) {
+      return 'white'; // no color in case of error
+    } else if (ageInDays <= 3) {
+      return 'success.light';
+    } else if (ageInDays <= 6) {
+      return 'warning.light';
+    } else if (ageInDays > 6) {
+      return 'error.light';
+    }
+  };
+  const ageColor = determineAgeColor();
+  const determineWordingAge = () => {
+    if (ageInDays < 0) {
+      return 'unbekannt';
+    } else if (ageInDays < 1) {
+      return 'heute';
+    } else if (ageInDays === 1) {
+      return 'vor 1 Tag';
+    } else {
+      return `vor ${ageInDays} Tagen`;
+    }
+  };
+  const wordingAge = determineWordingAge();
 
   const setOfferClosed = async () => {
     const { error } = await supabase
@@ -61,7 +93,6 @@ export default function OfferDetailModal({
 
   const handleDelete = async () => {
     const { error } = await supabase.from('Offer').delete().eq('id', offer.id);
-
     if (error) {
       setAlert({
         type: 'error',
@@ -136,8 +167,16 @@ export default function OfferDetailModal({
                 {offer.city} {offer.postal_code}
               </Typography>
             )}
-            <Typography sx={{ mt: 2 }}>
-              Geteilt seit: {formatCHDate(offer.created_at)}
+            <Typography
+              sx={{
+                mt: 2,
+                p: 0.5,
+                backgroundColor: ageColor,
+                border: 1,
+                borderRadius: 1,
+              }}
+            >
+              Geteilt {wordingAge}
             </Typography>
             {user && (
               <Typography sx={{ mt: 2 }}>Geteilt von: {user.name}</Typography>
