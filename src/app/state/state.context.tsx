@@ -1,7 +1,7 @@
 import { useSupabaseClient } from '@supabase/auth-helpers-react';
 import { RealtimeChannel } from '@supabase/supabase-js';
 import { LatLngLiteral } from 'leaflet';
-import { createContext, useCallback, useEffect, useState } from 'react';
+import { createContext, useCallback, useEffect, useRef, useState } from 'react';
 import { Alert } from '../alert/alert.model';
 import { FilterProps } from '../offer/offer-list-filter/list-filter';
 import {
@@ -20,12 +20,13 @@ interface State {
   defaultLocation: LatLngLiteral;
   currentLocation: LatLngLiteral | undefined;
   alert: Alert | null;
+  offerFilter: FilterProps;
   latestOfferUpdate: string | null;
   setUserActive: (id: number) => void;
   loadListOffers: () => void;
   loadMapOffers: (bounds: OffersInViewArgs) => void;
-  loadFilterListOffers: (filter: FilterProps) => void;
   setAlert: (alert: Alert | null) => void;
+  setOfferFilter: (filter: FilterProps) => void;
 }
 
 const StateContext = createContext<State>({
@@ -36,12 +37,16 @@ const StateContext = createContext<State>({
   defaultLocation: { lat: 0, lng: 0 },
   currentLocation: undefined,
   alert: null,
+  offerFilter: {
+    category: 0,
+    title: '',
+  },
   latestOfferUpdate: null,
   setUserActive: () => undefined,
   loadListOffers: () => undefined,
   loadMapOffers: () => undefined,
-  loadFilterListOffers: () => undefined,
   setAlert: () => undefined,
+  setOfferFilter: () => undefined,
 });
 
 function mapOffer(offer_json: Views<'offer_json'>): Offer {
@@ -75,11 +80,15 @@ export const StateProvider = ({ children }: StateProviderProperties) => {
     lat: 46.947707374681514,
     lng: 7.445807175401288,
   });
+  const [offerFilter, _setOfferFilter] = useState<FilterProps>({
+    category: 0,
+    title: '',
+  });
 
   // Do not load offers older than this timespan, at the moment 21 days
-  const offerMaxAge = new Date(
+  const offerMaxAge = useRef(new Date(
     new Date().getTime() - 24 * 60 * 60 * 1000 * 21
-  ).toUTCString();
+  ).toUTCString());
 
   const getUsers = useCallback(() => {
     const query = supabaseClient.from('User').select('*');
@@ -95,37 +104,20 @@ export const StateProvider = ({ children }: StateProviderProperties) => {
     const query = supabaseClient
       .from('offer_json')
       .select('*')
-      .gt('created_at', offerMaxAge)
+      .gt('created_at', offerMaxAge.current)
       .order('created_at', { ascending: false });
-
+    if (offerFilter.category && offerFilter.category !== 0) {
+      query.eq('category', offerFilter.category);
+    }
+    if (offerFilter.title) {
+      query.ilike('subject', '%' + offerFilter.title + '%');
+    }
     query.then((result) => {
       if (result.data) {
         setOffers(result.data.map((offer) => mapOffer(offer)));
       }
     });
-  }, [offerMaxAge, supabaseClient]);
-
-  const loadFilterListOffers = useCallback(
-    (filter: FilterProps) => {
-      const query = supabaseClient
-        .from('offer_json')
-        .select('*')
-        .gt('created_at', offerMaxAge)
-        .order('created_at', { ascending: false });
-      if (filter.category && filter.category !== 0) {
-        query.eq('category', filter.category);
-      }
-      if (filter.title) {
-        query.ilike('subject', '%' + filter.title + '%');
-      }
-      query.then((result) => {
-        if (result.data) {
-          setOffers(result.data.map((offer) => mapOffer(offer)));
-        }
-      });
-    },
-    [offerMaxAge, supabaseClient]
-  );
+  }, [offerFilter, supabaseClient]);
 
   const getCategories = useCallback(() => {
     const query = supabaseClient.from('Category').select('*');
@@ -183,18 +175,26 @@ export const StateProvider = ({ children }: StateProviderProperties) => {
     (bounds: OffersInViewArgs) => {
       supabaseClient
         .rpc('offers_in_view', bounds)
-        .gt('created_at', offerMaxAge)
+        .gt('created_at', offerMaxAge.current)
         .then((response) => {
           const result: Functions<'offers_in_view'>['Returns'] = response.data;
           setOffers(result.map((offer) => mapOffer(offer)));
         });
     },
-    [offerMaxAge, supabaseClient]
+    [supabaseClient]
   );
 
   const setAlert = useCallback((alert: Alert | null) => {
     _setAlert(alert);
   }, []);
+
+  const setOfferFilter = useCallback(
+    (filter: FilterProps) => {
+      _setOfferFilter(filter);
+      loadListOffers();
+    },
+    [loadListOffers]
+  );
 
   useEffect(() => {
     getUsers();
@@ -218,10 +218,11 @@ export const StateProvider = ({ children }: StateProviderProperties) => {
         loadListOffers,
         currentLocation,
         defaultLocation,
-        loadFilterListOffers,
         alert,
         setAlert,
         latestOfferUpdate,
+        offerFilter,
+        setOfferFilter,
       }}
     >
       {children}
