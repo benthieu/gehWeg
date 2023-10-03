@@ -4,14 +4,14 @@ import { Tables } from '../../state/supabase/database.types';
 
 type AddOfferCategoryProps = {
   categories: Tables<'Category'>[];
-  updateCategory: (category: number) => void;
+  updateCategory: (category: string) => void;
 };
 
 export function AddOfferCategory({
   categories,
   updateCategory,
 }: AddOfferCategoryProps) {
-  const [category, setCategory] = useState(0);
+  const [category, setCategory] = useState('');
 
   return (
     <Box mx={1}>
@@ -24,7 +24,7 @@ export function AddOfferCategory({
           variant="standard"
           value={category}
           onChange={(event) => {
-            const value = parseInt(event.target.value);
+            const value = event.target.value;
             setCategory(value);
             updateCategory(value);
           }}

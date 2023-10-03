@@ -106,8 +106,8 @@ export function AddOfferForm() {
     });
   }
 
-  function updateCategory(category: number) {
-    setOffer({ ...offer, category: category });
+  function updateCategory(category: string) {
+    setOffer({ ...offer, category: parseInt(category) });
   }
 
   async function saveOffer() {
