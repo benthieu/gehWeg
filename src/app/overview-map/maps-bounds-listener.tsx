@@ -1,23 +1,12 @@
 import { LatLngBounds } from 'leaflet';
 import { useRef } from 'react';
 import { useMapEvents } from 'react-leaflet';
-import { Functions, OffersInViewArgs } from '../state/supabase/database.types';
+import { OffersInViewArgs } from '../state/supabase/database.types';
 import { mapOfferQueryBounds } from '../utils/map-utils';
 
 interface MapsBoundsListenerProperties {
   boundsChanged: (bounds:OffersInViewArgs) => void;
 }
-
-// function mapOfferQueryBounds(
-//   bounds: LatLngBounds
-// ): Functions<'offers_in_view'>['Args'] {
-//   return {
-//     min_lat: bounds.getWest(),
-//     max_lat: bounds.getEast(),
-//     min_long: bounds.getSouth(),
-//     max_long: bounds.getNorth(),
-//   };
-// }
 export function MapsBoundsListener({
   boundsChanged,
 }: MapsBoundsListenerProperties) {
