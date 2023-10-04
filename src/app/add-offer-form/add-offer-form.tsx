@@ -2,10 +2,10 @@ import { Box, Button, Divider, Stack } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
 import { useSupabaseClient } from '@supabase/auth-helpers-react';
 import { LatLngLiteral } from 'leaflet';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { v4 as uuidv4 } from 'uuid';
-import { Tables } from '.././state/supabase/database.types';
+import { Offer } from '.././state/supabase/database.types';
 import StateContext from '../state/state.context';
 import AddOfferCategory from './category/add-category';
 import AddDescriptionButton from './description/add-description-button';
@@ -23,12 +23,12 @@ export function AddOfferForm() {
     useContext(StateContext);
   const navigate = useNavigate();
   const [images, setImages] = useState<Image[]>([]);
-  const [offer, setOffer] = useState<Partial<Tables<'Offer'>>>({
+  const [offer, setOffer] = useState<Partial<Offer>>({
     category: null,
     city: '',
     created_by: activeUser ? activeUser.id : 1,
     description: null,
-    location: currentLocation,
+    location: currentLocation || defaultLocation,
     postal_code: null,
     status: '',
     street: '',
@@ -36,17 +36,6 @@ export function AddOfferForm() {
     images: null,
   });
   const supabase = useSupabaseClient();
-
-  useEffect(() => {
-    function updateOffer() {
-      const imageIds = images.map((image) => image.imageId);
-      setOffer({
-        ...offer,
-        images: imageIds,
-      });
-    }
-    updateOffer();
-  }, [images, offer]);
 
   function addImageFromFile(image: Blob | MediaSource) {
     const newImageUrl = URL.createObjectURL(image);
@@ -111,8 +100,8 @@ export function AddOfferForm() {
   }
 
   async function saveOffer() {
-    saveImages(images);
     const offerToBeSaved = buildOffer();
+    saveImages(images);
     if (!offerToBeSaved) {
       return;
     }
@@ -142,6 +131,7 @@ export function AddOfferForm() {
         created_by: activeUser?.id,
         status: 'new',
         location: point,
+        images: images.map((image) => image.imageId),
       };
     } catch (error) {
       setAlert({

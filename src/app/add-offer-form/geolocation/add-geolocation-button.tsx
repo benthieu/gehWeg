@@ -1,18 +1,25 @@
-import { useState } from 'react';
-import OfferGeolocationModal from './offer-geolocation-modal';
-import { Box, Divider, ListItemButton, ListItemText } from '@mui/material';
-import PlaceIcon from '@mui/icons-material/Place';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import DoneIcon from '@mui/icons-material/Done';
-import { Tables } from 'src/app/state/supabase/database.types';
+import PlaceIcon from '@mui/icons-material/Place';
+import { Box, Divider, ListItemButton, ListItemText } from '@mui/material';
 import { LatLngLiteral } from 'leaflet';
+import { useState } from 'react';
+import { Offer } from 'src/app/state/supabase/database.types';
+import OfferGeolocationModal from './offer-geolocation-modal';
 
 type AddGeolocationButtonProps = {
-  offer: Partial<Tables<'Offer'>>;
-  setOfferLocation: (event: {latlng: { lat: number; lng: number}}, address: string) => void,
-  defaultLocation: LatLngLiteral
+  offer: Partial<Offer>;
+  setOfferLocation: (
+    event: { latlng: { lat: number; lng: number } },
+    address: string
+  ) => void;
+  defaultLocation: LatLngLiteral;
 };
-function AddGeolocationButton({ offer, setOfferLocation, defaultLocation}: AddGeolocationButtonProps) {
+function AddGeolocationButton({
+  offer,
+  setOfferLocation,
+  defaultLocation,
+}: AddGeolocationButtonProps) {
   const [geolocationModalOpened, setGeolocationModalOpened] = useState(false);
 
   return (
