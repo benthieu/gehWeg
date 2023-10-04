@@ -103,14 +103,6 @@ export function OfferGeolocationModal({
     zoom: number;
   };
 
-  function ChangeView({ center, zoom }: CenterMapProps) {
-    const map = useMap();
-    if (center && zoom) {
-      map.setView(center, zoom);
-    }
-    return null;
-  }
-
   return (
     <Modal
       open={open}
@@ -127,10 +119,7 @@ export function OfferGeolocationModal({
           <Box mt={1}>
             <MapContainer
               style={{ height: `250px` }}
-              center={{
-                lat: 46.947707374681514,
-                lng: 7.445807175401288,
-              }}
+              center={location}
               zoom={16}
               scrollWheelZoom={false}
               doubleClickZoom
