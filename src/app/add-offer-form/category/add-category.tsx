@@ -17,24 +17,27 @@ export function AddOfferCategory({
     <Box mx={1}>
       <Stack direction="column" m={1}>
         <Tooltip title="Kategorie wählen">
-        <TextField
-          id="offer-category"
-          label="Kategorie"
-          select
-          variant="standard"
-          value={category}
-          onChange={(event) => {
-            const value = parseInt(event.target.value);
-            setCategory(value);
-            updateCategory(value);
-          }}
-        >    
-          {categories.map((category) => (
-            <MenuItem key={category.id} value={category.id}>
-              {category.name}
+          <TextField
+            id="offer-category"
+            label="Kategorie"
+            select
+            variant="standard"
+            value={category}
+            onChange={(event) => {
+              const value = parseInt(event.target.value);
+              setCategory(value);
+              updateCategory(value);
+            }}
+          >
+            <MenuItem key={0} value={0}>
+              Kategorie auswählen
             </MenuItem>
-          ))}
-        </TextField>
+            {categories.map((category) => (
+              <MenuItem key={category.id} value={category.id}>
+                {category.name}
+              </MenuItem>
+            ))}
+          </TextField>
         </Tooltip>
       </Stack>
     </Box>
