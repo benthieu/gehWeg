@@ -98,10 +98,6 @@ export function OfferGeolocationModal({
     }
   }
 
-  type CenterMapProps = {
-    center: LatLngLiteral;
-    zoom: number;
-  };
 
   return (
     <Modal
