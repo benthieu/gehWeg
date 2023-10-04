@@ -240,7 +240,7 @@ export function AddOfferForm() {
               color="primary"
               variant="contained"
             >
-              Abbrechen
+              Zurück zur Map
             </Button>
           </Stack>
         </Box>
