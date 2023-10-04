@@ -1,11 +1,17 @@
-import { Typography, Box, Stack, Tooltip, Modal } from '@mui/material';
-import { MapContainer, Marker, TileLayer, useMapEvents } from 'react-leaflet';
+import { Box, Modal, Stack, Tooltip, Typography } from '@mui/material';
 import { LatLngLiteral, LeafletMouseEvent } from 'leaflet';
+import { useState } from 'react';
 import Geocode from 'react-geocode';
 import GooglePlacesAutocomplete from 'react-google-places-autocomplete';
 import { Option } from 'react-google-places-autocomplete/build/types';
+import {
+  MapContainer,
+  Marker,
+  TileLayer,
+  useMap,
+  useMapEvents,
+} from 'react-leaflet';
 import { PropsValue, SingleValue } from 'react-select';
-import { useEffect, useState } from 'react';
 
 const PLACES_API_KEY = 'AIzaSyDX7buq-sfinghkw3M6TSoA8Jc_RnUxdvc';
 
@@ -14,8 +20,8 @@ type AddOfferLocationProps = {
   handleClickOnMap: (
     event: { latlng: { lat: number; lng: number } },
     address: string
-  ) => void;
-  addGeolocationClosed: (closed: boolean) => void;
+  ) => void,
+  addGeolocationClosed: (closed: boolean) => void
 };
 
 const style = {
@@ -37,7 +43,7 @@ Geocode.enableDebug();
 export function OfferGeolocationModal({
   location,
   handleClickOnMap: updateOfferLocation,
-  addGeolocationClosed,
+  addGeolocationClosed
 }: AddOfferLocationProps) {
   const [addressInput, setAddressInput] = useState<PropsValue<Option>>();
   const [addressDisplay, setAddressDisplay] = useState<string>();
@@ -48,13 +54,6 @@ export function OfferGeolocationModal({
     addGeolocationClosed(true);
   };
 
-  useEffect(() => {
-    if (location) {
-      mapGeolocationToAddress({
-        latlng: { lat: location?.lat, lng: location?.lng },
-      });
-    }
-  }, []);
 
   const MapEvents = () => {
     useMapEvents({
@@ -99,6 +98,19 @@ export function OfferGeolocationModal({
     }
   }
 
+  type CenterMapProps = {
+    center: LatLngLiteral;
+    zoom: number;
+  };
+
+  function ChangeView({ center, zoom }: CenterMapProps) {
+    const map = useMap();
+    if (center && zoom) {
+      map.setView(center, zoom);
+    }
+    return null;
+  }
+
   return (
     <Modal
       open={open}
@@ -107,46 +119,55 @@ export function OfferGeolocationModal({
       aria-describedby="modal-modal-description"
     >
       <Box sx={style}>
-        <Stack direction="column" m={1}>
-          <Typography mx={1} fontSize={15}>
-            {addressDisplay}
-          </Typography>
-          <Tooltip title="Standort in Karte setzen oder Adresse unterhalb eingeben">
-            <Box mt={1}>
-              <MapContainer
-                style={{ height: `250px` }}
-                center={location}
+      <Stack direction="column" m={1}>
+        <Typography mx={1} fontSize={15}>
+          {addressDisplay}
+        </Typography>
+        <Tooltip title="Standort in Karte setzen oder Adresse unterhalb eingeben">
+          <Box mt={1}>
+            <MapContainer
+              style={{ height: `250px` }}
+              center={location}
+              zoom={16}
+              scrollWheelZoom={false}
+              doubleClickZoom
+            >
+              <ChangeView
+                center={
+                  location ?? {
+                    lat: 46.947707374681514,
+                    lng: 7.445807175401288,
+                  }
+                }
                 zoom={16}
-                scrollWheelZoom={false}
-                doubleClickZoom
-              >
-                <header className="map">
-                  <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-                </header>
-                <MapEvents />
-                <main>
-                  <section>
-                    {location ? <Marker position={location}></Marker> : null}
-                  </section>
-                </main>
-              </MapContainer>
-              <GooglePlacesAutocomplete
-                apiKey={PLACES_API_KEY}
-                autocompletionRequest={{
-                  componentRestrictions: {
-                    country: ['ch'],
-                  },
-                }}
-                selectProps={{
-                  placeholder: 'Adresse eingeben',
-                  isClearable: true,
-                  value: addressInput,
-                  onChange: (event) => mapAddressToGeolocation(event),
-                }}
-              />
-            </Box>
-          </Tooltip>
-        </Stack>
+              ></ChangeView>
+              <header className="map">
+                <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+              </header>
+              <MapEvents />
+              <main>
+                <section>
+                  {location ? <Marker position={location}></Marker> : null}
+                </section>
+              </main>
+            </MapContainer>
+            <GooglePlacesAutocomplete
+              apiKey={PLACES_API_KEY}
+              autocompletionRequest={{
+                componentRestrictions: {
+                  country: ['ch'],
+                },
+              }}              
+              selectProps={{
+                placeholder: 'Adresse eingeben',
+                isClearable: true,
+                value: addressInput,
+                onChange: (event) => mapAddressToGeolocation(event),
+              }}
+            />
+          </Box>
+        </Tooltip>
+      </Stack>
       </Box>
     </Modal>
   );
