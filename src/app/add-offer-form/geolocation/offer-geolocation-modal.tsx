@@ -1,4 +1,9 @@
-import { Typography, Box, Stack, Tooltip, Modal } from '@mui/material';
+import { Box, Modal, Stack, Tooltip, Typography } from '@mui/material';
+import { LatLngLiteral, LeafletMouseEvent } from 'leaflet';
+import { useState } from 'react';
+import Geocode from 'react-geocode';
+import GooglePlacesAutocomplete from 'react-google-places-autocomplete';
+import { Option } from 'react-google-places-autocomplete/build/types';
 import {
   MapContainer,
   Marker,
@@ -6,12 +11,7 @@ import {
   useMap,
   useMapEvents,
 } from 'react-leaflet';
-import { LatLngLiteral, LeafletMouseEvent} from 'leaflet';
-import Geocode from 'react-geocode';
-import GooglePlacesAutocomplete from 'react-google-places-autocomplete';
-import { Option } from 'react-google-places-autocomplete/build/types';
 import { PropsValue, SingleValue } from 'react-select';
-import { useState } from 'react';
 
 const PLACES_API_KEY = 'AIzaSyDX7buq-sfinghkw3M6TSoA8Jc_RnUxdvc';
 
