@@ -90,7 +90,7 @@ const CustomWebcam = ({
     >
       <Box sx={style}>
         <Stack direction="column">
-          <Stack justifyContent="center">
+          <Stack justifyContent="center" direction="row">
             {webcamLoading ? (
               <Box>
                 <Typography>Connecting...</Typography>
