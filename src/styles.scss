@@ -155,6 +155,9 @@ body {
   height: 100%;
 }
 .MuiModal-root {
+  .MuiBox-root {
+    z-index: 1;
+  }
   .modal-header {
     height: 25vh;
     position: relative;
