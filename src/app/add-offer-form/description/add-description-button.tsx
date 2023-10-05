@@ -1,13 +1,13 @@
-import { useState } from 'react';
-import { Box, Divider, ListItemButton, ListItemText } from '@mui/material';
-import DoneIcon from '@mui/icons-material/Done';
-import { Tables } from 'src/app/state/supabase/database.types';
-import OfferDescriptionModal from './offer-description-modal';
-import EditIcon from '@mui/icons-material/Edit';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+import DoneIcon from '@mui/icons-material/Done';
+import EditIcon from '@mui/icons-material/Edit';
+import { Box, Divider, ListItemButton, ListItemText } from '@mui/material';
+import { useState } from 'react';
+import { Offer } from '../../state/supabase/database.types';
+import OfferDescriptionModal from './offer-description-modal';
 
 type AddDescriptionButtonProps = {
-  offer: Partial<Tables<'Offer'>>;
+  offer: Partial<Offer>;
   updateDescription: (value: string) => void
 };
 function AddDescriptionButton({ offer, updateDescription }: AddDescriptionButtonProps) {
